@@ -548,7 +548,6 @@ td {
 .post-detail .post .post-content {
   width: 100%;
   flex-shrink: 0;
-  font-family: "Droid Serif", "PingFang SC", "Hiragino Sans GB", "Droid Sans Fallback", "Microsoft YaHei", sans-serif;
 }
 .post-detail .post .post-content a {
   color: rgba(0, 0, 0, 0.98);
@@ -574,9 +573,12 @@ td {
   letter-spacing: 0.05em;
   hyphens: auto;
 }
+.post-detail .post .post-content code {
+  font-size: 12px;
+  font-family: Monaco, Operator, 'Source Code Pro', Consolas, Menlo, 'Courier New', monospace;
+}
 .post-detail .post .post-content p code,
 .post-detail .post .post-content li code {
-  font-family: 'Source Code Pro', Consolas, Menlo, Monaco, 'Courier New', monospace;
   line-height: initial;
   word-wrap: break-word;
   border-radius: 0;
@@ -592,8 +594,6 @@ td {
   position: relative;
 }
 .post-detail .post .post-content pre code {
-  font-size: 0.96em;
-  font-family: 'Source Code Pro', Consolas, Menlo, Monaco, 'Courier New', monospace;
   padding: 1em;
   border-radius: 5px;
   line-height: 1.5;
@@ -974,29 +974,3 @@ td {
 .hljs-strong {
   font-weight: bold;
 }
-
-      .post-container .post .post-title {
-        text-align: center;
-      }
-      .post-container .post .post-info {
-        text-align: center;
-      }
-      .post-detail .post .post-title {
-        text-align: center;
-      }
-      .post-detail .post .post-info {
-        text-align: center;
-      }
-    
-      body {
-        font-family: -apple-system,BlinkMacSystemFont,'Helvetica Neue','PingFang SC','Hiragino Sans GB','Droid Sans Fallback','Microsoft YaHei',sans-serif;
-      }
-    
-      body .main {
-    font-family: -apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
-    font-size: 1.6vw;
-    line-height: 1.42857143;
-    hanging-punctuation: first allow-end;
-    transition: all .2s ease;
-}
-    

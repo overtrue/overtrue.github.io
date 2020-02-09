@@ -3,21 +3,12 @@
     <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>更准确的 PHP 汉字转拼音解决方案 | overtrue</title>
-<link rel="shortcut icon" href="https://overtrue.github.io/favicon.ico?v=1581256206741">
+<link rel="shortcut icon" href="https://overtrue.github.io/favicon.ico?v=1581259249428">
 <link href="https://cdn.remixicon.com/releases/v2.1.0/remixicon.css" rel="stylesheet">
 <link rel="stylesheet" href="https://overtrue.github.io/styles/main.css">
 <link rel="alternate" type="application/atom+xml" title="更准确的 PHP 汉字转拼音解决方案 | overtrue - Atom Feed" href="https://overtrue.github.io/atom.xml">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
 
-
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-55452630-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-55452630-1');
-</script>
 
 
     <meta name="description" content="目前为止这可能是最准确的一个解决方案了，大GitHub上各种找，没有一个好用的，大部分都只是汉字转拼音，所以包含多音字的结果基本都错误。当然也有基于词典的转换工具，不过还是解决不了词库不全造成的多音字问题（当然，完全解决是不太可能的，或者词..." />
@@ -30,7 +21,7 @@
       <div class="main-content">
         <div class="site-header">
   <a href="https://overtrue.github.io">
-  <img class="avatar" src="https://overtrue.github.io/images/avatar.png?v=1581256206741" alt="">
+  <img class="avatar" src="https://overtrue.github.io/images/avatar.png?v=1581259249428" alt="">
   </a>
   <h1 class="site-title">
     overtrue
@@ -74,17 +65,9 @@
   <div class="social-container">
     
       
-        <a href="https://github.com/overtrue" target="_blank">
-          <i class="ri-github-line"></i>
-        </a>
-      
     
       
     
-      
-        <a href="https://weibo.com/joychaocc" target="_blank">
-          <i class="ri-weibo-line"></i>
-        </a>
       
     
       
@@ -298,7 +281,8 @@ echo Pinyin::pinyin('带着希望去旅行，比到达终点更美好');
     repo: 'blog',
     owner: 'overtrue',
     admin: ['overtrue'],
-    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    labels: ['gitalk', 'comment'],
+    id: location.pathname.slice(1, location.pathname.lastIndexOf('/')).substring(0, 49), 
     distractionFreeMode: false  // Facebook-like distraction free mode
   })
 
