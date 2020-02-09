@@ -1,0 +1,192 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>我写了一份 PHP 拓展包开发教程 | overtrue</title>
+<link rel="shortcut icon" href="https://overtrue.github.io/favicon.ico?v=1581253585933">
+<link href="https://cdn.remixicon.com/releases/v2.1.0/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://overtrue.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="我写了一份 PHP 拓展包开发教程 | overtrue - Atom Feed" href="https://overtrue.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-55452630-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-55452630-1');
+</script>
+
+
+    <meta name="description" content="这里所谓的拓展包，其实就是指的 Composer 包啦，很多人其实都有想去做自己的拓展包，但是又不知道从何下手，所以，作为一个还算熟悉的拓展包开发者当然有这个责任将这个技能分享给大家了。
+下图是目录结构，感兴趣的同学可以花 ￥20 元学习一..." />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://overtrue.github.io">
+  <img class="avatar" src="https://overtrue.github.io/images/avatar.png?v=1581253585933" alt="">
+  </a>
+  <h1 class="site-title">
+    overtrue
+  </h1>
+  <p class="site-description">
+    🇨🇳 <b>China Shenzhen</b>・🕹<b>Web developer</b>
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="https://github.com/overtrue" class="menu" target="_blank">
+          开源
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/overtrue" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+    
+      
+        <a href="https://weibo.com/joychaocc" target="_blank">
+          <i class="ri-weibo-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              我写了一份 PHP 拓展包开发教程
+            </h2>
+            <div class="post-info">
+              <span>
+                2018-12-11
+              </span>
+              <span>
+                1 min read
+              </span>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <p>这里所谓的拓展包，其实就是指的 Composer 包啦，很多人其实都有想去做自己的拓展包，但是又不知道从何下手，所以，作为一个还算熟悉的拓展包开发者当然有这个责任将这个技能分享给大家了。</p>
+<p>下图是目录结构，感兴趣的同学可以花 ￥20 元学习一下（毕竟我写了两个周，就当请我喝杯咖啡啦）。</p>
+<figure data-type="image" tabindex="1"><a href="https://laravel-china.org/courses/creating-package"><img src="https://user-images.githubusercontent.com/1472352/49772566-b3b06080-fd28-11e8-9a15-e32952f59fdb.png" alt="image" loading="lazy"></a></figure>
+<p>课程链接：<a href="https://laravel-china.org/courses/creating-package">《PHP 扩展包实战教程 - 从入门到发布》</a></p>
+
+              </div>
+              <div class="toc-container">
+                
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://overtrue.github.io/set-expired-at-for-laravel-passport-personal-access-token">
+              <h3 class="post-title">
+                Laravel 中如何更方便的修改 Passport Personal Access Token 过期时间
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+  <a class="rss" href="https://overtrue.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

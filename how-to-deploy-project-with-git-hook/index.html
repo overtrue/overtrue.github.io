@@ -1,0 +1,262 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>使用 PHP 脚本远程部署 git 项目 | overtrue</title>
+<link rel="shortcut icon" href="https://overtrue.github.io/favicon.ico?v=1581253585933">
+<link href="https://cdn.remixicon.com/releases/v2.1.0/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://overtrue.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="使用 PHP 脚本远程部署 git 项目 | overtrue - Atom Feed" href="https://overtrue.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-55452630-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-55452630-1');
+</script>
+
+
+    <meta name="description" content="2015第一篇文章，没啥技术含量，权当作个笔记。
+我们通常在一些git托管网站托管我们的代码，除了大家耳熟能详的GitHub, 还有国外的Bitbucket等，国内的开源中国、Coding等都是不错的选择。
+今天以Coding上私有库的部署..." />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://overtrue.github.io">
+  <img class="avatar" src="https://overtrue.github.io/images/avatar.png?v=1581253585933" alt="">
+  </a>
+  <h1 class="site-title">
+    overtrue
+  </h1>
+  <p class="site-description">
+    🇨🇳 <b>China Shenzhen</b>・🕹<b>Web developer</b>
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="https://github.com/overtrue" class="menu" target="_blank">
+          开源
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/overtrue" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+    
+      
+        <a href="https://weibo.com/joychaocc" target="_blank">
+          <i class="ri-weibo-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              使用 PHP 脚本远程部署 git 项目
+            </h2>
+            <div class="post-info">
+              <span>
+                2015-01-19
+              </span>
+              <span>
+                3 min read
+              </span>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <p>2015第一篇文章，没啥技术含量，权当作个笔记。</p>
+<p>我们通常在一些git托管网站托管我们的代码，除了大家耳熟能详的<a href="https://github.com">GitHub</a>, 还有国外的<a href="https://bitbucket.org/">Bitbucket</a>等，国内的<a href="http://git.oschina.net/">开源中国</a>、<a href="https://coding.net/">Coding</a>等都是不错的选择。</p>
+<p>今天以Coding上私有库的部署为例来讲解如何使用Coding的hook服务来自动部署到生产环境的服务器。</p>
+<h2 id="准备工作">准备工作</h2>
+<ul>
+<li>在Coding.net上创建一个私有库</li>
+<li>安装了web服务与git服务的服务器</li>
+</ul>
+<h2 id="在服务器上">在服务器上</h2>
+<p>1.创建web服务器用户目录，这里以apache用户为例，不同的环境请根据自己环境自行修改：</p>
+<pre><code class="language-shell"> sudo mkdir /var/www/.ssh
+ sudo chown -R apache:apache /var/www/.ssh/
+</code></pre>
+<p>2.生成公钥</p>
+<p>公钥有两个：1. git用户公钥，2. 部署公钥：</p>
+<p>3.用户公钥（用于git clone时认证权限）</p>
+<pre><code class="language-shell"> ssh-keygen -t rsa -C &quot;anzhengchao@gmail.com&quot;
+ # 然后一直回车就行
+ # 生成的文件通常是 /root/.ssh/id_rsa，如果非root用户请查看提示上的路径
+</code></pre>
+<p>4.部署公钥</p>
+<pre><code class="language-shell"> sudo -Hu apache ssh-keygen -t rsa # 请选择 &quot;no passphrase&quot;，一直回车下去
+ sudo cat /var/www/.ssh/id_rsa.pub # 查看生成的密钥内容，复制全部
+</code></pre>
+<p>5.准备钩子文件</p>
+<p>在你的www目录建立一个目录<code>hook</code>, 里面放上一个php文件<code>index.php</code>，内容如下：</p>
+  <script src="https://gist.github.com/overtrue/0bf1cd704bf804de2e2c.js"></script>
+<p>在此目录下建立一个目录<code>repos</code>:</p>
+<pre><code class="language-shell"> mkdir repos
+</code></pre>
+<p>修改目录权限：</p>
+<pre><code class="language-shell"> chown -R apache:apache /www/hook # 这里请改成你创建的hook目录
+</code></pre>
+<p>确保你的hook文件可以访问：http://example.com/hook/index.php，钩子准备完成。</p>
+<p>4.修改git配置</p>
+<pre><code class="language-shell"> git config --global user.name &quot;overtrue&quot;
+ git config --global user.email &quot;anzhengchao@gmail.com&quot; # 邮箱请与conding上一致
+</code></pre>
+<h2 id="在代码托管网站">在代码托管网站</h2>
+<p>1.添加用户公钥</p>
+<p>复制上面的<code>/root/.ssh/id_rsa.pub</code>的内容到个人设置页<code>https://coding.net/user/setting/keys</code>添加即可</p>
+<p>2.复制<code>/var/www/.ssh/id_rsa.pub</code>的内容并添加到Coding.net公钥:</p>
+<blockquote>
+<p>选择项目 &gt; 设置 &gt; 部署公钥 &gt; 新建 &gt; 粘贴到下面框并确认</p>
+</blockquote>
+<p>3.添加hook</p>
+<blockquote>
+<p>选择项目 &gt; 设置 &gt; WebHook &gt; 新建hook &gt; 粘贴你的hook/index.php所在的网址。比如:http://example.com/hook/index.php, 令牌可选，但是建议写上。</p>
+</blockquote>
+<p>稍过几秒刷新页面查看hook状态，显示为绿色勾就OK了。</p>
+<h2 id="初始化">初始化</h2>
+<p>1.我们需要先在服务器上clone一次，以后都可以实现自动部署了：</p>
+<pre><code class="language-shell">  sudo chown -R apache:apache /www/hook/repos
+  sudo -Hu apache git clone git@coding.net:you/repo.git /www/hook/repos/  --depth=1
+</code></pre>
+<pre><code>**！！注意，这里初始化clone必须要用www用户**
+</code></pre>
+<p>2.往Coding.net提交一次代码测试：</p>
+<pre><code class="language-shell">  git commit -am &quot;test hook&quot; --allow-empty
+  git push
+</code></pre>
+<p>OK，稍微一几秒，正常的话你在代码里配置的目标目录里就会有你的项目文件了。</p>
+<p>有问题请随时反馈：https://gist.github.com/overtrue/0bf1cd704bf804de2e2c</p>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C">准备工作</a></li>
+<li><a href="#%E5%9C%A8%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8A">在服务器上</a></li>
+<li><a href="#%E5%9C%A8%E4%BB%A3%E7%A0%81%E6%89%98%E7%AE%A1%E7%BD%91%E7%AB%99">在代码托管网站</a></li>
+<li><a href="#%E5%88%9D%E5%A7%8B%E5%8C%96">初始化</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://overtrue.github.io/laravel-mongodb-field-type-bug">
+              <h3 class="post-title">
+                laravel-mongodb 拓展与 MySQL 关联问题
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+  <a class="rss" href="https://overtrue.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

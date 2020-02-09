@@ -1,0 +1,295 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>MySQL 性能优化小结 | overtrue</title>
+<link rel="shortcut icon" href="https://overtrue.github.io/favicon.ico?v=1581253585933">
+<link href="https://cdn.remixicon.com/releases/v2.1.0/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://overtrue.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="MySQL 性能优化小结 | overtrue - Atom Feed" href="https://overtrue.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-55452630-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-55452630-1');
+</script>
+
+
+    <meta name="description" content="一.数据库设计和查询优化
+
+Schema设计时主要考虑:标准化,数据类型,索引.
+
+一个数据库设计可以混合使用,一部分表格标准化,一部分表格非标准化.(非标准化表格适当冗余)
+最优的数据类型,使表在磁盘上占据的空间尽可能小,读写快,占用内存..." />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://overtrue.github.io">
+  <img class="avatar" src="https://overtrue.github.io/images/avatar.png?v=1581253585933" alt="">
+  </a>
+  <h1 class="site-title">
+    overtrue
+  </h1>
+  <p class="site-description">
+    🇨🇳 <b>China Shenzhen</b>・🕹<b>Web developer</b>
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="https://github.com/overtrue" class="menu" target="_blank">
+          开源
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/overtrue" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+    
+      
+        <a href="https://weibo.com/joychaocc" target="_blank">
+          <i class="ri-weibo-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              MySQL 性能优化小结
+            </h2>
+            <div class="post-info">
+              <span>
+                2014-10-11
+              </span>
+              <span>
+                3 min read
+              </span>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <h1 id="一数据库设计和查询优化">一.数据库设计和查询优化</h1>
+<ol>
+<li>Schema设计时主要考虑:标准化,数据类型,索引.
+<ul>
+<li>一个数据库设计可以混合使用,一部分表格标准化,一部分表格非标准化.(非标准化表格适当冗余)</li>
+<li>最优的数据类型,使表在磁盘上占据的空间尽可能小,读写快,占用内存少.(索引也尽量建立在较小的列上)</li>
+<li>正确索引,提高Select,Update,Delete性能.</li>
+</ul>
+</li>
+<li>不同的Sql不同的优化方案
+<ul>
+<li>Explain Sql查看结果,分析查询.</li>
+<li>查询使用匹配的类型.</li>
+<li>使用long-slow-queries记录较慢查询,分析优化.</li>
+</ul>
+</li>
+</ol>
+<h1 id="二服务器端优化">二.服务器端优化</h1>
+<ol>
+<li>安装适当的MySql版本.<br>
+如果服务器使用Intel处理器,使用Intel C++版本可提高30 %效率</li>
+<li>配置优化.<br>
+常见优化项:</li>
+</ol>
+<ul>
+<li><code>charset</code></li>
+<li><code>max_allowed_packet</code></li>
+<li><code>max_connections</code></li>
+<li><code>table_cache_size</code></li>
+<li><code>query_cache_size</code></li>
+</ul>
+<p>三.存储引擎优化</p>
+<ul>
+<li><strong>MyISAM</strong>
+<ol>
+<li>引擎特点
+<ul>
+<li>不支持事务,提供高速存储,检索以及全文搜索能力.</li>
+<li>宕机会破坏表.</li>
+<li>使用的磁盘和内存空间小.</li>
+<li>基于表的锁,并发更新数据会出现严重性能问题.</li>
+<li>MySql只缓存索引,数据由OS缓存.</li>
+</ul>
+</li>
+<li>适用情况
+<ul>
+<li>日志系统.</li>
+<li>只读操作或者大部分读操作.</li>
+<li>全表扫描.</li>
+<li>批量导入数据.</li>
+<li>没有事务的低并发读写.</li>
+</ul>
+</li>
+<li>优化策略
+<ul>
+<li>NOT NULL,可以减少磁盘存储.</li>
+<li>Optimize Table,碎片整理,回收空闲空间.</li>
+<li>Deleting/updating/adding大量数据的时候禁止使用index.</li>
+<li>参数优化,key_buffer_size_variable索引缓存设置.</li>
+<li>避免并发Inset Update.</li>
+</ul>
+</li>
+</ol>
+</li>
+<li><strong>InnoDB</strong>
+<ol>
+<li>引擎特点
+<ul>
+<li>具有提交,回滚和崩溃恢复能力的事务安全存储引擎.</li>
+<li>处理巨大数据量性能卓越,它的CPU使用效率非常高.</li>
+<li>需要更多的内存和磁盘存储空间.</li>
+<li>数据和索引都缓存在内存中.</li>
+</ul>
+</li>
+<li>适用情况
+<ul>
+<li>需要事务的应用.</li>
+<li>高并发的应用.</li>
+<li>自动恢复.</li>
+<li>较快速的基于主键的操作.</li>
+</ul>
+</li>
+<li>优化策略
+<ul>
+<li>尽量使用short,integer的主键.</li>
+<li>使用prefix keys,因为InnoDB没有key压缩功能.</li>
+<li>参数优化,innodb_buffer_pool_size,innodb_data_home_dir等等.</li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+<h1 id="三-缓存优化">三. 缓存优化</h1>
+<ol>
+<li>Memcached</li>
+<li>Redis</li>
+</ol>
+<p>转自： http://allensuiverson.blog.163.com/blog/static/133648269201310119491437/</p>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li><a href="#%E4%B8%80%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AE%BE%E8%AE%A1%E5%92%8C%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96">一.数据库设计和查询优化</a></li>
+<li><a href="#%E4%BA%8C%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E4%BC%98%E5%8C%96">二.服务器端优化</a></li>
+<li><a href="#%E4%B8%89-%E7%BC%93%E5%AD%98%E4%BC%98%E5%8C%96">三. 缓存优化</a></li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://overtrue.github.io/php-chinese-to-pinyin">
+              <h3 class="post-title">
+                更准确的 PHP 汉字转拼音解决方案
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+  <a class="rss" href="https://overtrue.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

@@ -1,0 +1,386 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>在 Laravel 外使用 Eloquent（一） | overtrue</title>
+<link rel="shortcut icon" href="https://overtrue.github.io/favicon.ico?v=1581253585933">
+<link href="https://cdn.remixicon.com/releases/v2.1.0/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://overtrue.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="在 Laravel 外使用 Eloquent（一） | overtrue - Atom Feed" href="https://overtrue.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-55452630-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-55452630-1');
+</script>
+
+
+    <meta name="description" content="不得不承认 Laravel 的 Eloquent 是一个很棒的 ORM，其实 Laravel 框架的设计本身结构使用的是 subtree 实现(外层使用的git-subsplit) , 也就是说Eloquent是独立的模块，我们也可以在自己..." />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://overtrue.github.io">
+  <img class="avatar" src="https://overtrue.github.io/images/avatar.png?v=1581253585933" alt="">
+  </a>
+  <h1 class="site-title">
+    overtrue
+  </h1>
+  <p class="site-description">
+    🇨🇳 <b>China Shenzhen</b>・🕹<b>Web developer</b>
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="https://github.com/overtrue" class="menu" target="_blank">
+          开源
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/overtrue" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+    
+      
+        <a href="https://weibo.com/joychaocc" target="_blank">
+          <i class="ri-weibo-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              在 Laravel 外使用 Eloquent（一）
+            </h2>
+            <div class="post-info">
+              <span>
+                2014-10-30
+              </span>
+              <span>
+                5 min read
+              </span>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <p>不得不承认 Laravel 的 Eloquent 是一个很棒的 ORM，其实 Laravel 框架的设计本身结构使用的是 subtree 实现(外层使用的<a href="https://github.com/dflydev/git-subsplit">git-subsplit</a>) , 也就是说Eloquent是独立的模块，我们也可以在自己的项目里通过composer来使用Eloquent，本文就详细讲解如何在自己的项目集成Eloquent。</p>
+<h2 id="安装">安装</h2>
+<p>首先我们得有<code>composer</code>，安装方法请详见：<a href="https://getcomposer.org/doc/00-intro.md">https://getcomposer.org/doc/00-intro.md </a><br>
+可能没有翻墙的情况下使用composer会比较慢，那么这里同样有福利：<a href="http://pkg.phpcomposer.com/">http://pkg.phpcomposer.com/</a> 。</p>
+<p>我们这里建议一个项目demo, 然后我们在demo目录下执行：</p>
+<pre><code class="language-shell">composer require illuminate/database:~4.2
+</code></pre>
+<p>那么你应该会看到：</p>
+<pre><code class="language-shell">Using version ~4.2 for illuminate/database
+./composer.json has been created
+Loading composer repositories with package information
+Updating dependencies (including require-dev)
+  - Installing nesbot/carbon (1.13.0)
+    Loading from cache
+
+  - Installing illuminate/support (v4.2.9)
+    Downloading: 100%
+    Downloading: 100%
+    Downloading: 100%
+
+    Failed, trying the next URL
+    Downloading: 100%
+
+  - Installing illuminate/container (v4.2.9)
+    Downloading: 100%
+
+  - Installing illuminate/events (v4.2.9)
+    Downloading: 100%
+
+  - Installing illuminate/database (v4.2.9)
+    Downloading: 100%
+
+Writing lock file
+Generating autoload files
+</code></pre>
+<p>这样就表示Eloquent已经安装好了。</p>
+<h2 id="配置">配置</h2>
+<p>下面我们来配置Eloquent。</p>
+<ol>
+<li>首先我们创建一个入口文件，如果你的项目已经有内容，那么同理在你的项目入口文件加入即可：</li>
+</ol>
+<p>demo/start.php:</p>
+<pre><code class="language-php?start_inline=1">&lt;?php
+
+// 载入composer的autoload文件
+include __DIR__ . '/vendor/autoload.php';
+</code></pre>
+<p>然后我们加入数据库配置：</p>
+<pre><code class="language-php?start_inline=1">$database = [
+    'driver'    =&gt; 'mysql',
+    'host'      =&gt; 'localhost',
+    'database'  =&gt; 'demo',
+    'username'  =&gt; 'root',
+    'password'  =&gt; '',
+    'charset'   =&gt; 'utf8',
+    'collation' =&gt; 'utf8_unicode_ci',
+    'prefix'    =&gt; '',
+];
+</code></pre>
+<p>上面我们的数据库配置，库名<code>demo</code>,用户名<code>root</code>,密码为空,这个<code>demo</code>是我在mysql里建立好的空数据库。</p>
+<p>然后我们加入Eloquent初始化代码：</p>
+<pre><code class="language-php?start_inline=1">use Illuminate\Container\Container;
+use Illuminate\Database\Capsule\Manager as Capsule;
+
+$capsule = new Capsule;
+
+// 创建链接
+$capsule-&gt;addConnection($database);
+
+// 设置全局静态可访问
+$capsule-&gt;setAsGlobal();
+
+// 启动Eloquent
+$capsule-&gt;bootEloquent();
+
+</code></pre>
+<p>那么Eloquent就配置完成了。</p>
+<p>最终的文件<code>demo/start.php</code>应该是这样：</p>
+<p>demo/start.php:</p>
+<pre><code class="language-php?start_inline=1">&lt;?php
+
+// 载入composer的autoload文件
+include __DIR__ . '/vendor/autoload.php';
+
+$database = [
+    'driver'    =&gt; 'mysql',
+    'host'      =&gt; 'localhost',
+    'database'  =&gt; 'demo',
+    'username'  =&gt; 'root',
+    'password'  =&gt; '',
+    'charset'   =&gt; 'utf8',
+    'collation' =&gt; 'utf8_unicode_ci',
+    'prefix'    =&gt; '',
+];
+
+use Illuminate\Container\Container;
+use Illuminate\Database\Capsule\Manager as Capsule;//如果你不喜欢这个名称，as DB;就好
+
+$capsule = new Capsule;
+
+// 创建链接
+$capsule-&gt;addConnection($database);
+
+// 设置全局静态可访问
+$capsule-&gt;setAsGlobal();
+
+// 启动Eloquent
+$capsule-&gt;bootEloquent();
+</code></pre>
+<p>那么现在只要你需要使用到Eloquent的地方载入这个文件即可， 下面我们来简单介绍一下使用。</p>
+<h2 id="建表">建表</h2>
+<p>配置完成了，我们再来使用Eloquent的结构生成器创建数据库的表：</p>
+<p>demo/table.php</p>
+<pre><code class="language-php?start_inline=1">&lt;?php
+
+//包含Eloquent的初始化文件
+include __DIR__ . '/start.php';
+
+use Illuminate\Database\Capsule\Manager as Capsule;
+
+Capsule::schema()-&gt;create('users', function($table)
+{
+    $table-&gt;increments('id');
+    $table-&gt;string('username', 40);
+    $table-&gt;string('email')-&gt;unique();
+    $table-&gt;timestamps();
+});
+</code></pre>
+<p>然后我们运行table.php，两种方式：浏览器打开，或者命令行运行：</p>
+<pre><code class="language-shell">php table.php
+</code></pre>
+<p>然后我们的查看MySQL数据库<code>domo</code>里就会有一个<code>users</code>表了:</p>
+<p>![demo-db]({{ site.url }}/attachments/images/db-demo.png)</p>
+<h2 id="写入数据">写入数据</h2>
+<p>表建立好了，然后我们插入数据，我们同样创建一个文件 <code>demo/insert.php</code>来做实验：</p>
+<pre><code class="language-php?start_inline=1">&lt;?php
+
+//包含Eloquent的初始化文件
+include __DIR__ . '/start.php';
+
+use Illuminate\Database\Capsule\Manager as Capsule;
+
+Capsule::table('users')-&gt;insert(array(
+        array('username' =&gt; 'Hello',  'email' =&gt; 'hello@world.com'),
+        array('username' =&gt; 'Carlos',  'email' =&gt; 'anzhengchao@gmail.com'),
+        array('username' =&gt; 'Overtrue',  'email' =&gt; 'i@overtrue.me'),
+    ));
+
+
+</code></pre>
+<p>我们写入了3条数据。</p>
+<h2 id="使用模型">使用模型</h2>
+<p>只要你的模型继承Eloquent的Model类，就没问题了：</p>
+<pre><code class="language-php?start_inline=1">
+use  Illuminate\Database\Eloquent\Model  as Eloquent;
+
+class User extends  Eloquent
+{
+	protected $table = 'users';
+}
+
+</code></pre>
+<p>那么你就可以很方便的像在Laravel框架里一样使用Eloquent了：</p>
+<pre><code class="language-php?start_inline=1">// 查询id为2的
+$users = User::find(2);
+
+// 查询全部
+$users = User::all();
+
+// 创建数据
+$user = new User;
+$user-&gt;username = 'someone';
+$user-&gt;email = 'some@overtrue.me';
+$user-&gt;save();
+
+// ... 更多
+
+</code></pre>
+<p>OK，这基本上就搞定了，当然，你用分页的时候会出问题，我们下一节再讲。</p>
+<p>为了给大家一个完整的示例，我这里使用<a href="https://github.com/codeguy/slim">Slim</a>结合Eloquent做了一个实例：<a href="https://github.com/overtrue/rester">overtrue/rester</a></p>
+<p><a href="/2014/11/25/using-eloquent-outside-laravel-2.html">《在Laravel外使用Eloquent（二）- 分页问题》</a></p>
+<p>更多关于Eloquent的使用请参考: <a href="http://v4.golaravel.com/docs/4.1/eloquent">http://v4.golaravel.com/docs/4.1/eloquent</a></p>
+<h2 id="有用的链接">有用的链接</h2>
+<ul>
+<li><a href="http://laravel.com">Laravel官网</a></li>
+<li><a href="http://golaravel.com">Laravel中文网</a></li>
+</ul>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E5%AE%89%E8%A3%85">安装</a></li>
+<li><a href="#%E9%85%8D%E7%BD%AE">配置</a></li>
+<li><a href="#%E5%BB%BA%E8%A1%A8">建表</a></li>
+<li><a href="#%E5%86%99%E5%85%A5%E6%95%B0%E6%8D%AE">写入数据</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8%E6%A8%A1%E5%9E%8B">使用模型</a></li>
+<li><a href="#%E6%9C%89%E7%94%A8%E7%9A%84%E9%93%BE%E6%8E%A5">有用的链接</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://overtrue.github.io/mysql-explain">
+              <h3 class="post-title">
+                MySQL 中 EXPLAIN 命令详解
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+  <a class="rss" href="https://overtrue.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

@@ -1,0 +1,251 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>全局 exception handler 的黑科技用法 | overtrue</title>
+<link rel="shortcut icon" href="https://overtrue.github.io/favicon.ico?v=1581253585933">
+<link href="https://cdn.remixicon.com/releases/v2.1.0/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://overtrue.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="全局 exception handler 的黑科技用法 | overtrue - Atom Feed" href="https://overtrue.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-55452630-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-55452630-1');
+</script>
+
+
+    <meta name="description" content="昨天在写 overtrue/wechat 3.0 的时候，考虑到用户 debug 的问题。期望把日志包括产生的异常日志都记到用户配置的日志文件里。
+因为代码在不同的组件，不可能用 try...catch。我打算使用 set_exceptio..." />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://overtrue.github.io">
+  <img class="avatar" src="https://overtrue.github.io/images/avatar.png?v=1581253585933" alt="">
+  </a>
+  <h1 class="site-title">
+    overtrue
+  </h1>
+  <p class="site-description">
+    🇨🇳 <b>China Shenzhen</b>・🕹<b>Web developer</b>
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="https://github.com/overtrue" class="menu" target="_blank">
+          开源
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/overtrue" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+    
+      
+        <a href="https://weibo.com/joychaocc" target="_blank">
+          <i class="ri-weibo-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              全局 exception handler 的黑科技用法
+            </h2>
+            <div class="post-info">
+              <span>
+                2015-12-09
+              </span>
+              <span>
+                3 min read
+              </span>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <p>昨天在写 <a href="https://github.com/overtrue/wechat/tree/3.0">overtrue/wechat 3.0</a> 的时候，考虑到用户 debug 的问题。期望把日志包括产生的异常日志都记到用户配置的日志文件里。</p>
+<p>因为代码在不同的组件，不可能用 <code>try...catch</code>。我打算使用 <a href="http://php.net/manual/en/function.set-exception-handler.php">set_exception_handler</a> 注册一个全局异常处理器来做这事儿，但是，我这个只是一个开源组件，可能会被用户用到各种各样的环境中，所以，不能破坏原有框架或者用户自己定义的异常处理器，因为 <code>set_exception_handler</code> 会覆盖前面设置的，所以问题就卡住了。</p>
+<p>然后我找到了 <a href="http://php.net/manual/en/function.restore-exception-handler.php">restore_exception_handler</a>，以为找到了救命稻草，于是我把代码改成如下：</p>
+<pre><code class="language-php?start_inline=1">&lt;?php
+
+class MyException extends Exception {}
+
+set_exception_handler(function(Exception $e){
+    echo &quot;Old handler:&quot;.$e-&gt;getMessage();
+});
+
+set_exception_handler(function(Exception $e) {
+    if ($e instanceof MyException) {
+        echo &quot;New handler:&quot;.$e-&gt;getMessage();
+        return;
+    }
+
+    restore_exception_handler(); // 还原之前的设定然后下面再抛出
+
+    throw $e;
+});
+
+// throw new MyException(&quot;Exception two&quot;, 1);
+throw new Exception(&quot;Exception two&quot;, 1);
+</code></pre>
+<p>然后就报错了...</p>
+<pre><code>PHP Fatal error:  Cannot destroy active lambda function in /Users/overtrue/www/foo.php on line 15
+</code></pre>
+<p>于是 google, stackoverflow... 都无解。</p>
+<p>后来又仔细研究了文档，终于，我发现了：</p>
+<blockquote>
+<p>Returns the name of the previously defined exception handler, or NULL on error. If no previous handler was defined, NULL is also returned.</p>
+</blockquote>
+<p>于是此问题得以圆满解决，虽然恢复原有的 handler 是不可能了，但是达到同样的效果就 OK 了。</p>
+<pre><code class="language-php?start_inline=1">&lt;?php
+
+class MyException extends Exception {}
+
+set_exception_handler(function(Exception $e){
+    echo &quot;Old handler:&quot;.$e-&gt;getMessage();
+});
+
+$lastHandler = set_exception_handler(function(Exception $e) use (&amp;$lastHandler) {
+    if ($e instanceof MyException) {
+        echo &quot;New handler:&quot;.$e-&gt;getMessage();
+        return;
+    }
+
+    if (is_callable($lastHandler)) {
+        return call_user_func_array($lastHandler, [$e]);
+    }
+});
+
+// throw new MyException(&quot;Exception two&quot;, 1);
+throw new Exception(&quot;Exception two&quot;, 1);
+</code></pre>
+<p>利用 PHP 的引用，把 <code>$lastHandler</code> 引用到闭包里，这样毕竟 <code>set_exception_handler</code> 会比闭包先运行，所以就会把前一个 <code>handler</code> 拿到了，然后异常的时候，发现不是我的 <code>MyException</code> 就直接调用原来的 handler 来处理就好了。</p>
+<p>然后我去回答了我之前搜索到没有答案的两个问题：</p>
+<ul>
+<li><a href="http://stackoverflow.com/questions/14411492/cannot-destroy-active-lambda-function/34181805#34181805">Cannot destroy active lambda function</a></li>
+<li><a href="http://stackoverflow.com/questions/12378644/how-can-i-retrieve-the-current-error-handler">How can I retrieve the current error handler?</a></li>
+</ul>
+<p>希望有此想法的同学能得到帮助。 😄</p>
+
+              </div>
+              <div class="toc-container">
+                
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://overtrue.github.io/sync-your-laravel-project">
+              <h3 class="post-title">
+                让你的 Laravel 应用与官方保持同步
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+  <a class="rss" href="https://overtrue.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

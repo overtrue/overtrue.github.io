@@ -1,0 +1,339 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>更准确的 PHP 汉字转拼音解决方案 | overtrue</title>
+<link rel="shortcut icon" href="https://overtrue.github.io/favicon.ico?v=1581253585933">
+<link href="https://cdn.remixicon.com/releases/v2.1.0/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://overtrue.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="更准确的 PHP 汉字转拼音解决方案 | overtrue - Atom Feed" href="https://overtrue.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-55452630-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-55452630-1');
+</script>
+
+
+    <meta name="description" content="目前为止这可能是最准确的一个解决方案了，大GitHub上各种找，没有一个好用的，大部分都只是汉字转拼音，所以包含多音字的结果基本都错误。当然也有基于词典的转换工具，不过还是解决不了词库不全造成的多音字问题（当然，完全解决是不太可能的，或者词..." />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://overtrue.github.io">
+  <img class="avatar" src="https://overtrue.github.io/images/avatar.png?v=1581253585933" alt="">
+  </a>
+  <h1 class="site-title">
+    overtrue
+  </h1>
+  <p class="site-description">
+    🇨🇳 <b>China Shenzhen</b>・🕹<b>Web developer</b>
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="https://github.com/overtrue" class="menu" target="_blank">
+          开源
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/overtrue" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+    
+      
+        <a href="https://weibo.com/joychaocc" target="_blank">
+          <i class="ri-weibo-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              更准确的 PHP 汉字转拼音解决方案
+            </h2>
+            <div class="post-info">
+              <span>
+                2014-10-06
+              </span>
+              <span>
+                5 min read
+              </span>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <p>目前为止这可能是最准确的一个解决方案了，大GitHub上各种找，没有一个好用的，大部分都只是汉字转拼音，所以包含多音字的结果基本都错误。当然也有基于词典的转换工具，不过还是解决不了词库不全造成的多音字问题（当然，完全解决是不太可能的，或者词库会无比的大）。比如<code>康熙来了</code> 大部分工具的试用结果是：kang xi lai liao.</p>
+<p>基于上面的原因，我造了下面这个轮子。特点如下:</p>
+<ul>
+<li>基于<a href="http://cc-cedict.org/wiki/">CC-CEDICT</a>.词典，解决大部分词汇问题；</li>
+<li>添加补充词典，解决CC-CEDICT不全或者不准确的问题；</li>
+<li>添加词频表，根据使用频率再一步提高多音字的准确度；</li>
+</ul>
+<h1 id="pinyin"><a href="http://overtrue.me/pinyin">Pinyin</a></h1>
+<p>主页：<a href="http://overtrue.me/pinyin">http://overtrue.me/pinyin</a></p>
+<p>基于CC-CEDICT词典的中文转拼音工具, 更准确的汉字转拼音解决方案。 <a href="http://cc-cedict.org/wiki/">CC-CEDICT</a>.</p>
+<pre><code class="language-php?start_inline=1">use \Overtrue\Pinyin;
+
+echo Pinyin::pinyin('带着希望去旅行，比到达终点更美好');
+// dài zhe xī wàng qù lǔ xíng bǐ dào dá zhōng diǎn gèng měi hǎo
+
+//多音字
+// 了
+Pinyin::pinyin('了然'); // liǎo rán
+Pinyin::pinyin('来了'); // lái le
+
+// 还
+Pinyin::pinyin('还有'); // hái yǒu
+Pinyin::pinyin('交还'); // jiāo huán
+
+// 什
+Pinyin::pinyin('什么'); // shén me
+Pinyin::pinyin('什锦'); // shí jǐn
+
+// 便
+Pinyin::pinyin('便当'); // biàn dāng
+Pinyin::pinyin('便宜'); // pián yí
+
+// 剥
+Pinyin::pinyin('剥皮'); // bāo pí
+Pinyin::pinyin('剥皮器'); // bō pí qì
+
+// 不
+Pinyin::pinyin('赔不是'); // péi bú shi
+Pinyin::pinyin('跑了和尚，跑不了庙'); // pǎo le hé shàng , pǎo bù liǎo miào
+
+// 降
+Pinyin::pinyin('降温'); // jiàng wēn
+Pinyin::pinyin('投降'); // tóu xiáng
+
+// 都
+Pinyin::pinyin('首都'); // shǒu dū
+Pinyin::pinyin('都什么年代了'); // dōu shén me nián dài le
+
+// 乐
+Pinyin::pinyin('快乐'); // kuài lè
+Pinyin::pinyin('音乐'); // yīn yuè
+
+// 长
+Pinyin::pinyin('成长'); // chéng zhǎng
+Pinyin::pinyin('长江'); // cháng jiāng
+
+// 难
+Pinyin::pinyin('难民'); // nàn mín
+Pinyin::pinyin('难过'); // nán guò
+...
+
+</code></pre>
+<h1 id="安装">安装</h1>
+<ol>
+<li>使用 Composer 安装:</li>
+</ol>
+<pre><code class="language-shell">composer require overtrue/pinyin &gt;=1.4
+</code></pre>
+<p>或者在你的项目composer.json加入：</p>
+<pre><code class="language-javascript">{
+    &quot;require&quot;: {
+        &quot;overtrue/pinyin&quot;: &quot;&gt;=1.4&quot;
+    }
+}
+</code></pre>
+<ol start="2">
+<li>直接下载文件 <code>src/Overtrue/Pinyin.php</code> 引入到项目中。</li>
+</ol>
+<h1 id="使用">使用</h1>
+<pre><code class="language-php?start_inline=1">&lt;?php
+use \Overtrue\Pinyin;
+
+//获取拼音
+echo Pinyin::pinyin('带着希望去旅行，比到达终点更美好');
+//或者: Overtrue\pinyin($string);
+// dài zhe xī wàng qù lǔ xíng bǐ dào dá zhōng diǎn gèng měi hǎo
+
+//获取首字母
+echo Pinyin::letter('带着希望去旅行，比到达终点更美好');
+// D Z X W Q L X B D D Z D G M H
+
+</code></pre>
+<h2 id="设置">设置</h2>
+<ul>
+<li><code>delimiter</code> 分隔符，默认为一个空格 ' '；</li>
+<li><code>traditional</code> 繁体</li>
+<li><code>accent</code> 是否输出音调；</li>
+<li><code>letter</code> 只输出首字母，或者直接使用<code>Pinyin::letter($string)</code>;</li>
+<li><code>only_chinese</code> 只保留$string中中文部分。</li>
+</ul>
+<ul>
+<li>
+<p>全局设置：*  <code>Pinyin::set('delimiter', '-');</code></p>
+</li>
+<li>
+<p>临时设置：*  <code>Pinyin::pinyin($word, $settings)</code> 在调用的方法后传参</p>
+</li>
+</ul>
+<p>example:</p>
+<pre><code class="language-php?start_inline=1">
+Pinyin::set('delimiter', '-');//全局
+echo Pinyin::pinyin('带着希望去旅行，比到达终点更美好');
+
+// dài-zhe-xī-wàng-qù-lǔ-xíng-bǐ-dào-dá-zhōng-diǎn-gèng-měi-hǎo
+</code></pre>
+<pre><code class="language-php?start_inline=1">
+$setting = [
+            'delimiter' =&gt; '-',
+            'accent' =&gt; false,
+           ];
+
+echo Pinyin::pinyin('带着希望去旅行，比到达终点更美好', $setting);//这里的setting只是临时修改，并非全局设置
+
+// dai-zhe-xi-wang-qu-lu-xing-bi-dao-da-zhong-dian-geng-mei-hao
+</code></pre>
+<pre><code class="language-php?start_inline=1">Pinyin::set('accent', false);
+echo Pinyin::pinyin('带着希望去旅行，比到达终点更美好');
+
+// dai zhe xi wang qu lu xing bi dao da zhong dian geng mei hao
+</code></pre>
+<h1 id="contribution">Contribution</h1>
+<p>欢迎提意见及完善补充词库 <code>src/Overtrue/data/additional.php</code>! 💋</p>
+<h1 id="参考">参考</h1>
+<ul>
+<li><a href="http://cc-cedict.org/wiki/">CC-CEDICT</a></li>
+<li><a href="http://mmc.sinica.edu.tw/intro_c_01.html">現代漢語語音語料庫</a></li>
+<li><a href="http://www.zdic.net/">汉典</a></li>
+</ul>
+<h1 id="license">License</h1>
+<p>MIT</p>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li><a href="#pinyin">Pinyin</a></li>
+<li><a href="#%E5%AE%89%E8%A3%85">安装</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8">使用</a>
+<ul>
+<li><a href="#%E8%AE%BE%E7%BD%AE">设置</a></li>
+</ul>
+</li>
+<li><a href="#contribution">Contribution</a></li>
+<li><a href="#%E5%8F%82%E8%80%83">参考</a></li>
+<li><a href="#license">License</a></li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://overtrue.github.io/github-windows-https-error">
+              <h3 class="post-title">
+                GitHub windows 客户端报 https 错误解决办法
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+  <a class="rss" href="https://overtrue.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

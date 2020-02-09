@@ -1,0 +1,756 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://overtrue.github.io</id>
+    <title>overtrue</title>
+    <updated>2020-02-09T13:06:28.487Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
+    <link rel="alternate" href="https://overtrue.github.io"/>
+    <link rel="self" href="https://overtrue.github.io/atom.xml"/>
+    <subtitle>🇨🇳 &lt;b&gt;China Shenzhen&lt;/b&gt;・🕹&lt;b&gt;Web developer&lt;/b&gt;</subtitle>
+    <logo>https://overtrue.github.io/images/avatar.png</logo>
+    <icon>https://overtrue.github.io/favicon.ico</icon>
+    <rights>All rights reserved 2020, overtrue</rights>
+    <entry>
+        <title type="html"><![CDATA[我写了一份 PHP 拓展包开发教程]]></title>
+        <id>https://overtrue.github.io/php-package-develop-tutorial</id>
+        <link href="https://overtrue.github.io/php-package-develop-tutorial">
+        </link>
+        <updated>2018-12-11T04:00:00.000Z</updated>
+        <content type="html"><![CDATA[<p>这里所谓的拓展包，其实就是指的 Composer 包啦，很多人其实都有想去做自己的拓展包，但是又不知道从何下手，所以，作为一个还算熟悉的拓展包开发者当然有这个责任将这个技能分享给大家了。</p>
+<p>下图是目录结构，感兴趣的同学可以花 ￥20 元学习一下（毕竟我写了两个周，就当请我喝杯咖啡啦）。</p>
+<figure data-type="image" tabindex="1"><a href="https://laravel-china.org/courses/creating-package"><img src="https://user-images.githubusercontent.com/1472352/49772566-b3b06080-fd28-11e8-9a15-e32952f59fdb.png" alt="image" loading="lazy"></a></figure>
+<p>课程链接：<a href="https://laravel-china.org/courses/creating-package">《PHP 扩展包实战教程 - 从入门到发布》</a></p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Laravel 中如何更方便的修改 Passport Personal Access Token 过期时间]]></title>
+        <id>https://overtrue.github.io/set-expired-at-for-laravel-passport-personal-access-token</id>
+        <link href="https://overtrue.github.io/set-expired-at-for-laravel-passport-personal-access-token">
+        </link>
+        <updated>2018-11-01T04:00:00.000Z</updated>
+        <content type="html"><![CDATA[<p>认真看过 <a href="https://laravel.com/docs/5.7/passport#configuration">Laravel Passport 文档</a> 的人应该知道，它的 Personal Access Token 是不支持自定义过期时间的，<code>tokensExpireIn</code> 对此类 token 无效，原文如下：</p>
+<blockquote>
+<p>Personal access tokens are always long-lived. Their lifetime is not modified when using the tokensExpireIn or refreshTokensExpireIn methods.</p>
+</blockquote>
+<p>默认时间为 1 年，但是这可能不满足我们的需求，我们想要改成其它更短的时间怎么办呢？今天尝试了一下，应该算是全网可以找到的最简单方法了，直接在 <code>app/Providers/AppServiceProvider</code> 中添加一句就可以搞定，下面以改为有效期为 1 周的示例来演示：</p>
+<p><em>app/Providers/AppServiceProvider.php</em></p>
+<pre><code class="language-php">&lt;?php
+//...
+use Laravel\Passport\Bridge\PersonalAccessGrant;
+use League\OAuth2\Server\AuthorizationServer;
+//...
+
+class AppServiceProvider extends ServiceProvider
+{
+    /**
+     * Bootstrap any application services.
+     */
+    public function boot()
+    {
+        $this-&gt;app-&gt;get(AuthorizationServer::class)
+              -&gt;enableGrantType(new PersonalAccessGrant(), new \DateInterval('P1W'));
+    }
+   
+    //...
+}
+//...
+</code></pre>
+<p>关于时间值的写法，请参考:</p>
+<blockquote>
+<p>https://secure.php.net/manual/en/dateinterval.construct.php</p>
+</blockquote>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[又一篇 Deployer 的使用攻略]]></title>
+        <id>https://overtrue.github.io/deployer-guide</id>
+        <link href="https://overtrue.github.io/deployer-guide">
+        </link>
+        <updated>2018-06-25T04:00:00.000Z</updated>
+        <content type="html"><![CDATA[<p><a href="https://lccdn.phphub.org/uploads/images/201806/14/76/FAOVLKIcez.png?imageView2/2/w/1240/h/0">file</a></p>
+<p>其实网上有相当多的关于 Deployer 的使用教程，在这个社区也有不少同学写过，不过发现很难找到一个完整能跑通的文章，所以希望今天写这篇是一个小白就能完整走通的教程吧，当然了，这是回忆加参考外文写出来的，难免也有失误，欢迎小白同学在下面反馈使用过程中遇到的问题为谢！</p>
+<h2 id="基础知识">基础知识</h2>
+<p>在开始之前，有必要了解一下 Deployer 是一个什么样的东西。<br>
+Deployer 是一个基于 SSH 协议的无侵入 web 项目部署工具，因为它不需要你在目标服务器上装什么服务之类的东西即可使用，它只需要在你的开发机，或者你的笔记本，就是发起部署动作的一方安装即可。</p>
+<p>它的原理就是通过 SSH 到你的机器去创建目录，移动文件，执行指定的动作来完成项目的部署。</p>
+<p>我画了一张图来说明它的操作原理：</p>
+<p><img src="https://lccdn.phphub.org/uploads/images/201806/14/76/eQTmTiE2WF.png?imageView2/2/w/1240/h/0" alt="file" loading="lazy"><br>
+绘图工具：https://www.draw.io/</p>
+<p>简单介绍一下，Deployer 安装在本地，它通过 SSH 协议登录到服务器 web server 上执行一系列我们预定的操作，其中包含从代码库 Git Server 拉取我们的项目代码部署到 web 服务器指定的目录完成部署。</p>
+<p>一共分为以下几个部分：</p>
+<ul>
+<li>在本地使用 composer 安装 deployer</li>
+<li>在 Linux 服务器添加账户与配置权限</li>
+<li>项目 git 仓库允许服务器访问（clone 代码）</li>
+<li>部署我们的 web 项目</li>
+</ul>
+<p>我们分开一个个讲，在后面的每一步请注意区分当前逻辑所在的环境：<strong>本地 / 目标服务器</strong>。</p>
+<h2 id="deployer-的安装与配置">Deployer 的安装与配置</h2>
+<blockquote>
+<p>此部分在本地操作</p>
+</blockquote>
+<p>Deployer 是一个 composer 包，你可以选择以 phar 包的形式，或者以 composer 全局安装来使用它，这里只讲后者，毕竟这是推荐大家使用的方式，升级也会方便很多：</p>
+<pre><code class="language-shell">$  composer global require deployer/deployer -vvv
+</code></pre>
+<p>安装完成你应该可以使用以下命令来查看它的版本信息：</p>
+<pre><code class="language-shell">$ dep --version
+# Deployer master
+</code></pre>
+<p>如果提示 <code>dep</code> 命令不存在的话，可能需要将 composer 的 bin 目录加到你的 PATH 环境变量里面，通常是家目录下的 <code>.composer/vendor/bin/</code>，你可以通过下面的命令来查看是否配置成功：</p>
+<pre><code class="language-shell">$ echo $PATH
+/usr/local/sbin /usr/local/bin /Users/overtrue/.composer/vendor/bin 
+</code></pre>
+<p>Mac 环境下根据你使用 shell 的不同来配置环境变量，默认的 bash 的话直接编辑家目录下的 <code>.bash_profile</code> 文件即可：</p>
+<pre><code class="language-shell">$ vim ~/.bash_profile
+# 将 composer bin 目录加到其中即可
+# export PATH=/usr/local/bin:/Users/overtrue/.composer/vendor/bin:$PATH
+# 然后保存退出
+</code></pre>
+<p>然后切一个新的终端窗口，应该就有 dep 命令了。</p>
+<p>Deployer 的安装就到这里，接下来我们去目标服务器去折腾一下。</p>
+<h2 id="服务器端的配置">服务器端的配置</h2>
+<blockquote>
+<p>此部分在目标服务器上操作</p>
+</blockquote>
+<p>虽然说是无侵入的部署工具，但是还是需要我们来做一些微小的配置的，因为出于安全考虑，我们一般不会开发 root 用户的 SSH 登录，而是使用其它用户，比如 Ubuntu 默认的 ubuntu 用户。<br>
+我们 Deployer 是用来部署 web 应用的，所以我们也专门创建一个用户来做这件事情比较好：</p>
+<pre><code class="language-shell">$ sudo adduser deployer
+# 密码什么的，按提示操作即可
+</code></pre>
+<p>我们的 web 项目通常需要一些上传，或者缓存写入这样的操作，所以 deployer 还需要有权限对目录进行修改，比如 Laravel 的 storage 目录需要可写权限，这里以 nginx 默认的用户组 www-data 举例，如果你修改过用户或者组名请对应修改下面的命令里的 www 用户组：</p>
+<pre><code class="language-shell">$ sudo usermod -aG www-data deployer
+</code></pre>
+<p>我们通常需要将<code>deployer</code> 用户权限分别设置为创建文件 644 与目录 755，这样一来，deployer 用户可以读写，但是组与其它用户只能读：</p>
+<pre><code class="language-shell">$ su deployer # 切换到 deployer 用户
+$ echo &quot;umask 022&quot; &gt;&gt; ~/.bashrc
+$ exit # 退出
+</code></pre>
+<p>我们需要将 <code>depoloyer</code> 用户加到 sudoers 中：</p>
+<pre><code class="language-shell">$ vim /etc/sudoers
+# 在最后加入
+deployer ALL=(ALL) NOPASSWD: ALL
+# 保存并退出
+</code></pre>
+<p>接下来要对我们的 web 根目录授权，假设我们的 web 服务的根目录在 <code>/var/www/</code>  下，那么需要将这个目录的用户设置为 <code>deployer</code> ，组设置为 www 用户 <code>www-data</code>:</p>
+<pre><code class="language-shell">$ sudo chown deployer:www-data /var/www/html # 最后这里不要加斜线哦
+</code></pre>
+<p>为了让 <code>deployer</code> 用户在 <code>/var/www/html</code> 下创建的文件与目录集成根目录的权限设定（用户：deployer,组：www-data），我们还需要一步操作：</p>
+<pre><code class="language-shell">$ sudo chmod g+s /var/www/html
+</code></pre>
+<p>OK，Deployer 的用户操作就结束了，接着你需要检查以下配置：</p>
+<ol>
+<li>确认 php 的可执行文件在全局 PATH 中，或者你手动添加到 deployer 用户目录的 .bash_profile PATH 中也可，使用命令确认（登录用户 <code>deployer</code> 后执行）：<code>php -v</code>，如果报错的话，一般建议是将 php 的 bin 文件软链接到 <code>/usr/local/bin/</code>（推荐） 或者  <code>/usr/bin/</code> 下。</li>
+<li>同样检查你的 Deployer 任务清单所需要用到的其它命令，比如 <code>npm</code>,<code>nginx</code>,<code>composer</code> 都在 <code>deployer</code> 用户下可以使用，否则在部署的时候会出错。</li>
+</ol>
+<h2 id="项目-git-仓库允许服务器访问">项目 git 仓库允许服务器访问</h2>
+<blockquote>
+<p>此部分在目标服务器上操作</p>
+</blockquote>
+<p>我们 deployer 的运行机制是从 git 或者其它你指定的代码库 clone 代码到目标服务器，所以如果你的代码不是公开的仓库，我们通常需要添加 SSH 公钥才可以从代码库 clone 代码，所以接着来创建公钥：</p>
+<p>先切换当前登录用户到 deployer：</p>
+<pre><code class="language-shell">$ su - deployer
+</code></pre>
+<p>然后创建 SSH 密钥：</p>
+<pre><code class="language-shell">$ ssh-keygen -t rsa -b 4096 -C &quot;deployer&quot; 
+# 这里的 -C 是指定备注
+# 一路回车下去即可
+</code></pre>
+<p>然后我们将生成的公钥拷贝出来：</p>
+<pre><code class="language-shell">$ cat ~/.ssh/id_rsa.pub # 显示公钥
+</code></pre>
+<p>请完整的复制 cat 出来的结果，然后去你的代码库添加 SSH 公钥。</p>
+<p>OK, 现在你的服务器就可以从代码库 clone 代码了，你可以在服务器上 git clone 一下你的代码库测试，如果不成功，请检查你的公钥是否正确完全的复制与粘贴正确，不正确的话再次重复复制粘贴即可。</p>
+<h2 id="服务器免密码登录-deployer">服务器免密码登录 deployer</h2>
+<blockquote>
+<p>此部分在本地（或者开发机）操作</p>
+</blockquote>
+<p>在本地（或者开发机）执行部署任务时我们不想每次输入密码，所以我们需要将 deployer 用户设置 SSH 免密码登录：</p>
+<p>在本机生成 deployer 专用密钥，然后拷贝公钥：</p>
+<pre><code class="language-shell">$ ssh-keygen -t rsa -b 4096 -f  ~/.ssh/deployerkey
+</code></pre>
+<p>然后将公钥保存到目标服务器（注意，这一步还是在本机操作）：</p>
+<pre><code class="language-shell">$ ssh-copy-id -i  ~/.ssh/deployerkey.pub deployer@123.45.67.89 # 请填写服务器 IP
+# 应该会让你输入 deployer 在服务器上的登录密码，输入后回车即可
+</code></pre>
+<p>然后你应该就可以直接以 <code>deployer</code> 用户免密码登录到服务器了，测试方式：</p>
+<pre><code class="language-shell">$ ssh deployer@123.45.67.89 -i ~/.ssh/deployerkey
+# 应该就能直接进到服务器上了，然后 exit 退出
+</code></pre>
+<p>OK，这一步搞定了 <code>deployer</code> 免密码登录，接下来我们聊项目的部署。</p>
+<h2 id="deployer-的使用">Deployer 的使用</h2>
+<blockquote>
+<p>这些都在本地操作哦</p>
+</blockquote>
+<p>假设我们的项目在本地 <code>/www/demo-project</code> 下，那么我们切换到该目录：</p>
+<pre><code class="language-shell">$ cd /www/demo-project
+</code></pre>
+<p>然后执行 Deployer 的初始化命令：</p>
+<pre><code class="language-shell">$ dep init
+</code></pre>
+<p>它会让你选择项目类型，比如 Laravel，symfony 等，如果你都不是，选择 common 类型即可。</p>
+<p>这一步操作将会在当前目录生成一个 <code>deploy.php</code> 文件，这个文件就是部署清单，也就是告诉 Deployer 怎样去部署你的项目，关于这部分我们不需要过多的介绍，大家去参考  Deployer 官网的详细说明操作即可。</p>
+<p>需要关心的几个配置是：</p>
+<pre><code class="language-php">// 指定你的代码所在的服务器 SSH 地址，请不要使用 https 方式哦。
+set('repository', 'git@mygitserver.com:overtrue/demo-project.git');
+
+// 这里填写目标服务器的 IP 或者域名
+host('your_server_ip') 
+    -&gt;user('deployer') // 这里填写 deployer 
+	  // 并指定公钥的位置
+    -&gt;identityFile('~/.ssh/deployerkey')
+    // 指定项目部署到服务器上的哪个目录
+    -&gt;set('deploy_path', '/var/www/demo-app'); 
+</code></pre>
+<p>正确填写完配置清单以后，我们就可以部署我们的项目了，确认你的代码已经提交到代码仓库，因为执行部署的时候并不是将当前代码部署到服务器，而是从代码库拉最新的版本。</p>
+<p>然后在当前目录执行：</p>
+<pre><code class="language-shell">$ dep deploy -vvv
+</code></pre>
+<p>就可以看到整个部署过程了，一般正常会是像下面这样子：</p>
+<pre><code class="language-shell">$ dep deploy -vvv
+Deployer's output
+✈︎ Deploying master on your_server_ip
+✔ Executing task deploy:prepare
+✔ Executing task deploy:lock
+✔ Executing task deploy:release
+➤ Executing task deploy:update_code
+✔ Ok
+✔ Executing task deploy:shared
+✔ Executing task deploy:vendors
+✔ Executing task deploy:writable
+✔ Executing task artisan:storage:link
+✔ Executing task artisan:view:clear
+✔ Executing task artisan:cache:clear
+✔ Executing task artisan:config:cache
+✔ Executing task artisan:optimize
+✔ Executing task deploy:symlink
+✔ Executing task deploy:unlock
+✔ Executing task cleanup
+Successfully deployed!
+</code></pre>
+<p>如果失败的话就需要检查一下哪一步出错了，通常根据报错信息即可定位。</p>
+<h2 id="关于-deployer-部署结构">关于 Deployer 部署结构</h2>
+<p>Deployer 部署完成后，在服务器上的结构会是这样子：</p>
+<pre><code class="language-shell">drwxr-sr-x 5 deployer www-data 4096 Jun 14 09:53 ./
+drwxr-sr-x 6 deployer www-data 4096 Jun 11 14:25 ../
+drwxr-sr-x 2 deployer www-data 4096 Jun 14 09:53 .dep/
+lrwxrwxrwx 1 deployer www-data   10 Jun 14 09:52 current -&gt; releases/7/
+drwxr-sr-x 4 deployer www-data 4096 Jun 14 09:53 releases/
+drwxr-sr-x 3 deployer www-data 4096 Jun 10 14:16 shared/
+</code></pre>
+<p>其中，.dep 为 Deployer 的一些版本信息，不用去研究，我们需要关心的是下面这几个：</p>
+<ul>
+<li><code>current</code>  - 它是指向一个具体的版本的软链接，你的 nginx 配置中 root 应该指向它，比如 laravel 项目的话 <code>root</code> 就指向：<code>/var/www/demo-app/current/public</code></li>
+<li><code>releases</code> - 部署的历史版本文件夹，里面可能有很多个最近部署的版本，可以根据你的配置来设置保留多少个版本，建议 5 个。保留版本可以让我们在上线出问题时使用 <code>dep rollback</code> 快速回滚项目到上一个版本。</li>
+<li><code>shared</code>  - 共享文件夹，它的作用就是存储我们项目中版本间共享的文件，比如 Laravel 项目的 <code>.env</code> 文件，<code>storage</code> 目录，或者你项目的上传文件夹，它会以软链接的形式链接到当前版本中。</li>
+</ul>
+<p>OK，那基本上这样子就完成了整体 Deployer 需要考虑的地方以及使用细节了，相信大部分同学的问题都出在权限问题上。所以上面在创建用户时，一定要仔细操作。</p>
+<h2 id="结论">结论</h2>
+<p>Deployer 确实非常好用，一条命令完成部署，回滚等操作，但是它目前还不是很完美，大家有问题可以去 GitHub 官方仓库提 issue 或者搜索相关问题解决方案。</p>
+<p>个人用它已经两年了，非常喜欢这样简单的部署方式，但是新手刚用的时候难免在服务器权限这块碰壁不少，我总结了以下几个建议：</p>
+<ul>
+<li>尽量使用系统提供的包管理工具来安装软件，比如 nginx, php 等，毕竟它是人家通过 N 年的实践总结出来的合理使用方式，包括配置文件的写法等都是科学的方式，另外一点就是当我们遇到问题的时候搜索到的结果也比较通用，当然你已经是系统高手了，那就不要看这条了。</li>
+<li>不要让你的项目结构设计的太复杂，简单统一为原则，这样你不必多次重复去折腾这些东西。</li>
+<li>最好关掉服务器 SSH 的密码登录，相关操作请自行 Google。</li>
+<li>多看文档，很多你遇到的问题其实都是你没仔细看使用文档造成的结果。</li>
+</ul>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[关于 Composer 版本约束表达式的使用]]></title>
+        <id>https://overtrue.github.io/about-composer-version-constraint</id>
+        <link href="https://overtrue.github.io/about-composer-version-constraint">
+        </link>
+        <updated>2017-08-01T04:00:00.000Z</updated>
+        <content type="html"><![CDATA[<p>相信 <code>Composer</code> 对你来说已经相当熟悉了，不过对于包的版本，我觉得应该还有不少同学不是那么清楚各种写法到底是啥意思。</p>
+<h2 id="语义化版本">语义化版本</h2>
+<p>首先，我们来了解一个东西：<a href="http://semver.org/">语义化版本</a></p>
+<blockquote>
+<p>版本格式：主版本号.次版本号.修订号，版本号递增规则如下：<br>
+主版本号：当你做了不兼容的 API 修改，<br>
+次版本号：当你做了向下兼容的功能性新增，<br>
+修订号：当你做了向下兼容的问题修正。<br>
+先行版本号及版本编译信息可以加到“主版本号.次版本号.修订号”的后面，作为延伸。</p>
+</blockquote>
+<p>语义化版本一般我们使用 3 个部分来表示一个版本，例如：1.4.23，1 为主版本号，4 为次版本号，23 为修订号或者补丁版本号。当然你肯定也见过 1.0.0-alpha1 这样在后面添加修饰符号来表示先行版本。</p>
+<p>那在 composer 使用过程中我们通常会有这几种写法：</p>
+<h3 id="不限定版本">不限定版本</h3>
+<blockquote>
+<p>极不推荐这样玩哦</p>
+</blockquote>
+<p>使用 <code>*</code> 号来表示版本的时候，composer 会根据你配置中的 <code>minimum-stability</code> 的值情况来决定安装最新的 dev 还是 stable 版本。<br>
+比如：</p>
+<pre><code class="language-json">    &quot;require&quot;: {
+        &quot;overtrue/wechat&quot;: &quot;*&quot;
+    }
+</code></pre>
+<p>根据上面语义化版本的定义，这样写就相当于允许大版本的安装，那你的代码在 composer 更新依赖后可能就跑不起来了（如果第三方包作者做了大版本更新）。</p>
+<h3 id="使用-dev-前缀加分支名">使用 <code>dev-</code> 前缀加分支名</h3>
+<p>我们在自己开发一个包的时候，经常会用 <code>dev-master</code> 或者 <code>dev-develop</code> 来指定版本，它表示使用该分支下最新的提交。</p>
+<p>比如：</p>
+<pre><code class="language-json">    &quot;require&quot;: {
+        &quot;overtrue/wechat&quot;: &quot;dev-master&quot;
+    }
+</code></pre>
+<p>这个也是不推荐在生产环境使用的，因为它其实与 * 没有太大的差别，不过 * 在 <code>minimum-stability</code> 为 <code>stable</code> 时是安装最新的稳定版。但是二者都无法保证 API 兼容性。</p>
+<h3 id="使用-~-约束符锁定小版本的方式">使用 <code>~</code> 约束符锁定小版本的方式</h3>
+<p>这种方式比较常用，也是比较安全的，比如我们希望安装 &gt;= 1.2 并且 &lt; 2.0 的版本时，根据语义化版本的定义，次版本号的变化是新增功能，所以 API 是稳定的，也就是可以安全更新的。<br>
+你可以写成：</p>
+<pre><code class="language-json">    &quot;require&quot;: {
+        &quot;overtrue/wechat&quot;: &quot;~1.2&quot;
+    }
+</code></pre>
+<p>如果你希望次版本都不要更新，只允许修订版本（补丁版本）的变化，&gt;= 1.1.15 并且 &lt; 1.2.0，则写成：</p>
+<pre><code class="language-json">    &quot;require&quot;: {
+        &quot;overtrue/wechat&quot;: &quot;~1.1.15&quot;
+    }
+</code></pre>
+<p>所以，你应该看出规律了，<code>~</code> 的作用是允许表达式中最后一位变到最大值，<code>~1.1</code> 表示可以为 大于等于 <code>1.1</code> 的任何版本，比如 <code>1.1.0</code>、<code>1.2.0</code>、<code>1.3.5</code> 、<code>1.99.9999</code>、 <code>1.9999.999999</code> 都可以安装，但是不能安装 <code>2.0.0</code>， 同理，<code>~1.1.2</code> 表示 大于等于 <code>1.1.2</code> 的任何版本，比如 <code>1.1.2</code>、<code>1.1.3</code>、<code>1.1.99</code>、 <code>1.1.9999</code> 都可以安装。</p>
+<h3 id="使用-约束符锁定大版本">使用 <code>^</code> 约束符锁定大版本</h3>
+<p>上面 <code>~</code> 表示最后一位可变，前面几位都不可变，那 <code>^</code> 的作用不一样的是：<code>^</code> <strong>锁定不允许变的第一位</strong>，其实学过正则的同学都知道  <code>^</code> 表示起始，<code>^a</code> 表示以 <code>a</code> 开头的全部。</p>
+<p>所以， <code>^1.2</code> 表示任意大于等于 <code>1.2</code> 的 <code>1.x.x</code> 版本，比如 <code>1.2.0</code>、<code>1.2.1</code>、<code>1.3.0</code>、<code>1.9.99999</code> 等。只要前面的 <code>1</code> 并且大于 <code>^</code> 后面指定的 <code>1.2</code> 都满足条件。</p>
+<h3 id="锁定版本范围">锁定版本范围</h3>
+<p>有时候我们的使用场景要求只能安装某些版本范围内的时候，可以使用 <code>&gt;</code>、<code>&lt;</code>、<code>&gt;=</code>、<code>&lt;=</code>、<code>|</code> 这些符号来组合，比如：<code>&gt;= 1.3 &lt;1.6</code>、<code>&gt;=1.3 | &gt;=1.7</code> 、<code>3.0|4.0</code> 等。这样的使用场景并不多，根据你的情况来调整用法就好。</p>
+<h3 id="最后就是使用具体版本号">最后就是使用具体版本号</h3>
+<p>使用 <code>=1.2.34</code> 或者 <code>1.2.34</code> 都是指定了具体的版本号， composer 不会考虑检查新版本来安装。</p>
+<h2 id="注意">注意</h2>
+<p>如果你的版本是 1.0 以下，<code>0.0.1</code>，<code>0.9.99999</code> 等这样的版本的时候， <code>^</code> 的作用与 <code>~</code> 一样，也就是说：</p>
+<p><code>^0.0.3</code> 表示：<code>&gt;=0.0.3 &lt; 0.0.4</code></p>
+<p>所以需要注意这个问题，之所以这样设计是有原因的：<a href="http://semver.org/lang/zh-CN/#spec-item-4">主版本号为零（0.y.z）的软件处于开发初始阶段，一切都可能随时被改变。这样的公共 API 不应该被视为稳定版。</a></p>
+<p>所以不要掉进这个坑哦。</p>
+<h2 id="总结">总结</h2>
+<p>无论你是包的作者，还是使用者，正确使用版本是非常重要的，尤其对于有一定使用量的包作者来讲，严格遵守语义化版本的规范是对你的用户负责。最后引入 semver.org 官网的一句话：</p>
+<blockquote>
+<p>记住， 语义化的版本控制就是透过版本号的改变来传达意义。若这些改变对你的使用者是重要的，那就透过版本号来向他们说明。</p>
+</blockquote>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Summernote 图片上传到服务端实现方式]]></title>
+        <id>https://overtrue.github.io/summernote-image-upload-to-server</id>
+        <link href="https://overtrue.github.io/summernote-image-upload-to-server">
+        </link>
+        <updated>2016-11-24T04:00:00.000Z</updated>
+        <content type="html"><![CDATA[<p>Summernote 默认使用 data-url 形式来存储编辑器内的图片，稍大一些的图片生成的 <a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/data_URIs">data URIs</a> 就会特别长特别长，几度让我的 chrome 出现：<code>net::ERR_INCOMPLETE_CHUNKED_ENCODING</code> 的报错。</p>
+<p>为了将其改为上传到服务器端然后插入 <code>img</code> 标签的形式，我们需要做一些小小的自定义，下面的一段简单的代码即可达到此目的：</p>
+<pre><code class="language-js">jQuery(document).ready(function($) {
+    //upload image in description
+    $('#description').summernote({
+        height: 300,
+        callbacks: {
+            onImageUpload: function(files, editor, welEditable) {
+                    for (var i = files.length - 1; i &gt;= 0; i--) {
+                        sendFile(files[i], this);
+                    }
+                }
+        }});
+
+    //create record for attachment
+    function sendFile(file, el) {
+        data = new FormData();
+        data.append(&quot;file&quot;, file); // 表单名称
+
+        $.ajax({
+            type: &quot;POST&quot;,
+            url: &quot;这里填写你的服务器端上传 URL&quot;,
+            data: data,
+            cache: false,
+            contentType: false,
+            processData: false,
+            dataType: 'json',
+            success: function(response) {
+              // 这里可能要根据你的服务端返回的上传结果做一些修改哦
+              $(el).summernote('editor.insertImage', response.url, response.filename);
+            },
+            error : function(error) {
+              alert('图片上传失败');
+            },
+            complete : function(response) {
+            }
+        });
+    }
+});
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[我所理解的 PHP Trait]]></title>
+        <id>https://overtrue.github.io/about-php-trait</id>
+        <link href="https://overtrue.github.io/about-php-trait">
+        </link>
+        <updated>2016-04-16T04:00:00.000Z</updated>
+        <content type="html"><![CDATA[<p><a href="http://php.net/manual/zh/language.oop5.traits.php">Trait</a> 是从 PHP 5.4 加入的一种细粒度代码复用的语法。以下是官方手册对 Trait 的描述：</p>
+<blockquote>
+<p>Trait 是为类似 PHP 的单继承语言而准备的一种代码复用机制。Trait 为了减少单继承语言的限制，使开发人员能够自由地在不同层次结构内独立的类中复用 method。Trait 和 Class 组合的语义定义了一种减少复杂性的方式，避免传统多继承和 Mixin 类相关典型问题。</p>
+<p>Trait 和 Class 相似，但仅仅旨在用细粒度和一致的方式来组合功能。 无法通过 trait 自身来实例化。它为传统继承增加了水平特性的组合；也就是说，应用的几个 Class 之间不需要继承。</p>
+</blockquote>
+<h2 id="什么是-trait">什么是 Trait ?</h2>
+<p>其实说通俗一点，就是能把重复的<strong>方法</strong>拆分到一个文件，通过 <code>use</code>  引入以达到代码复用的目的。</p>
+<p>那么，我们应该怎么样去拆分我们的代码才是合适的呢？我的看法是这样的：</p>
+<p>Trait，译作 <strong>“特性”、“特征”、“特点”</strong> 。那么问题就来了：什么才是特性？</p>
+<p>一个销售公司有很多种产品：电视，电脑与鼠标垫，卡通手办等。其中鼠标垫与卡通手办是非卖品，只用于赠送。</p>
+<p>那么这里的 “可卖性” 就是一个特性，非卖品是没有价格的。我们便可以抽象出 “可卖性”  这个 Trait 来：</p>
+<pre><code class="language-php?start_inline=1">trait Sellable
+{
+    protected $price = 0;
+
+    public function getPrice()
+    {
+        return $this-&gt;price;
+    }
+
+    public function setPrice(int $price)
+    {
+        $this-&gt;price = $price;
+    }
+}
+</code></pre>
+<p>当然我们所有的产品都会有品牌与其它基本属性，所以我们通常会定义一个产品类：</p>
+<pre><code class="language-php?start_inline=1">class Pruduct
+{
+    protected $brand;
+    //...
+
+    public function __construct($brand)
+    {
+        $this-&gt;brand = $brand;
+    }
+
+    public function getBrand()
+    {
+        return $this-&gt;brand;
+    }
+
+    //...
+}
+</code></pre>
+<p>我们的电视与电脑类：</p>
+<pre><code class="language-php?start_inline=1">class TV extends Pruduct
+{
+    use Sellable;
+    //...
+
+    public function play()
+    {
+        echo &quot;一台 {$this-&gt;brand} 电视在播放中...&quot;;
+    }
+
+    //...
+}
+
+class Computer extends Pruduct
+{
+    use Sellable;
+
+    protected $cores = 8;
+    //...
+
+    public function getNumberOfCores()
+    {
+        return $this-&gt;cores;
+    }
+
+    //...
+}
+</code></pre>
+<p>而鼠标垫与手办等礼品是不可卖的：</p>
+<pre><code class="language-php?start_inline=1">class Gift extends Pruduct
+{
+    protected $name;
+
+    function __construct($brand, $name)
+    {
+        parent::__construct($brand);
+        $this-&gt;name = $name;
+    }
+
+    //...
+}
+</code></pre>
+<p>上面的这个例子中，“可卖性” 便是部分商品的一个特性，也可以理解为商品的一个归类。你也许会说，我也可以再添加一个 Goods 类来完成上面的例子啊，Goods 继承 Product，再让所有可卖的商品继承于 Goods 类，把价格属性与方法写到 Goods 里，同样可以代码复用啊。的确，这没啥问题。但是你会发现：你有多个需要区别的特性时，由于 PHP 只有单继承的原因，你不得不组合很多个基类出来，将他们层叠，最终得到的树状结构是很复杂的。这也是 Trait 所带来的优势：随意组合，代码清晰。</p>
+<p>其实还有很多例子，比如<strong>可飞行的</strong>，那么把飞行这个特性所具有的属性（如：高度，距离）与方法（如：起飞，降落）放到一个 trait 就是一个合理的拆分。</p>
+<h2 id="trait-有什么优势">Trait 有什么优势 ?</h2>
+<p>trait 有什么优势？来看一段代码：</p>
+<pre><code class="language-php?start_inline=1">class User extends Model
+{
+    use Authenticate, SoftDeletes, Arrayable, Cacheable;
+
+    ...
+}
+</code></pre>
+<p>这个用户模型类，我们引入了四个特性：注册与授权、软删除、数组式操作、可缓存。</p>
+<p>我们看到代码的时候一眼便知道当前支持了哪些个特性。再看下面另外一种写法：</p>
+<pre><code class="language-php?start_inline=1">abstract AdvansedUser {
+  // ... 实现了 Authenticate, SoftDeletes, Arrayable, Cacheable 的所有方法
+}
+class User extends AdvansedUser
+{
+    ...
+}
+</code></pre>
+<p>你不得不再去阅读 <code>AdvansedUser</code> 的代码才能理解。你想说没有可读性是因为我基类的名称没起好？可是，这种各种特性组合的一个基类是根本无法起一个见名知义的名称的，不信你可以试一下。</p>
+<p>就算你真的起了一个见名知义的名称：<code>AuthenticateCacheableAndArrayableSoftDeletesUser</code>，可是当需求变更，要求在 <code>FooUser</code>（同样继承了这个基类） 中去除缓存特性，而 <code>User</code> 类保留这个特性，怎么办？再创建一个基类么？</p>
+<p>这就是我理解的 Trait：</p>
+<p><strong>它不仅仅是可复用代码段的集合，它应该是一组描述了某个特性的的属性与方法的集合。它的优点在于随意组合，耦合性低，可读性高。</strong></p>
+<p>平常写代码的时候也许怎么拆分才是大家的痛点，分享以下几个技巧：</p>
+<ul>
+<li>从需求或功能描述拆分，而不是写了两段代码发现代码一样就提到一起；</li>
+<li>拆分时某些属性也一起带走，比如上面第一个例子里的价格，它是“可卖性”必备的属性；</li>
+<li>拆分时如果给 Trait 起名困难时，请认真思考你是否真的拆分对了，因为正确的拆分是很容易描述 “它是一个具有什么功能的特性” 的；</li>
+</ul>
+<p>总之一定要记住：不要为了让两段相同的代码提到一起这样简单粗暴的方式来拆分。</p>
+<p>以上是个人见解，欢迎各位讨论。​😄​</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[npm 代理安装依赖]]></title>
+        <id>https://overtrue.github.io/npm-proxy</id>
+        <link href="https://overtrue.github.io/npm-proxy">
+        </link>
+        <updated>2016-03-01T04:00:00.000Z</updated>
+        <content type="html"><![CDATA[<p>虽然已经使用了<a href="http://npm.taobao.org/">淘宝 npm 镜像</a>, 但是有一些包的下载地址在国外，比如 <a href="https://github.com/ariya/phantomjs/">phantomjs</a> 的下载地址是 <code>https://bitbucket/xxxx</code>, 没有代理的话还是会卡在这里。</p>
+<p>我们可以使用 <a href="https://github.com/bitinn/kneesocks">bitinn/kneesocks</a> 来支持 npm 的 socket 代理，它的作用按我的理解是生成一个本地的 HTTP 代理。</p>
+<p>安装：</p>
+<pre><code class="language-shell">$ npm install kneesocks --production -g
+</code></pre>
+<p>创建本地代理：</p>
+<pre><code class="language-shell">kneesocks PORT1 PORT2
+</code></pre>
+<p>这里需要说明一下，<code>PORT1</code> 为一个未被使用的新端口，用于 kneesocks 监听，<code>PORT2</code> 是已经存在的本地代理，比如我们已经安装的 ss 的本地端口。</p>
+<p>例如：<code>kneesocks 1082 1080</code>, 1080 为本地 ss 端口。</p>
+<p>配置 npm 代理：</p>
+<pre><code class="language-shell">$ npm config set http http://127.0.0.1:1082
+$ npm config set https-proxy http://127.0.0.1:1082
+</code></pre>
+<blockquote>
+<p>注意，使用 kneesocks 端口</p>
+</blockquote>
+<p>然后你就可以正常的 <code>npm install</code> 了。</p>
+<p>如果你后面想去掉代理：</p>
+<pre><code class="language-shell">$ npm config delete http
+$ npm config delete https-proxy
+</code></pre>
+<p>DEBUG 代理，使用以下命令：</p>
+<pre><code class="language-shell">DEBUG=proxy kneesocks PORT1 PORT2
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[全局 exception handler 的黑科技用法]]></title>
+        <id>https://overtrue.github.io/about-set-exception-handler</id>
+        <link href="https://overtrue.github.io/about-set-exception-handler">
+        </link>
+        <updated>2015-12-09T04:00:00.000Z</updated>
+        <content type="html"><![CDATA[<p>昨天在写 <a href="https://github.com/overtrue/wechat/tree/3.0">overtrue/wechat 3.0</a> 的时候，考虑到用户 debug 的问题。期望把日志包括产生的异常日志都记到用户配置的日志文件里。</p>
+<p>因为代码在不同的组件，不可能用 <code>try...catch</code>。我打算使用 <a href="http://php.net/manual/en/function.set-exception-handler.php">set_exception_handler</a> 注册一个全局异常处理器来做这事儿，但是，我这个只是一个开源组件，可能会被用户用到各种各样的环境中，所以，不能破坏原有框架或者用户自己定义的异常处理器，因为 <code>set_exception_handler</code> 会覆盖前面设置的，所以问题就卡住了。</p>
+<p>然后我找到了 <a href="http://php.net/manual/en/function.restore-exception-handler.php">restore_exception_handler</a>，以为找到了救命稻草，于是我把代码改成如下：</p>
+<pre><code class="language-php?start_inline=1">&lt;?php
+
+class MyException extends Exception {}
+
+set_exception_handler(function(Exception $e){
+    echo &quot;Old handler:&quot;.$e-&gt;getMessage();
+});
+
+set_exception_handler(function(Exception $e) {
+    if ($e instanceof MyException) {
+        echo &quot;New handler:&quot;.$e-&gt;getMessage();
+        return;
+    }
+
+    restore_exception_handler(); // 还原之前的设定然后下面再抛出
+
+    throw $e;
+});
+
+// throw new MyException(&quot;Exception two&quot;, 1);
+throw new Exception(&quot;Exception two&quot;, 1);
+</code></pre>
+<p>然后就报错了...</p>
+<pre><code>PHP Fatal error:  Cannot destroy active lambda function in /Users/overtrue/www/foo.php on line 15
+</code></pre>
+<p>于是 google, stackoverflow... 都无解。</p>
+<p>后来又仔细研究了文档，终于，我发现了：</p>
+<blockquote>
+<p>Returns the name of the previously defined exception handler, or NULL on error. If no previous handler was defined, NULL is also returned.</p>
+</blockquote>
+<p>于是此问题得以圆满解决，虽然恢复原有的 handler 是不可能了，但是达到同样的效果就 OK 了。</p>
+<pre><code class="language-php?start_inline=1">&lt;?php
+
+class MyException extends Exception {}
+
+set_exception_handler(function(Exception $e){
+    echo &quot;Old handler:&quot;.$e-&gt;getMessage();
+});
+
+$lastHandler = set_exception_handler(function(Exception $e) use (&amp;$lastHandler) {
+    if ($e instanceof MyException) {
+        echo &quot;New handler:&quot;.$e-&gt;getMessage();
+        return;
+    }
+
+    if (is_callable($lastHandler)) {
+        return call_user_func_array($lastHandler, [$e]);
+    }
+});
+
+// throw new MyException(&quot;Exception two&quot;, 1);
+throw new Exception(&quot;Exception two&quot;, 1);
+</code></pre>
+<p>利用 PHP 的引用，把 <code>$lastHandler</code> 引用到闭包里，这样毕竟 <code>set_exception_handler</code> 会比闭包先运行，所以就会把前一个 <code>handler</code> 拿到了，然后异常的时候，发现不是我的 <code>MyException</code> 就直接调用原来的 handler 来处理就好了。</p>
+<p>然后我去回答了我之前搜索到没有答案的两个问题：</p>
+<ul>
+<li><a href="http://stackoverflow.com/questions/14411492/cannot-destroy-active-lambda-function/34181805#34181805">Cannot destroy active lambda function</a></li>
+<li><a href="http://stackoverflow.com/questions/12378644/how-can-i-retrieve-the-current-error-handler">How can I retrieve the current error handler?</a></li>
+</ul>
+<p>希望有此想法的同学能得到帮助。 😄</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[让你的 Laravel 应用与官方保持同步]]></title>
+        <id>https://overtrue.github.io/sync-your-laravel-project</id>
+        <link href="https://overtrue.github.io/sync-your-laravel-project">
+        </link>
+        <updated>2015-06-09T04:00:00.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="解决什么问题">解决什么问题？</h1>
+<p>我们在用着 4.2，过了一段时间作者发布了 5.0，项目可能还没开发完，然后你又像我一样是一个不升级不舒服斯基，那么用升到最新版是你接下来要忙碌的事情。因为你不知道 4.2 ~ 5.0 变化了多少。所以你不可能手动一个个加上或者删除、修改。有的人可能是备份，然后用新版建立一个项目：<code>composer create-project laravel/laravel</code> ，然后把原来自己的代码考过来，然而，变化不一定只是文件新增或者删除啊，可能是原来文件里改了一行，你却没法知道。所以这就头疼了。那么下面我就分享一个超简单的办法来解决这个问题：</p>
+<p>首先我们使用的是 <code>git</code>，如果你不熟悉它的话，起码你这时候应该去补补基本命令了。</p>
+<p>这里假设我们的项目叫做 <code>blog</code>, 然后我们第一步要做的事情是添加官方<code>git</code>源:</p>
+<pre><code class="language-shell">cd blog # 切到项目根目录
+git remote add laravel https://github.com/laravel/laravel # 添加一个源
+</code></pre>
+<p>这里解释一下：</p>
+<p>因为我们的项目基本都已经有一个源<code>origin</code>，就是我们项目用于上传到公司 <code>gitlab</code> 或者 <code>bitbucket</code> 这样的网站用于项目代码管理的地方，所以我们不能破坏它。然后我们添加了一个叫做 <code>laravel</code>，这样就会有两个源了，意味着我们就可以从两个源同步代码。</p>
+<h2 id="拉取-larvel-的新版代码">拉取 Larvel 的新版代码</h2>
+<h4 id="拉取指定的-laravel-分支">拉取指定的 Laravel 分支</h4>
+<blockquote>
+<p>注意：在我们拉取 Laravel 源的代码前，请确认你的修改都已经保存并 <code>commit</code>。</p>
+</blockquote>
+<pre><code class="language-shell">git pull laravel master
+</code></pre>
+<p>这里我们从 <code>laravel</code> 的源拉取 <code>master</code> 分支，当然你也可以拉取其它分支的代码。</p>
+<h4 id="合并冲突">合并冲突</h4>
+<p>拉取完代码，这时候通常是会冲突的，因为你的代码与官方的代码不一样了，冲突部分就是不相同的地方，那么你根据合并结果找到<code>CONFLICT (content): Merge conflict in xxxx.xxx</code> 部分的文件打开，找到冲突的地方合并就好了。</p>
+<p>解决完冲突你的代码结构就与官方一致了，而且这种合并方式不会让你落下任何一个不同的地方。</p>
+<p>当然以上的方法适用于任何 <code>git</code> 管理的项目。比如工作中，你 <code>fork</code> 了主项目，要经常同步主项目的更新时就用这个方法最简单了。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[PHPCS、PHPMD 的安装与配置]]></title>
+        <id>https://overtrue.github.io/install-phpcs-and-phpmd</id>
+        <link href="https://overtrue.github.io/install-phpcs-and-phpmd">
+        </link>
+        <updated>2015-05-18T04:00:00.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="phpcs">PHPCS</h1>
+<h3 id="安装">安装</h3>
+<p>有以下方式安装 PHPCS:</p>
+<h5 id="使用-composer">使用 <code>composer</code>:</h5>
+<pre><code>composer global require &quot;squizlabs/php_codesniffer=*&quot;
+</code></pre>
+<blockquote>
+<p>注意，你可能需要将 <code>~/.composer/vendor/bin/</code> 添加到 PATH 环境变量中，否则会报命令找不到。</p>
+</blockquote>
+<h5 id="使用-pear">使用 PEAR:</h5>
+<pre><code>pear install PHP_CodeSniffer
+</code></pre>
+<h5 id="下载安装">下载安装：</h5>
+<pre><code class="language-sh">curl -OL https://squizlabs.github.io/PHP_CodeSniffer/phpcs.phar
+php phpcs.phar -h
+curl -OL https://squizlabs.github.io/PHP_CodeSniffer/phpcbf.phar
+php phpcbf.phar -h
+</code></pre>
+<p>然后移动到命令目录：</p>
+<pre><code class="language-sh">mv phpcs.phar /usr/bin/phpcs
+mv phpcbf.phar /usr/bin/phpcbf
+// 也许上面需要 sudo
+chmod +x /usr/bin/phpcs
+chmod +x /usr/bin/phpcbf
+</code></pre>
+<p>这里的 <code>phpcbf</code> 是代码修复工具。</p>
+<h3 id="使用">使用</h3>
+<h5 id="查看帮助">查看帮助：</h5>
+<pre><code>phpcs --help
+</code></pre>
+<h5 id="添加标准">添加标准：</h5>
+<pre><code>phpcs --config-set installed_paths PATH_TO_SEARCH_STANDARDS
+</code></pre>
+<p>注意：假设标准为 <code>Weibo</code>, 目录为:</p>
+<pre><code>/Users/overtrue/code_standards/Weibo
+</code></pre>
+<p>其中<code>Weibo</code> 里才是 <code>ruleset.xml</code>，那么对应上面的 <code>PATH_TO_SEARCH_STANDARDS</code> 应该为：</p>
+<pre><code>phpcs --config-set installed_paths /Users/overtrue/code_standards
+</code></pre>
+<h5 id="查看已经安装的标准">查看已经安装的标准：</h5>
+<pre><code>phpcs -i
+</code></pre>
+<h5 id="查看配置">查看配置：</h5>
+<pre><code>phpcs --config-show
+</code></pre>
+<h5 id="检查代码规范">检查代码规范：</h5>
+<pre><code>phpcs ./codes/Example.php
+// or
+phpcs ./codes/
+</code></pre>
+<p>指定标准：</p>
+<pre><code>phpcs ./codes/Example.php --standard=PSR2
+</code></pre>
+<p>报告格式：</p>
+<pre><code>phpcs --report=summary /path/to/code
+</code></pre>
+<p>可用的格式有（默认为: <code>full</code>）：</p>
+<pre><code>full, xml, checkstyle, csv
+json, emacs, source, summary, diff
+svnblame, gitblame, hgblame or notifysend
+</code></pre>
+<h5 id="修复代码">修复代码</h5>
+<p>第一种：使用 diff 形式打补丁：</p>
+<pre><code class="language-sh">phpcs --report-diff=/path/to/changes.diff /path/to/code
+patch -p0 -ui /path/to/changes.diff
+# patching file /path/to/code/file.php
+</code></pre>
+<p>第二种：使用 PHP Code Beautifier 和 Fixer：</p>
+<pre><code>phpcbf /path/to/code
+</code></pre>
+<p>以上命令会自动修复原文件，如果不想直接覆盖原文件，可以使用 <code>--suffix</code> 指定修复后的代码后缀：</p>
+<pre><code>phpcs /path/to/code --suffix=.fixed
+</code></pre>
+<p>更多 PHPCS 的使用请参考：https://github.com/squizlabs/PHP_CodeSniffer/wiki</p>
+<h2 id="phpmd">PHPMD</h2>
+<h3 id="安装-2">安装</h3>
+<p>同样有以下安装方式：</p>
+<h5 id="下载-phar-文件安装">下载 <code>phar</code> 文件安装：</h5>
+<pre><code class="language-sh">wget -c http://static.phpmd.org/php/latest/phpmd.phar
+mv phpmd.phar /usr/bin/phpmd
+chmod +x /usr/bin/phpmd
+</code></pre>
+<h5 id="使用-composer-安装">使用 <code>Composer</code> 安装：</h5>
+<pre><code>composer global require phpmd/phpmd
+</code></pre>
+<h3 id="使用-2">使用</h3>
+<ul>
+<li>检查代码质量：</li>
+</ul>
+<pre><code># phpmd 代码路径 报告格式
+phpmd /path/to/source text
+</code></pre>
+<p>或者指定要检查的规则：</p>
+<pre><code># phpmd 代码路径 报告格式 规则列表
+phpmd /path/to/source text codesize,unusedcode,naming
+</code></pre>
+<p>或者使用xml指定检查规则：</p>
+<pre><code># phpmd 代码路径 报告格式 规则xml文件
+phpmd /path/to/source text /phpmd_ruleset.xml
+</code></pre>
+<ul>
+<li>报告格式有：
+<ul>
+<li>xml, 以 XML 格式输出；</li>
+<li>text, 简单的文本格式；</li>
+<li>html, 输出到单个的html；</li>
+</ul>
+</li>
+</ul>
+<p>这里有一个phpmd规则可参考：https://github.com/overtrue/phpmd-rulesets</p>
+<p>更多关于 PHPMD 的使用请参考：http://phpmd.org/documentation/index.html</p>
+]]></content>
+    </entry>
+</feed>

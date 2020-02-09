@@ -1,0 +1,236 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Laravel 获取当前控制器名称或方法 | overtrue</title>
+<link rel="shortcut icon" href="https://overtrue.github.io/favicon.ico?v=1581253585933">
+<link href="https://cdn.remixicon.com/releases/v2.1.0/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://overtrue.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="Laravel 获取当前控制器名称或方法 | overtrue - Atom Feed" href="https://overtrue.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-55452630-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-55452630-1');
+</script>
+
+
+    <meta name="description" content="我们有时候需要获取当前 Laravel 项目的控制器或者方法名，框架默认是不会提供单独的方法的，框架只提供了如下的方法：
+\Route::current()-&gt;getActionName();
+
+返回的结果是：
+App\Http\Co..." />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://overtrue.github.io">
+  <img class="avatar" src="https://overtrue.github.io/images/avatar.png?v=1581253585933" alt="">
+  </a>
+  <h1 class="site-title">
+    overtrue
+  </h1>
+  <p class="site-description">
+    🇨🇳 <b>China Shenzhen</b>・🕹<b>Web developer</b>
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="https://github.com/overtrue" class="menu" target="_blank">
+          开源
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/overtrue" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+    
+      
+        <a href="https://weibo.com/joychaocc" target="_blank">
+          <i class="ri-weibo-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              Laravel 获取当前控制器名称或方法
+            </h2>
+            <div class="post-info">
+              <span>
+                2015-03-19
+              </span>
+              <span>
+                1 min read
+              </span>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <p>我们有时候需要获取当前 Laravel 项目的控制器或者方法名，框架默认是不会提供单独的方法的，框架只提供了如下的方法：</p>
+<pre><code class="language-php?start_inline=1">\Route::current()-&gt;getActionName();
+</code></pre>
+<p>返回的结果是：</p>
+<pre><code class="language-php?start_inline=1">App\Http\Controllers\WelcomeController@index
+</code></pre>
+<p>可是这不是我们想要的，我们只想获取控制器名或者方法名，那么，你可以自定义下面三个函数来实现：</p>
+<pre><code class="language-php?start_inline=1">/**
+ * 获取当前控制器名
+ *
+ * @return string
+ */
+public function getCurrentControllerName()
+{
+    return getCurrentAction()['controller'];
+}
+
+/**
+ * 获取当前方法名
+ *
+ * @return string
+ */
+public function getCurrentMethodName()
+{
+    return getCurrentAction()['method'];
+}
+
+/**
+ * 获取当前控制器与方法
+ *
+ * @return array
+ */
+public function getCurrentAction()
+{
+    $action = \Route::current()-&gt;getActionName();
+    list($class, $method) = explode('@', $action);
+
+    return ['controller' =&gt; $class, 'method' =&gt; $method];
+}
+</code></pre>
+<p>另外推荐近期完成的两个 Laravel 拓展包：</p>
+<ul>
+<li><a href="https://github.com/overtrue/laravel-lang">overtrue/laravel-lang</a> 基于 <a href="https://github.com/caouecs/Laravel4-lang">Laravel4-lang</a> 的 44 语种语言文件</li>
+<li><a href="https://github.com/overtrue/laravel-pinyin">overtrue/laravel-pinyin</a> Laravel 中文转拼音， 基于 <a href="https://github.com/overtrue/pinyin">overtrue/pinyin</a></li>
+</ul>
+
+              </div>
+              <div class="toc-container">
+                
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://overtrue.github.io/how-to-deploy-project-with-git-hook">
+              <h3 class="post-title">
+                使用 PHP 脚本远程部署 git 项目
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+  <a class="rss" href="https://overtrue.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

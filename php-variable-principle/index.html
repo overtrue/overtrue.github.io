@@ -1,0 +1,260 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>PHP 的弱类型实现 | overtrue</title>
+<link rel="shortcut icon" href="https://overtrue.github.io/favicon.ico?v=1581253585933">
+<link href="https://cdn.remixicon.com/releases/v2.1.0/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://overtrue.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="PHP 的弱类型实现 | overtrue - Atom Feed" href="https://overtrue.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-55452630-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-55452630-1');
+</script>
+
+
+    <meta name="description" content="PHP 是弱类型，动态的语言脚本。在申明一个变量的时候，并不需要指明它保存的数据类型。例如：
+&lt;?php
+$var = 1;
+$var = &quot;variable&quot;;
+$var = 1.00;
+$var = array..." />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://overtrue.github.io">
+  <img class="avatar" src="https://overtrue.github.io/images/avatar.png?v=1581253585933" alt="">
+  </a>
+  <h1 class="site-title">
+    overtrue
+  </h1>
+  <p class="site-description">
+    🇨🇳 <b>China Shenzhen</b>・🕹<b>Web developer</b>
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="https://github.com/overtrue" class="menu" target="_blank">
+          开源
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/overtrue" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+    
+      
+        <a href="https://weibo.com/joychaocc" target="_blank">
+          <i class="ri-weibo-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              PHP 的弱类型实现
+            </h2>
+            <div class="post-info">
+              <span>
+                2014-10-12
+              </span>
+              <span>
+                3 min read
+              </span>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <p>PHP 是弱类型，动态的语言脚本。在申明一个变量的时候，并不需要指明它保存的数据类型。例如：</p>
+<pre><code class="language-php?start_inline=1">&lt;?php
+$var = 1;
+$var = &quot;variable&quot;;
+$var = 1.00;
+$var = array();
+$var = new Object();
+</code></pre>
+<p>动态变量，在运行期间是可以改变的，并且在使用前无需声明变量类型。</p>
+<p><strong>问题一、Zend引擎是如何用C实现这种弱类型的呢？</strong></p>
+<p>实际上，在PHP中声明的变量，在ZE中都是用结构体zval来保存的。<br>
+首先我们打开Zend/zend.h来看zval的定义：</p>
+<pre><code class="language-c">typedef struct _zval_struct zval;
+
+struct _zval_struct {
+    /* Variable information */
+    zvalue_value value;     /* value */
+    zend_uint refcount__gc;
+    zend_uchar type;    /* active type */
+    zend_uchar is_ref__gc;
+};
+
+typedef union _zvalue_value {
+    long lval;  /* long value */
+    double dval;    /* double value */
+    struct {
+        char *val;
+        int len;
+    } str;
+    HashTable *ht;  /* hash table value */
+    zend_object_value obj;
+} zvalue_value;
+</code></pre>
+<p>Zend/zend_types.h：</p>
+<pre><code class="language-c">typedef unsigned char zend_bool;
+typedef unsigned char zend_uchar;
+typedef unsigned int zend_uint;
+typedef unsigned long zend_ulong;
+typedef unsigned short zend_ushort;
+</code></pre>
+<p>从上述代码中，可以看到<code>_zvalue_value</code>是真正保存数据的关键部分。通过共用体实现的弱类型变量声明</p>
+<p><strong>问题二、Zend引擎是如何判别、存储PHP中的多种数据类型的呢？</strong></p>
+<p><code>_zval_struct.type</code>中存储着一个变量的真正类型，根据<code>type</code>来选择如何获取<code>zvalue_value</code>的值。</p>
+<p>type值列表(Zend/zend.h)：</p>
+<pre><code class="language-c">#define IS_NULL     0
+#define IS_LONG     1
+#define IS_DOUBLE   2
+#define IS_BOOL     3
+#define IS_ARRAY    4
+#define IS_OBJECT   5
+#define IS_STRING   6
+#define IS_RESOURCE 7
+#define IS_CONSTANT 8
+#define IS_CONSTANT_ARRAY   9
+</code></pre>
+<p>来看一个简单的例子：</p>
+<pre><code class="language-php?start_inline=1">&lt;?php
+$a = 1;
+//此时zval.type = IS_LONG,那么zval.value就去取lval.
+$a = array();
+//此时zval.type = IS_ARRAY,那么zval.value就去取ht.
+</code></pre>
+<p>这其中最复杂的，并且在开发第三方扩展中经常需要用到的是&quot;资源类型&quot;.<br>
+在PHP中，任何不属于PHP的内建的变量类型的变量，都会被看作资源来进行保存。<br>
+比如：数据库句柄、打开的文件句柄、打开的socket句柄。</p>
+<p>资源类型，会用<code>lval</code>，此时它是一个整型指示器， 然后PHP会再根据这个指示器在PHP内建的一个资源列表中查询相对应的资源。</p>
+<p>正是因为ZE这样的处理方式，使PHP就实现了弱类型，而对于ZE的来说，它所面对的永远都是同一种类型zval。</p>
+<p>转自：http://allensuiverson.blog.163.com/blog/static/13364826920131013103226827/</p>
+
+              </div>
+              <div class="toc-container">
+                
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://overtrue.github.io/config-zsh-on-osx">
+              <h3 class="post-title">
+                Mac 下配置 zsh 与 oh-my-zsh
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+  <a class="rss" href="https://overtrue.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

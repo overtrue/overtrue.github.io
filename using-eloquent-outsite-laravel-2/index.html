@@ -1,0 +1,538 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>在 Laravel 外使用 Eloquent（二）- 分页问题 | overtrue</title>
+<link rel="shortcut icon" href="https://overtrue.github.io/favicon.ico?v=1581253585933">
+<link href="https://cdn.remixicon.com/releases/v2.1.0/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://overtrue.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="在 Laravel 外使用 Eloquent（二）- 分页问题 | overtrue - Atom Feed" href="https://overtrue.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-55452630-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-55452630-1');
+</script>
+
+
+    <meta name="description" content="上一篇《在Laravel外使用Eloquent（一）》 中我们演示了如何引入Eloquent以及基本使用，但是如果细心的朋友肯定会发现，当你在使用paginate(15)来分页的时候是会报错的。因为我们没有依赖laravel的paginat..." />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://overtrue.github.io">
+  <img class="avatar" src="https://overtrue.github.io/images/avatar.png?v=1581253585933" alt="">
+  </a>
+  <h1 class="site-title">
+    overtrue
+  </h1>
+  <p class="site-description">
+    🇨🇳 <b>China Shenzhen</b>・🕹<b>Web developer</b>
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="https://github.com/overtrue" class="menu" target="_blank">
+          开源
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/overtrue" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+    
+      
+        <a href="https://weibo.com/joychaocc" target="_blank">
+          <i class="ri-weibo-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              在 Laravel 外使用 Eloquent（二）- 分页问题
+            </h2>
+            <div class="post-info">
+              <span>
+                2014-11-25
+              </span>
+              <span>
+                7 min read
+              </span>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <p>上一篇<a href="/2014/10/30/using-eloquent-outside-laravel.html">《在Laravel外使用Eloquent（一）》</a> 中我们演示了如何引入Eloquent以及基本使用，但是如果细心的朋友肯定会发现，当你在使用paginate(15)来分页的时候是会报错的。因为我们没有依赖laravel的pagination模块。但是引入那个模块同时它内部依赖了symfony的http-foundation模块，意味着为了一个分页功能我们要装好多东西。于是我就实现了一个比较简单的分页类：</p>
+<p>代码见：<a href="https://github.com/overtrue/rester">https://github.com/overtrue/rester</a></p>
+<pre><code class="language-php?start_inline=1">&lt;?php
+
+namespace Rester;
+
+/**
+ * Paginator.php
+ *
+ * (c) 2014 overtrue &lt;anzhengchao@gmail.com&gt;
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * @author overtrue &lt;anzhengchao@gmail.com&gt;
+ * @github https://github.com/overtrue
+ * @url    http://overtrue.me
+ * @date   2014-10-23T20:05:33
+ */
+
+use Closure;
+use Countable;
+use ArrayAccess;
+use Serializable;
+use ArrayIterator;
+use JsonSerializable;
+use IteratorAggregate;
+
+class Paginator implements
+    ArrayAccess,
+    Countable,
+    IteratorAggregate,
+    Serializable,
+    JsonSerializable
+{
+    protected $pager;
+    protected $pageSize;
+    protected $total;
+    protected $items;
+
+    /**
+     * Constructor
+     *
+     * @param \Slim\Http\Request $request
+     * @param string             $pager
+     */
+    public function __construct($pager = 'page')
+    {
+        $this-&gt;pager = $pager;
+    }
+
+    /**
+     * Make a pagination
+     *
+     * @param array   $items
+     * @param integer $total
+     * @param integer $pageSize
+     *
+     * @return array
+     */
+    public function make($items, $total, $pageSize = 10)
+    {
+        $this-&gt;total    = abs($total);
+        $this-&gt;pageSize = $pageSize;
+        $this-&gt;items = $items;
+
+        return $this;
+    }
+
+    /**
+     * Return current page
+     *
+     * @return integer
+     */
+    public function getCurrentPage($total = null)
+    {
+        $page = abs(app()-&gt;request-&gt;get('page', 1));
+
+        if ($total) {
+            $this-&gt;total = $total;
+        }
+
+        $page &gt;= 1 || $page = 1;
+
+        if ($this-&gt;items) {
+            $totalPage = $this-&gt;getTotalPage();
+            $page &lt;= $totalPage || $page = $totalPage;
+        }
+
+        return $page;
+    }
+
+    /**
+     * Return total pages
+     *
+     * @return integer
+     */
+    public function getTotalPage()
+    {
+        $this-&gt;pageSize &gt; 0 || $this-&gt;pageSize = 10;
+
+        $totalPage = ceil($this-&gt;total / $this-&gt;pageSize);
+
+        $totalPage &gt;= 1 || $totalPage = 1;
+
+        return $totalPage;
+    }
+
+    public function links()
+    {
+        $html = '&lt;ul class=&quot;pagination&quot;&gt;';
+
+        $totalPage   = $this-&gt;getTotalPage();
+        $currentPage = $this-&gt;getCurrentPage();
+
+        if ($totalPage &lt; 10) {
+            for ($i = 1; $i &lt;= $totalPage; $i++) {
+                $active = $i == $currentPage ? 'class=&quot;active&quot;':'';
+                $html .= &quot;&lt;li $active&gt;&lt;a href=&quot;.$this-&gt;getLink($i).&quot;&gt;$i&lt;/a&gt;&lt;/li&gt;&quot;;
+            }
+        } else {
+
+            if ($currentPage &gt; 3) {
+                $html .= &quot;&lt;li&gt;&lt;a href=&quot;.$this-&gt;getLink(1).&quot;&gt;&amp;laquo;&lt;/a&gt;&lt;/li&gt;&quot;;
+                $start = $currentPage - 2;
+            } else {
+                $start = 1;
+            }
+
+            for ($i = $start; $i &lt;= $currentPage; $i++) {
+                $active = $i == $currentPage ? 'class=&quot;active&quot;':'';
+                $html .= &quot;&lt;li $active&gt;&lt;a href=&quot;.$this-&gt;getLink($i).&quot;&gt;$i&lt;/a&gt;&lt;/li&gt;&quot;;
+            }
+
+            for ($i = $currentPage + 1; $i &lt;= $currentPage + 3; $i++) {
+                $active = $i == $currentPage ? 'class=&quot;active&quot;':'';
+                $html .= &quot;&lt;li $active&gt;&lt;a href=&quot;.$this-&gt;getLink($i).&quot;&gt;$i&lt;/a&gt;&lt;/li&gt;&quot;;
+            }
+
+            if ($totalPage - $currentPage &gt;= 5) {
+                $html .= &quot;&lt;li&gt;&lt;a href='javascript:void(0)'&gt;...&lt;/a&gt;&lt;/li&gt;&quot;;
+                $html .= &quot;&lt;li&gt;&lt;a href=&quot;.$this-&gt;getLink($totalPage).&quot;&gt;$totalPage&lt;/a&gt;&lt;/li&gt;&quot;;
+            }
+        }
+
+        return $html .= '&lt;/ul&gt;';
+    }
+
+    /**
+     * getLink
+     *
+     * @param integer $page
+     *
+     * @return string
+     */
+    public function getLink($page)
+    {
+        static $query;
+
+        if (is_null($query)) {
+            $query = app()-&gt;request-&gt;get();
+        }
+
+        $query['page'] = $page;
+
+        return &quot;?&quot; . http_build_query($query);
+    }
+
+     /** {@inhertDoc} */
+    public function jsonSerialize()
+    {
+        return $this-&gt;items;
+    }
+
+    /** {@inhertDoc} */
+    public function serialize()
+    {
+        return serialize($this-&gt;items);
+    }
+
+    /** {@inhertDoc} */
+    public function unserialize($data)
+    {
+        return $this-&gt;items = unserialize($data);
+    }
+
+    /** {@inhertDoc} **/
+    public function getIterator()
+    {
+        return new ArrayIterator($this-&gt;items);
+    }
+
+    /** {@inhertDoc} */
+    public function count($mode = COUNT_NORMAL)
+    {
+        return count($this-&gt;items, $mode);
+    }
+
+    /**
+     * Get a data by key
+     *
+     * @param string $key
+     *
+     * @return mixed
+     */
+    public function __get($key) {
+        return $this[$key];
+    }
+
+    /**
+     * Assigns a value to the specified data
+     *
+     * @param string $key
+     * @param mixed  $value
+     *
+     * @return void
+     */
+    public function __set($key, $value)
+    {
+        $this-&gt;items[$key] = $value;
+    }
+
+    /**
+     * Whether or not an data exists by key
+     *
+     * @param string $key
+     *
+     * @return bool
+     */
+    public function __isset($key)
+    {
+        return isset($this-&gt;items[$key]);
+    }
+
+    /**
+     * Unsets an data by key
+     *
+     * @param string $key
+     */
+    public function __unset($key)
+    {
+        unset($this-&gt;items[$key]);
+    }
+
+    /**
+     * Assigns a value to the specified offset
+     *
+     * @param string $offset
+     * @param mixed  $value
+     *
+     * @return void
+     */
+    public function offsetSet($offset, $value)
+    {
+        $this-&gt;items[$offset] = $value;
+    }
+
+    /**
+     * Whether or not an offset exists
+     *
+     * @param string $offset
+     *
+     * @access public
+     *
+     * @return bool
+     */
+    public function offsetExists($offset)
+    {
+        return isset($this-&gt;items[$offset]);
+    }
+
+    /**
+     * Unsets an offset
+     *
+     * @param string $offset
+     *
+     * @return array
+     */
+    public function offsetUnset($offset)
+    {
+        if ($this-&gt;offsetExists($offset)) {
+            unset($this-&gt;items[$offset]);
+        }
+    }
+
+    /**
+     * Returns the value at specified offset
+     *
+     * @param string $offset
+     *
+     * @return mixed
+     */
+    public function offsetGet($offset)
+    {
+        return $this-&gt;offsetExists($offset) ? array_get($this-&gt;items, $offset) : null;
+    }
+}
+</code></pre>
+<p>然后在我们初始化eloquent的方装载这个分页类到eloquent中就好：</p>
+<pre><code class="language-php?start_inline=1">//...
+use Rester\Paginator;
+
+// 注册分页类
+Capsule::setPaginator(function() use ($app, $config) {
+    return new Paginator($app-&gt;request, $config-&gt;get('pager', 'page'));
+});
+
+//...
+</code></pre>
+<p>完整的eloquent初始化步骤请参考：</p>
+<p>https://github.com/overtrue/rester/blob/master/start/eloquent.php</p>
+<p>然后我们就可以正常使用分页功能了：</p>
+<pre><code class="language-php?start_inline=1">$users = User::paginate(15);
+$users = User::where('status', 1)-&gt;paginate(15);
+...
+</code></pre>
+<p>因为上面的分页类实现了常用的<a href="http://php.net/manual/zh/reserved.interfaces.php">预定义接口</a>, 所以你可以很方便的使用分页结果：</p>
+<pre><code class="language-php?start_inline=1">// 遍历
+foreach ($users as $user) {
+    // do sth.
+}
+
+// json encode
+$json = json_encode($users);
+
+// count
+$count = count($users);
+
+//...
+</code></pre>
+<p>另外还考虑到了大家不一定全用它写接口用，所以分页类同样实现了Laravel里的生成分页链接的方法：<code>$users-&gt;links()</code>, 它会生成bootstrap格式的分页列表：</p>
+<pre><code class="language-html">&lt;ul class=&quot;pagination&quot;&gt;
+    &lt;li&gt;&lt;a href=&quot;#&quot;&gt;&amp;laquo;&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&quot;#&quot;&gt;1&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&quot;#&quot;&gt;2&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&quot;#&quot;&gt;3&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&quot;#&quot;&gt;4&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&quot;#&quot;&gt;5&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&quot;#&quot;&gt;&amp;raquo;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</code></pre>
+<p>demo:</p>
+<pre><code class="language-php?start_inline=1">&lt;div class=&quot;container&quot;&gt;
+    &lt;?php foreach ($users as $user): ?&gt;
+        &lt;?php echo $user-&gt;name; ?&gt;
+    &lt;?php endforeach; ?&gt;
+&lt;/div&gt;
+
+&lt;?php echo $users-&gt;links(); ?&gt;
+</code></pre>
+<p>OK,那么现在你就可以很方便的在你的项目里无忧的使用Eloquent啦。</p>
+
+              </div>
+              <div class="toc-container">
+                
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://overtrue.github.io/using-eloquent-outside-laravel">
+              <h3 class="post-title">
+                在 Laravel 外使用 Eloquent（一）
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+  <a class="rss" href="https://overtrue.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

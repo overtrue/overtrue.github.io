@@ -1,0 +1,234 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>centos 编译安装最新版 Git | overtrue</title>
+<link rel="shortcut icon" href="https://overtrue.github.io/favicon.ico?v=1581253585933">
+<link href="https://cdn.remixicon.com/releases/v2.1.0/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://overtrue.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="centos 编译安装最新版 Git | overtrue - Atom Feed" href="https://overtrue.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-55452630-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-55452630-1');
+</script>
+
+
+    <meta name="description" content="安装依赖包
+yum -y install zlib-devel curl-devel openssl-devel perl cpio expat-devel gettext-devel openssl zlib autoconf tk pe..." />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://overtrue.github.io">
+  <img class="avatar" src="https://overtrue.github.io/images/avatar.png?v=1581253585933" alt="">
+  </a>
+  <h1 class="site-title">
+    overtrue
+  </h1>
+  <p class="site-description">
+    🇨🇳 <b>China Shenzhen</b>・🕹<b>Web developer</b>
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="https://github.com/overtrue" class="menu" target="_blank">
+          开源
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/overtrue" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+    
+      
+        <a href="https://weibo.com/joychaocc" target="_blank">
+          <i class="ri-weibo-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              centos 编译安装最新版 Git
+            </h2>
+            <div class="post-info">
+              <span>
+                2015-05-08
+              </span>
+              <span>
+                2 min read
+              </span>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <h1 id="安装依赖包">安装依赖包</h1>
+<pre><code class="language-shell">yum -y install zlib-devel curl-devel openssl-devel perl cpio expat-devel gettext-devel openssl zlib autoconf tk perl-ExtUtils-MakeMaker
+</code></pre>
+<h2 id="获取最新版-git-源码包">获取最新版 Git 源码包</h2>
+<p>从 https://github.com/git/git/releases 下载最新版的 zip 包或者 tar.gz 并解压：</p>
+<p>以 tar.gz 格式为例（在网页的 tar.gz 上右键复制下载链接即可）：</p>
+<pre><code class="language-shell">wget https://github.com/git/git/archive/v2.4.0.tar.gz
+tar zxvf v2.4.0.tar.gz
+</code></pre>
+<p>会得到一个 <code>git-2.4.0</code> 的目录（版本号与下载的一致），然后进入这个目录：</p>
+<pre><code class="language-shell">cd git-2.4.0
+</code></pre>
+<h2 id="编译安装">编译安装</h2>
+<pre><code class="language-shell">autoconf
+./configure
+make
+make install
+</code></pre>
+<blockquote>
+<p>以上4步请一步步来，以免出现错误不好找原因。</p>
+</blockquote>
+<p>然后修改 <code>/etc/ld.so.conf</code> 文件，在最后加入一行：</p>
+<pre><code class="language-shell">/usr/local/lib
+</code></pre>
+<p>保存并关闭。</p>
+<p>这就安装好了，看看版本：</p>
+<pre><code class="language-shell">git --version
+# git version 2.4.0
+</code></pre>
+<h2 id="错误处理">错误处理</h2>
+<p>如果安装后报以下错误：</p>
+<pre><code class="language-shell">bash: /usr/bin/git: 没有那个文件或目录
+</code></pre>
+<p>那么请编辑 <code>/etc/profile</code> 在最后加入一行：</p>
+<pre><code class="language-shell">export PATH=$PATH:/usr/local/bin
+</code></pre>
+<p>然后重新开窗口就好了，或者执行命令 <code>source /etc/profile</code> 后就好了。</p>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li><a href="#%E5%AE%89%E8%A3%85%E4%BE%9D%E8%B5%96%E5%8C%85">安装依赖包</a>
+<ul>
+<li><a href="#%E8%8E%B7%E5%8F%96%E6%9C%80%E6%96%B0%E7%89%88-git-%E6%BA%90%E7%A0%81%E5%8C%85">获取最新版 Git 源码包</a></li>
+<li><a href="#%E7%BC%96%E8%AF%91%E5%AE%89%E8%A3%85">编译安装</a></li>
+<li><a href="#%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86">错误处理</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://overtrue.github.io/laravel-login-event-handler">
+              <h3 class="post-title">
+                处理 Laravel 5 默认事件
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+  <a class="rss" href="https://overtrue.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

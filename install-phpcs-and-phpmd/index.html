@@ -1,0 +1,343 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>PHPCS、PHPMD 的安装与配置 | overtrue</title>
+<link rel="shortcut icon" href="https://overtrue.github.io/favicon.ico?v=1581253585933">
+<link href="https://cdn.remixicon.com/releases/v2.1.0/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://overtrue.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="PHPCS、PHPMD 的安装与配置 | overtrue - Atom Feed" href="https://overtrue.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-55452630-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-55452630-1');
+</script>
+
+
+    <meta name="description" content="PHPCS
+安装
+有以下方式安装 PHPCS:
+使用 composer:
+composer global require &quot;squizlabs/php_codesniffer=*&quot;
+
+
+注意，你可能需要将 ~/.comp..." />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://overtrue.github.io">
+  <img class="avatar" src="https://overtrue.github.io/images/avatar.png?v=1581253585933" alt="">
+  </a>
+  <h1 class="site-title">
+    overtrue
+  </h1>
+  <p class="site-description">
+    🇨🇳 <b>China Shenzhen</b>・🕹<b>Web developer</b>
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="https://github.com/overtrue" class="menu" target="_blank">
+          开源
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/overtrue" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+    
+      
+        <a href="https://weibo.com/joychaocc" target="_blank">
+          <i class="ri-weibo-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              PHPCS、PHPMD 的安装与配置
+            </h2>
+            <div class="post-info">
+              <span>
+                2015-05-18
+              </span>
+              <span>
+                3 min read
+              </span>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <h1 id="phpcs">PHPCS</h1>
+<h3 id="安装">安装</h3>
+<p>有以下方式安装 PHPCS:</p>
+<h5 id="使用-composer">使用 <code>composer</code>:</h5>
+<pre><code>composer global require &quot;squizlabs/php_codesniffer=*&quot;
+</code></pre>
+<blockquote>
+<p>注意，你可能需要将 <code>~/.composer/vendor/bin/</code> 添加到 PATH 环境变量中，否则会报命令找不到。</p>
+</blockquote>
+<h5 id="使用-pear">使用 PEAR:</h5>
+<pre><code>pear install PHP_CodeSniffer
+</code></pre>
+<h5 id="下载安装">下载安装：</h5>
+<pre><code class="language-sh">curl -OL https://squizlabs.github.io/PHP_CodeSniffer/phpcs.phar
+php phpcs.phar -h
+curl -OL https://squizlabs.github.io/PHP_CodeSniffer/phpcbf.phar
+php phpcbf.phar -h
+</code></pre>
+<p>然后移动到命令目录：</p>
+<pre><code class="language-sh">mv phpcs.phar /usr/bin/phpcs
+mv phpcbf.phar /usr/bin/phpcbf
+// 也许上面需要 sudo
+chmod +x /usr/bin/phpcs
+chmod +x /usr/bin/phpcbf
+</code></pre>
+<p>这里的 <code>phpcbf</code> 是代码修复工具。</p>
+<h3 id="使用">使用</h3>
+<h5 id="查看帮助">查看帮助：</h5>
+<pre><code>phpcs --help
+</code></pre>
+<h5 id="添加标准">添加标准：</h5>
+<pre><code>phpcs --config-set installed_paths PATH_TO_SEARCH_STANDARDS
+</code></pre>
+<p>注意：假设标准为 <code>Weibo</code>, 目录为:</p>
+<pre><code>/Users/overtrue/code_standards/Weibo
+</code></pre>
+<p>其中<code>Weibo</code> 里才是 <code>ruleset.xml</code>，那么对应上面的 <code>PATH_TO_SEARCH_STANDARDS</code> 应该为：</p>
+<pre><code>phpcs --config-set installed_paths /Users/overtrue/code_standards
+</code></pre>
+<h5 id="查看已经安装的标准">查看已经安装的标准：</h5>
+<pre><code>phpcs -i
+</code></pre>
+<h5 id="查看配置">查看配置：</h5>
+<pre><code>phpcs --config-show
+</code></pre>
+<h5 id="检查代码规范">检查代码规范：</h5>
+<pre><code>phpcs ./codes/Example.php
+// or
+phpcs ./codes/
+</code></pre>
+<p>指定标准：</p>
+<pre><code>phpcs ./codes/Example.php --standard=PSR2
+</code></pre>
+<p>报告格式：</p>
+<pre><code>phpcs --report=summary /path/to/code
+</code></pre>
+<p>可用的格式有（默认为: <code>full</code>）：</p>
+<pre><code>full, xml, checkstyle, csv
+json, emacs, source, summary, diff
+svnblame, gitblame, hgblame or notifysend
+</code></pre>
+<h5 id="修复代码">修复代码</h5>
+<p>第一种：使用 diff 形式打补丁：</p>
+<pre><code class="language-sh">phpcs --report-diff=/path/to/changes.diff /path/to/code
+patch -p0 -ui /path/to/changes.diff
+# patching file /path/to/code/file.php
+</code></pre>
+<p>第二种：使用 PHP Code Beautifier 和 Fixer：</p>
+<pre><code>phpcbf /path/to/code
+</code></pre>
+<p>以上命令会自动修复原文件，如果不想直接覆盖原文件，可以使用 <code>--suffix</code> 指定修复后的代码后缀：</p>
+<pre><code>phpcs /path/to/code --suffix=.fixed
+</code></pre>
+<p>更多 PHPCS 的使用请参考：https://github.com/squizlabs/PHP_CodeSniffer/wiki</p>
+<h2 id="phpmd">PHPMD</h2>
+<h3 id="安装-2">安装</h3>
+<p>同样有以下安装方式：</p>
+<h5 id="下载-phar-文件安装">下载 <code>phar</code> 文件安装：</h5>
+<pre><code class="language-sh">wget -c http://static.phpmd.org/php/latest/phpmd.phar
+mv phpmd.phar /usr/bin/phpmd
+chmod +x /usr/bin/phpmd
+</code></pre>
+<h5 id="使用-composer-安装">使用 <code>Composer</code> 安装：</h5>
+<pre><code>composer global require phpmd/phpmd
+</code></pre>
+<h3 id="使用-2">使用</h3>
+<ul>
+<li>检查代码质量：</li>
+</ul>
+<pre><code># phpmd 代码路径 报告格式
+phpmd /path/to/source text
+</code></pre>
+<p>或者指定要检查的规则：</p>
+<pre><code># phpmd 代码路径 报告格式 规则列表
+phpmd /path/to/source text codesize,unusedcode,naming
+</code></pre>
+<p>或者使用xml指定检查规则：</p>
+<pre><code># phpmd 代码路径 报告格式 规则xml文件
+phpmd /path/to/source text /phpmd_ruleset.xml
+</code></pre>
+<ul>
+<li>报告格式有：
+<ul>
+<li>xml, 以 XML 格式输出；</li>
+<li>text, 简单的文本格式；</li>
+<li>html, 输出到单个的html；</li>
+</ul>
+</li>
+</ul>
+<p>这里有一个phpmd规则可参考：https://github.com/overtrue/phpmd-rulesets</p>
+<p>更多关于 PHPMD 的使用请参考：http://phpmd.org/documentation/index.html</p>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li><a href="#phpcs">PHPCS</a><br>
+*
+<ul>
+<li><a href="#%E5%AE%89%E8%A3%85">安装</a><br>
+*
+<ul>
+<li><a href="#%E4%BD%BF%E7%94%A8-composer">使用 <code>composer</code>:</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8-pear">使用 PEAR:</a></li>
+<li><a href="#%E4%B8%8B%E8%BD%BD%E5%AE%89%E8%A3%85">下载安装：</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BD%BF%E7%94%A8">使用</a><br>
+*
+<ul>
+<li><a href="#%E6%9F%A5%E7%9C%8B%E5%B8%AE%E5%8A%A9">查看帮助：</a></li>
+<li><a href="#%E6%B7%BB%E5%8A%A0%E6%A0%87%E5%87%86">添加标准：</a></li>
+<li><a href="#%E6%9F%A5%E7%9C%8B%E5%B7%B2%E7%BB%8F%E5%AE%89%E8%A3%85%E7%9A%84%E6%A0%87%E5%87%86">查看已经安装的标准：</a></li>
+<li><a href="#%E6%9F%A5%E7%9C%8B%E9%85%8D%E7%BD%AE">查看配置：</a></li>
+<li><a href="#%E6%A3%80%E6%9F%A5%E4%BB%A3%E7%A0%81%E8%A7%84%E8%8C%83">检查代码规范：</a></li>
+<li><a href="#%E4%BF%AE%E5%A4%8D%E4%BB%A3%E7%A0%81">修复代码</a></li>
+</ul>
+</li>
+<li><a href="#phpmd">PHPMD</a>
+<ul>
+<li><a href="#%E5%AE%89%E8%A3%85-2">安装</a><br>
+*
+<ul>
+<li><a href="#%E4%B8%8B%E8%BD%BD-phar-%E6%96%87%E4%BB%B6%E5%AE%89%E8%A3%85">下载 <code>phar</code> 文件安装：</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8-composer-%E5%AE%89%E8%A3%85">使用 <code>Composer</code> 安装：</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BD%BF%E7%94%A8-2">使用</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://overtrue.github.io/cannot-find-command-sudo-hu">
+              <h3 class="post-title">
+                sudo -Hu 执行时找不到命令的问题解决
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+  <a class="rss" href="https://overtrue.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

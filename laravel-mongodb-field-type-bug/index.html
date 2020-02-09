@@ -1,0 +1,210 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>laravel-mongodb 拓展与 MySQL 关联问题 | overtrue</title>
+<link rel="shortcut icon" href="https://overtrue.github.io/favicon.ico?v=1581253585933">
+<link href="https://cdn.remixicon.com/releases/v2.1.0/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://overtrue.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="laravel-mongodb 拓展与 MySQL 关联问题 | overtrue - Atom Feed" href="https://overtrue.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-55452630-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-55452630-1');
+</script>
+
+
+    <meta name="description" content="我们在存储mongo数据的时候，整型字段存储的值为NumberLong格式，那么如果这个id来自于MySQL，在使用MySQL模型与MongoDB关联查询时就会踩到这个坑，从jenssegers/laravel-mongodb生成的SQL可..." />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://overtrue.github.io">
+  <img class="avatar" src="https://overtrue.github.io/images/avatar.png?v=1581253585933" alt="">
+  </a>
+  <h1 class="site-title">
+    overtrue
+  </h1>
+  <p class="site-description">
+    🇨🇳 <b>China Shenzhen</b>・🕹<b>Web developer</b>
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="https://github.com/overtrue" class="menu" target="_blank">
+          开源
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/overtrue" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+    
+      
+        <a href="https://weibo.com/joychaocc" target="_blank">
+          <i class="ri-weibo-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              laravel-mongodb 拓展与 MySQL 关联问题
+            </h2>
+            <div class="post-info">
+              <span>
+                2014-12-25
+              </span>
+              <span>
+                1 min read
+              </span>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <p>我们在存储mongo数据的时候，整型字段存储的值为<code>NumberLong</code>格式，那么如果这个id来自于MySQL，在使用MySQL模型与MongoDB关联查询时就会踩到这个坑，从jenssegers/laravel-mongodb生成的SQL可以看到类似这样的结果：</p>
+<pre><code class="language-sql">...{&quot;object_id&quot;:{&quot;$in&quot;:[&quot;13&quot;, &quot;15&quot;]}}...
+</code></pre>
+<p>可是我们的期望是：</p>
+<pre><code class="language-sql">...{&quot;object_id&quot;:{&quot;$in&quot;:[13, 15]}}...
+</code></pre>
+<p>这里的13、15是MySQL里的一条记录，在mongo里的值为<code>NumberLong(13)</code>， 所以查询结果永远为空。<br>
+找遍了源码，没有一个更好的解决方法，后来只能使用Eloquent模型提供的<a href="http://v4.golaravel.com/docs/4.2/eloquent#accessors-and-mutators"><strong>属性修改器</strong></a>来实现：</p>
+<p>在<strong>MySQL的模型里</strong>对相应字段使用修改器(这里以id为例)：</p>
+<pre><code class="language-php?start_inline=1">/**
+ * 避免与mongo关联时id转为字符的问题
+ *
+ * @param string $id
+ *
+ * @return int
+ */
+public function getIdAttribute($id)
+{
+    return intval($id);
+}
+</code></pre>
+<p>方法名：<code>get属性名大驼峰Attribute</code>, ex: <code>object_id</code> -&gt; <code>getObjectIdAttribute</code></p>
+<p>框架源码参考：<a href="https://github.com/laravel/framework/blob/4.2/src/Illuminate/Database/Eloquent/Model.php#L2409-L2419">getAttribute</a></p>
+
+              </div>
+              <div class="toc-container">
+                
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://overtrue.github.io/using-eloquent-outsite-laravel-2">
+              <h3 class="post-title">
+                在 Laravel 外使用 Eloquent（二）- 分页问题
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+  <a class="rss" href="https://overtrue.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

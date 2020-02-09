@@ -1,0 +1,227 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Mac 下配置 zsh 与 oh-my-zsh | overtrue</title>
+<link rel="shortcut icon" href="https://overtrue.github.io/favicon.ico?v=1581253585933">
+<link href="https://cdn.remixicon.com/releases/v2.1.0/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://overtrue.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="Mac 下配置 zsh 与 oh-my-zsh | overtrue - Atom Feed" href="https://overtrue.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-55452630-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-55452630-1');
+</script>
+
+
+    <meta name="description" content="之前在看 jeffway 的 laravel 教程的时候发现他演示用的终端特别漂亮，有一个云朵一样的标志，然后就一直找不到是怎么弄的，好在今天在GitHub上看到了zsh(不过打开页面的时候我已经发现我star过了... 🙈 )
+将bas..." />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://overtrue.github.io">
+  <img class="avatar" src="https://overtrue.github.io/images/avatar.png?v=1581253585933" alt="">
+  </a>
+  <h1 class="site-title">
+    overtrue
+  </h1>
+  <p class="site-description">
+    🇨🇳 <b>China Shenzhen</b>・🕹<b>Web developer</b>
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="https://github.com/overtrue" class="menu" target="_blank">
+          开源
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/overtrue" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+    
+      
+        <a href="https://weibo.com/joychaocc" target="_blank">
+          <i class="ri-weibo-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              Mac 下配置 zsh 与 oh-my-zsh
+            </h2>
+            <div class="post-info">
+              <span>
+                2014-10-11
+              </span>
+              <span>
+                1 min read
+              </span>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <p>之前在看 jeffway 的 laravel 教程的时候发现他演示用的终端特别漂亮，有一个云朵一样的标志，然后就一直找不到是怎么弄的，好在今天在GitHub上看到了<a href="https://github.com/zsh-users/zsh">zsh</a>(不过打开页面的时候我已经发现我star过了... 🙈 )</p>
+<h2 id="将bash切换为zsh">将bash切换为zsh</h2>
+<pre><code class="language-shell">chsh -s /bin/zsh
+</code></pre>
+<p>其实还可以用which来定位（特别是ubuntu的童鞋）</p>
+<pre><code class="language-shell">chsh -s `which zsh`
+</code></pre>
+<p>直接用zsh会很蛋疼，因为zsh功能很强大但是太复杂，所以需要oh-my-zsh来将它简单化。如果要切换回bash：</p>
+<pre><code class="language-shell">chsh -s /bin/bash
+</code></pre>
+<h3 id="下载oh-my-zsh">下载oh-my-zsh</h3>
+<ol>
+<li>直接用git从github上面下载包：</li>
+</ol>
+<pre><code class="language-shell">git clone git://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
+</code></pre>
+<ol start="2">
+<li>备份已有的zshrc(一般不需要)</li>
+</ol>
+<pre><code class="language-shell">cp ~/.zshrc ~/.zshrc.orig
+</code></pre>
+<ol start="3">
+<li>替换zshrc</li>
+</ol>
+<pre><code class="language-shell">cp ~/.oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc
+</code></pre>
+<figure data-type="image" tabindex="1"><img src="%7B%7Bsite.url%7D%7D/attachments/images/zsh.png" alt="zsh" loading="lazy"></figure>
+<p>转自：<a href="http://blog.163.com/qy_gong/blog/static/1718738792013102992830558/">MAC下配置ZSH</a></p>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E5%B0%86bash%E5%88%87%E6%8D%A2%E4%B8%BAzsh">将bash切换为zsh</a>
+<ul>
+<li><a href="#%E4%B8%8B%E8%BD%BDoh-my-zsh">下载oh-my-zsh</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://overtrue.github.io/mysql-performance-optimization-summary">
+              <h3 class="post-title">
+                MySQL 性能优化小结
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+  <a class="rss" href="https://overtrue.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>
