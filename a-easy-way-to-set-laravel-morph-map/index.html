@@ -1,0 +1,281 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>一种 Laravel 中简单设置多态关系模型别名的方式 | overtrue</title>
+<link rel="shortcut icon" href="https://overtrue.github.io/favicon.ico?v=1581260596089">
+<link href="https://cdn.remixicon.com/releases/v2.1.0/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://overtrue.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="一种 Laravel 中简单设置多态关系模型别名的方式 | overtrue - Atom Feed" href="https://overtrue.github.io/atom.xml">
+
+
+
+    <meta name="description" content="作为 Laravel 的重度使用者肯定都对多态关系不默生，以官方文档为例，文章有标签，视频有标签，那么文章和视频这些模型与标签模型的关系就是多态多对多（Many To Many (Polymorphic)）
+如果我们给 ID 为 1 的文章..." />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://overtrue.github.io">
+  <img class="avatar" src="https://overtrue.github.io/images/avatar.png?v=1581260596089" alt="">
+  </a>
+  <h1 class="site-title">
+    overtrue
+  </h1>
+  <p class="site-description">
+    🇨🇳 <b>China Shenzhen</b>・🕹<b>Web developer</b>
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="https://github.com/overtrue" class="menu" target="_blank">
+          开源
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              一种 Laravel 中简单设置多态关系模型别名的方式
+            </h2>
+            <div class="post-info">
+              <span>
+                2019-10-10
+              </span>
+              <span>
+                3 min read
+              </span>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <p>作为 Laravel 的重度使用者肯定都对多态关系不默生，以官方文档为例，文章有标签，视频有标签，那么文章和视频这些模型与标签模型的关系就是<a href="https://laravel.com/docs/6.x/eloquent-relationships#many-to-many-polymorphic-relations">多态多对多（Many To Many (Polymorphic)）</a></p>
+<p>如果我们给 ID 为 1 的文章打上两个标签，数据库标签关系表的的存储结果就是这样子：</p>
+<pre><code>&gt; select * from taggables;
++--------+-------------+---------------+
+| tag_id | taggable_id | taggable_type |
++--------+-------------+---------------+
+|      1 |           1 | App\Post      |
+|      2 |           1 | App\Post      |
++--------+-------------+---------------+
+</code></pre>
+<p>相信有不少人和我一样希望 <code>taggable_type</code> 的值不要直接用模型类名，而是使用表名：<code>posts</code>。官方文档的建议是：</p>
+<pre><code>use Illuminate\Database\Eloquent\Relations\Relation;
+
+Relation::morphMap([
+    'posts' =&gt; 'App\Post',
+    'videos' =&gt; 'App\Video',
+]);
+</code></pre>
+<blockquote>
+<p>https://laravel.com/docs/6.x/eloquent-relationships#custom-polymorphic-types</p>
+</blockquote>
+<p>我们可以将这个定义写到 AppServiceProvider 中，但是有一个非常严重的问题：<strong>我们在新增或者删除模型的时候，会很容易忘记去更新这个定义</strong>。我已经至少出现这个问题 3 次了，所以我一直在纠结有没有更好的方法，今天突然灵机一动，实现了一个看起来似乎是一个不错的方式，分享给大家。</p>
+<h2 id="思路来源">思路来源</h2>
+<p>我尝试跟踪了一遍源码，发现模型中有一个方法 <code>getMorphClass</code>，多态关联的时候，就是用它来取目标对象的类型名称的，默认返回类名：</p>
+<pre><code class="language-php">public function getMorphClass()
+{
+    $morphMap = Relation::morphMap();
+
+    if (! empty($morphMap) &amp;&amp; in_array(static::class, $morphMap)) {
+        return array_search(static::class, $morphMap, true);
+    }
+
+    return static::class;
+}
+</code></pre>
+<p>那么，只要我们在模型中覆盖这个方法便可以方便的实现目标了。</p>
+<h2 id="实现目标">实现目标</h2>
+<p>我们有两个选择去实现它：</p>
+<ol>
+<li>创建一个模型基类覆盖这个方法，所有的模型都来集成它即可；</li>
+<li>创建一个 trait，在需要的模型中引入它。</li>
+</ol>
+<p>我当然会选择 trait 方式来实现，不管从定义还是代码耦合度上，使用 trait 来解决这类特性需求都是再适合不过了，如果你对 trait 还不太熟悉，可以阅读我之前的文章：<a href="https://overtrue.me/articles/2016/04/about-php-trait.html">《我所理解的 PHP Trait》</a></p>
+<p>我们的目标是使用表名来做为关系类别名，那么在模型中如何获取表名呢，直接使用模型的 <code>getTable</code> 即可，那么整个 trait 的实现如下：</p>
+<p><em>app/Traits/UseTableNameAsMorphClass.php</em></p>
+<pre><code class="language-php">&lt;?php
+namespace App\Traits;
+
+
+trait UseTableNameAsMorphClass
+{
+    public function getMorphClass()
+    {
+        return $this-&gt;getTable();
+    }
+}
+</code></pre>
+<p>然后在我们需要用到关系类型的模型中引入它即可：</p>
+<pre><code class="language-php">&lt;?php
+
+namespace App;
+
+use App\Traits\UseTableNameAsMorphClass;
+use Illuminate\Database\Eloquent\Model;
+
+class Post extends Model
+{
+	use UseTableNameAsMorphClass;
+
+	//...
+}
+</code></pre>
+<h2 id="友情提示">友情提示</h2>
+<p>当然，如果你习惯给表名加前缀，或者你的表名与模型名不太一致，那么，你只需要修改 <code>trait</code> 中 <code>getMorphClass</code> 的实现即可，我个人的习惯是模型名就是表名的单数，不带前缀。</p>
+<p>如果你有更好的实现方式，欢迎留言交流。</p>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E6%80%9D%E8%B7%AF%E6%9D%A5%E6%BA%90">思路来源</a></li>
+<li><a href="#%E5%AE%9E%E7%8E%B0%E7%9B%AE%E6%A0%87">实现目标</a></li>
+<li><a href="#%E5%8F%8B%E6%83%85%E6%8F%90%E7%A4%BA">友情提示</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://overtrue.github.io/php-package-develop-tutorial">
+              <h3 class="post-title">
+                我写了一份 PHP 拓展包开发教程
+              </h3>
+            </a>
+          </div>
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: 'f2027ed0e5be934c16d5',
+    clientSecret: '37b4520fa4543c1565ed971e0e50ac215e110c99',
+    repo: 'blog',
+    owner: 'overtrue',
+    admin: ['overtrue'],
+    labels: ['gitalk', 'comment'],
+    id: location.pathname.slice(1, location.pathname.lastIndexOf('/')).substring(0, 49), 
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+  <a class="rss" href="https://overtrue.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

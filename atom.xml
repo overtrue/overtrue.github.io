@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://overtrue.github.io</id>
     <title>overtrue</title>
-    <updated>2020-02-09T14:45:26.170Z</updated>
+    <updated>2020-02-09T15:03:41.913Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://overtrue.github.io"/>
     <link rel="self" href="https://overtrue.github.io/atom.xml"/>
@@ -10,6 +10,135 @@
     <logo>https://overtrue.github.io/images/avatar.png</logo>
     <icon>https://overtrue.github.io/favicon.ico</icon>
     <rights>All rights reserved 2020, overtrue</rights>
+    <entry>
+        <title type="html"><![CDATA[如何在 And Design Pro 或 UmiJS 中使用 tailwindcss]]></title>
+        <id>https://overtrue.github.io/use-tailwindcss-in-and-design-pro</id>
+        <link href="https://overtrue.github.io/use-tailwindcss-in-and-design-pro">
+        </link>
+        <updated>2020-01-02T15:02:36.000Z</updated>
+        <content type="html"><![CDATA[<p>最近打算给已有的项目做个管理后台，找了一圈以后开箱即用又好看的，实属 <a href="https://pro.ant.design/index-cn">Ant Design Pro</a> 了，就像它的 Slogan 一样：“开箱即用的中台前端/设计解决方案”。不过对于 React 还不算入门的我，一路摸着石头过河，作为 Tailwindcss 死忠粉，尝试了在 Ant Design Pro 中集成它，这里分享给同样喜欢这俩的朋友。</p>
+<p>Ant Design Pro 是基于 <a href="https://umijs.org/zh/">UmiJS</a> 构建的，所以，如果你在使用 UmiJS，方法是完全一样的。</p>
+<h2 id="安装-tailwindcss-和常用-postcss-插件">安装 tailwindcss 和常用 postcss 插件</h2>
+<pre><code class="language-sh">$ yarn add tailwindcss postcss-import postcss-nested autoprefixer
+</code></pre>
+<h2 id="在-src-下创建-tailwindcss">在 <code>src</code> 下创建 <code>tailwind.css</code></h2>
+<p><em>src/tailwind.css</em></p>
+<pre><code class="language-css">@import 'tailwindcss/base';
+
+@import 'tailwindcss/components';
+
+@import 'tailwindcss/utilities';
+
+</code></pre>
+<h2 id="修改配置">修改配置</h2>
+<p>在 config/config.js 中增加配置项 <code>extraPostCSSPlugins</code>：</p>
+<pre><code>//...
+  extraPostCSSPlugins: [
+    require('postcss-import'),
+    require('tailwindcss'),
+    require('postcss-nested'), // or require('postcss-nesting')
+    require('autoprefixer'),
+  ],
+//...
+</code></pre>
+<h2 id="全局引入-tailwindcss">全局引入 tailwindcss</h2>
+<p>你可以在你觉得合适的地方全局引入上面创建的 <code>tailwind.css</code>，比如在 <code>src/global.less</code> 中引入：</p>
+<pre><code class="language-less">@import '~antd/es/style/themes/default.less';
+@import 'tailwind.css'; 
+
+//...
+</code></pre>
+<p>然后你就可以在我们的页面使用了：</p>
+<pre><code class="language-jsx">&lt;div className=&quot;mt-4&quot;&gt;
+    &lt;div className=&quot;mb-3&quot;&gt;
+    ...
+</code></pre>
+<p>好了，搞定！</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[一种 Laravel 中简单设置多态关系模型别名的方式]]></title>
+        <id>https://overtrue.github.io/a-easy-way-to-set-laravel-morph-map</id>
+        <link href="https://overtrue.github.io/a-easy-way-to-set-laravel-morph-map">
+        </link>
+        <updated>2019-10-10T15:01:23.000Z</updated>
+        <content type="html"><![CDATA[<p>作为 Laravel 的重度使用者肯定都对多态关系不默生，以官方文档为例，文章有标签，视频有标签，那么文章和视频这些模型与标签模型的关系就是<a href="https://laravel.com/docs/6.x/eloquent-relationships#many-to-many-polymorphic-relations">多态多对多（Many To Many (Polymorphic)）</a></p>
+<p>如果我们给 ID 为 1 的文章打上两个标签，数据库标签关系表的的存储结果就是这样子：</p>
+<pre><code>&gt; select * from taggables;
++--------+-------------+---------------+
+| tag_id | taggable_id | taggable_type |
++--------+-------------+---------------+
+|      1 |           1 | App\Post      |
+|      2 |           1 | App\Post      |
++--------+-------------+---------------+
+</code></pre>
+<p>相信有不少人和我一样希望 <code>taggable_type</code> 的值不要直接用模型类名，而是使用表名：<code>posts</code>。官方文档的建议是：</p>
+<pre><code>use Illuminate\Database\Eloquent\Relations\Relation;
+
+Relation::morphMap([
+    'posts' =&gt; 'App\Post',
+    'videos' =&gt; 'App\Video',
+]);
+</code></pre>
+<blockquote>
+<p>https://laravel.com/docs/6.x/eloquent-relationships#custom-polymorphic-types</p>
+</blockquote>
+<p>我们可以将这个定义写到 AppServiceProvider 中，但是有一个非常严重的问题：<strong>我们在新增或者删除模型的时候，会很容易忘记去更新这个定义</strong>。我已经至少出现这个问题 3 次了，所以我一直在纠结有没有更好的方法，今天突然灵机一动，实现了一个看起来似乎是一个不错的方式，分享给大家。</p>
+<h2 id="思路来源">思路来源</h2>
+<p>我尝试跟踪了一遍源码，发现模型中有一个方法 <code>getMorphClass</code>，多态关联的时候，就是用它来取目标对象的类型名称的，默认返回类名：</p>
+<pre><code class="language-php">public function getMorphClass()
+{
+    $morphMap = Relation::morphMap();
+
+    if (! empty($morphMap) &amp;&amp; in_array(static::class, $morphMap)) {
+        return array_search(static::class, $morphMap, true);
+    }
+
+    return static::class;
+}
+</code></pre>
+<p>那么，只要我们在模型中覆盖这个方法便可以方便的实现目标了。</p>
+<h2 id="实现目标">实现目标</h2>
+<p>我们有两个选择去实现它：</p>
+<ol>
+<li>创建一个模型基类覆盖这个方法，所有的模型都来集成它即可；</li>
+<li>创建一个 trait，在需要的模型中引入它。</li>
+</ol>
+<p>我当然会选择 trait 方式来实现，不管从定义还是代码耦合度上，使用 trait 来解决这类特性需求都是再适合不过了，如果你对 trait 还不太熟悉，可以阅读我之前的文章：<a href="https://overtrue.me/articles/2016/04/about-php-trait.html">《我所理解的 PHP Trait》</a></p>
+<p>我们的目标是使用表名来做为关系类别名，那么在模型中如何获取表名呢，直接使用模型的 <code>getTable</code> 即可，那么整个 trait 的实现如下：</p>
+<p><em>app/Traits/UseTableNameAsMorphClass.php</em></p>
+<pre><code class="language-php">&lt;?php
+namespace App\Traits;
+
+
+trait UseTableNameAsMorphClass
+{
+    public function getMorphClass()
+    {
+        return $this-&gt;getTable();
+    }
+}
+</code></pre>
+<p>然后在我们需要用到关系类型的模型中引入它即可：</p>
+<pre><code class="language-php">&lt;?php
+
+namespace App;
+
+use App\Traits\UseTableNameAsMorphClass;
+use Illuminate\Database\Eloquent\Model;
+
+class Post extends Model
+{
+	use UseTableNameAsMorphClass;
+
+	//...
+}
+</code></pre>
+<h2 id="友情提示">友情提示</h2>
+<p>当然，如果你习惯给表名加前缀，或者你的表名与模型名不太一致，那么，你只需要修改 <code>trait</code> 中 <code>getMorphClass</code> 的实现即可，我个人的习惯是模型名就是表名的单数，不带前缀。</p>
+<p>如果你有更好的实现方式，欢迎留言交流。</p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[我写了一份 PHP 拓展包开发教程]]></title>
         <id>https://overtrue.github.io/php-package-develop-tutorial</id>
@@ -603,154 +732,6 @@ throw new Exception(&quot;Exception two&quot;, 1);
 <li><a href="http://stackoverflow.com/questions/12378644/how-can-i-retrieve-the-current-error-handler">How can I retrieve the current error handler?</a></li>
 </ul>
 <p>希望有此想法的同学能得到帮助。 😄</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[让你的 Laravel 应用与官方保持同步]]></title>
-        <id>https://overtrue.github.io/sync-your-laravel-project</id>
-        <link href="https://overtrue.github.io/sync-your-laravel-project">
-        </link>
-        <updated>2015-06-09T04:00:00.000Z</updated>
-        <content type="html"><![CDATA[<h1 id="解决什么问题">解决什么问题？</h1>
-<p>我们在用着 4.2，过了一段时间作者发布了 5.0，项目可能还没开发完，然后你又像我一样是一个不升级不舒服斯基，那么用升到最新版是你接下来要忙碌的事情。因为你不知道 4.2 ~ 5.0 变化了多少。所以你不可能手动一个个加上或者删除、修改。有的人可能是备份，然后用新版建立一个项目：<code>composer create-project laravel/laravel</code> ，然后把原来自己的代码考过来，然而，变化不一定只是文件新增或者删除啊，可能是原来文件里改了一行，你却没法知道。所以这就头疼了。那么下面我就分享一个超简单的办法来解决这个问题：</p>
-<p>首先我们使用的是 <code>git</code>，如果你不熟悉它的话，起码你这时候应该去补补基本命令了。</p>
-<p>这里假设我们的项目叫做 <code>blog</code>, 然后我们第一步要做的事情是添加官方<code>git</code>源:</p>
-<pre><code class="language-shell">cd blog # 切到项目根目录
-git remote add laravel https://github.com/laravel/laravel # 添加一个源
-</code></pre>
-<p>这里解释一下：</p>
-<p>因为我们的项目基本都已经有一个源<code>origin</code>，就是我们项目用于上传到公司 <code>gitlab</code> 或者 <code>bitbucket</code> 这样的网站用于项目代码管理的地方，所以我们不能破坏它。然后我们添加了一个叫做 <code>laravel</code>，这样就会有两个源了，意味着我们就可以从两个源同步代码。</p>
-<h2 id="拉取-larvel-的新版代码">拉取 Larvel 的新版代码</h2>
-<h4 id="拉取指定的-laravel-分支">拉取指定的 Laravel 分支</h4>
-<blockquote>
-<p>注意：在我们拉取 Laravel 源的代码前，请确认你的修改都已经保存并 <code>commit</code>。</p>
-</blockquote>
-<pre><code class="language-shell">git pull laravel master
-</code></pre>
-<p>这里我们从 <code>laravel</code> 的源拉取 <code>master</code> 分支，当然你也可以拉取其它分支的代码。</p>
-<h4 id="合并冲突">合并冲突</h4>
-<p>拉取完代码，这时候通常是会冲突的，因为你的代码与官方的代码不一样了，冲突部分就是不相同的地方，那么你根据合并结果找到<code>CONFLICT (content): Merge conflict in xxxx.xxx</code> 部分的文件打开，找到冲突的地方合并就好了。</p>
-<p>解决完冲突你的代码结构就与官方一致了，而且这种合并方式不会让你落下任何一个不同的地方。</p>
-<p>当然以上的方法适用于任何 <code>git</code> 管理的项目。比如工作中，你 <code>fork</code> 了主项目，要经常同步主项目的更新时就用这个方法最简单了。</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[PHPCS、PHPMD 的安装与配置]]></title>
-        <id>https://overtrue.github.io/install-phpcs-and-phpmd</id>
-        <link href="https://overtrue.github.io/install-phpcs-and-phpmd">
-        </link>
-        <updated>2015-05-18T04:00:00.000Z</updated>
-        <content type="html"><![CDATA[<h1 id="phpcs">PHPCS</h1>
-<h3 id="安装">安装</h3>
-<p>有以下方式安装 PHPCS:</p>
-<h5 id="使用-composer">使用 <code>composer</code>:</h5>
-<pre><code>composer global require &quot;squizlabs/php_codesniffer=*&quot;
-</code></pre>
-<blockquote>
-<p>注意，你可能需要将 <code>~/.composer/vendor/bin/</code> 添加到 PATH 环境变量中，否则会报命令找不到。</p>
-</blockquote>
-<h5 id="使用-pear">使用 PEAR:</h5>
-<pre><code>pear install PHP_CodeSniffer
-</code></pre>
-<h5 id="下载安装">下载安装：</h5>
-<pre><code class="language-sh">curl -OL https://squizlabs.github.io/PHP_CodeSniffer/phpcs.phar
-php phpcs.phar -h
-curl -OL https://squizlabs.github.io/PHP_CodeSniffer/phpcbf.phar
-php phpcbf.phar -h
-</code></pre>
-<p>然后移动到命令目录：</p>
-<pre><code class="language-sh">mv phpcs.phar /usr/bin/phpcs
-mv phpcbf.phar /usr/bin/phpcbf
-// 也许上面需要 sudo
-chmod +x /usr/bin/phpcs
-chmod +x /usr/bin/phpcbf
-</code></pre>
-<p>这里的 <code>phpcbf</code> 是代码修复工具。</p>
-<h3 id="使用">使用</h3>
-<h5 id="查看帮助">查看帮助：</h5>
-<pre><code>phpcs --help
-</code></pre>
-<h5 id="添加标准">添加标准：</h5>
-<pre><code>phpcs --config-set installed_paths PATH_TO_SEARCH_STANDARDS
-</code></pre>
-<p>注意：假设标准为 <code>Weibo</code>, 目录为:</p>
-<pre><code>/Users/overtrue/code_standards/Weibo
-</code></pre>
-<p>其中<code>Weibo</code> 里才是 <code>ruleset.xml</code>，那么对应上面的 <code>PATH_TO_SEARCH_STANDARDS</code> 应该为：</p>
-<pre><code>phpcs --config-set installed_paths /Users/overtrue/code_standards
-</code></pre>
-<h5 id="查看已经安装的标准">查看已经安装的标准：</h5>
-<pre><code>phpcs -i
-</code></pre>
-<h5 id="查看配置">查看配置：</h5>
-<pre><code>phpcs --config-show
-</code></pre>
-<h5 id="检查代码规范">检查代码规范：</h5>
-<pre><code>phpcs ./codes/Example.php
-// or
-phpcs ./codes/
-</code></pre>
-<p>指定标准：</p>
-<pre><code>phpcs ./codes/Example.php --standard=PSR2
-</code></pre>
-<p>报告格式：</p>
-<pre><code>phpcs --report=summary /path/to/code
-</code></pre>
-<p>可用的格式有（默认为: <code>full</code>）：</p>
-<pre><code>full, xml, checkstyle, csv
-json, emacs, source, summary, diff
-svnblame, gitblame, hgblame or notifysend
-</code></pre>
-<h5 id="修复代码">修复代码</h5>
-<p>第一种：使用 diff 形式打补丁：</p>
-<pre><code class="language-sh">phpcs --report-diff=/path/to/changes.diff /path/to/code
-patch -p0 -ui /path/to/changes.diff
-# patching file /path/to/code/file.php
-</code></pre>
-<p>第二种：使用 PHP Code Beautifier 和 Fixer：</p>
-<pre><code>phpcbf /path/to/code
-</code></pre>
-<p>以上命令会自动修复原文件，如果不想直接覆盖原文件，可以使用 <code>--suffix</code> 指定修复后的代码后缀：</p>
-<pre><code>phpcs /path/to/code --suffix=.fixed
-</code></pre>
-<p>更多 PHPCS 的使用请参考：https://github.com/squizlabs/PHP_CodeSniffer/wiki</p>
-<h2 id="phpmd">PHPMD</h2>
-<h3 id="安装-2">安装</h3>
-<p>同样有以下安装方式：</p>
-<h5 id="下载-phar-文件安装">下载 <code>phar</code> 文件安装：</h5>
-<pre><code class="language-sh">wget -c http://static.phpmd.org/php/latest/phpmd.phar
-mv phpmd.phar /usr/bin/phpmd
-chmod +x /usr/bin/phpmd
-</code></pre>
-<h5 id="使用-composer-安装">使用 <code>Composer</code> 安装：</h5>
-<pre><code>composer global require phpmd/phpmd
-</code></pre>
-<h3 id="使用-2">使用</h3>
-<ul>
-<li>检查代码质量：</li>
-</ul>
-<pre><code># phpmd 代码路径 报告格式
-phpmd /path/to/source text
-</code></pre>
-<p>或者指定要检查的规则：</p>
-<pre><code># phpmd 代码路径 报告格式 规则列表
-phpmd /path/to/source text codesize,unusedcode,naming
-</code></pre>
-<p>或者使用xml指定检查规则：</p>
-<pre><code># phpmd 代码路径 报告格式 规则xml文件
-phpmd /path/to/source text /phpmd_ruleset.xml
-</code></pre>
-<ul>
-<li>报告格式有：
-<ul>
-<li>xml, 以 XML 格式输出；</li>
-<li>text, 简单的文本格式；</li>
-<li>html, 输出到单个的html；</li>
-</ul>
-</li>
-</ul>
-<p>这里有一个phpmd规则可参考：https://github.com/overtrue/phpmd-rulesets</p>
-<p>更多关于 PHPMD 的使用请参考：http://phpmd.org/documentation/index.html</p>
 ]]></content>
     </entry>
 </feed>
