@@ -303,10 +303,14 @@ video {
 }
 html {
   font-size: 58%;
+  text-size-adjust: none;
+  text-rendering: optimizelegibility;
+  image-rendering: optimizequality;
+  font-feature-settings: "case", "ss01", "ss02";
 }
 body {
   color: rgba(0, 0, 0, 0.86);
-  font: 400 16px/1.42 -apple-system, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Droid Sans Fallback", "Microsoft YaHei", sans-serif;
+  font: 400 16px/1.42 -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
   letter-spacing: 0.05em;
 }
 a {
@@ -408,7 +412,7 @@ td {
   font-size: 28px;
   text-align: center;
   padding: 24px 0;
-  font-weight: 900;
+  font-weight: 700;
   letter-spacing: 0.02em;
 }
 .post-container .post .post-info {
@@ -522,7 +526,7 @@ td {
   font-size: 32px;
   text-align: center;
   padding: 24px 0;
-  font-weight: 900;
+  font-weight: 700;
   letter-spacing: 0.02em;
 }
 .post-detail .post .post-info {
