@@ -992,3 +992,11 @@ td {
         font-family: -apple-system,BlinkMacSystemFont,'Helvetica Neue','PingFang SC','Hiragino Sans GB','Droid Sans Fallback','Microsoft YaHei',sans-serif;
       }
     
+      body .main {
+    font-family: -apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
+    font-size: 1.6vw;
+    line-height: 1.42857143;
+    hanging-punctuation: first allow-end;
+    transition: all .2s ease;
+}
+    

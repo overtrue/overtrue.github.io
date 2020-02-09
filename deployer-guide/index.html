@@ -3,7 +3,7 @@
     <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>又一篇 Deployer 的使用攻略 | overtrue</title>
-<link rel="shortcut icon" href="https://overtrue.github.io/favicon.ico?v=1581255360894">
+<link rel="shortcut icon" href="https://overtrue.github.io/favicon.ico?v=1581256206741">
 <link href="https://cdn.remixicon.com/releases/v2.1.0/remixicon.css" rel="stylesheet">
 <link rel="stylesheet" href="https://overtrue.github.io/styles/main.css">
 <link rel="alternate" type="application/atom+xml" title="又一篇 Deployer 的使用攻略 | overtrue - Atom Feed" href="https://overtrue.github.io/atom.xml">
@@ -20,8 +20,8 @@
 </script>
 
 
-    <meta name="description" content="file
-其实网上有相当多的关于 Deployer 的使用教程，在这个社区也有不少同学写过，不过发现很难找到一个完整能跑通的文章，所以希望今天写这篇是一个小白就能完整走通的教程吧，当然了，这是回忆加参考外文写出来的，难免也有失误，欢迎小白同..." />
+    <meta name="description" content="
+其实网上有相当多的关于 Deployer 的使用教程，在这个社区也有不少同学写过，不过发现很难找到一个完整能跑通的文章，所以希望今天写这篇是一个小白就能完整走通的教程吧，当然了，这是回忆加参考外文写出来的，难免也有失误，欢迎小白同学在下面..." />
     <meta name="keywords" content="" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
     <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
@@ -31,7 +31,7 @@
       <div class="main-content">
         <div class="site-header">
   <a href="https://overtrue.github.io">
-  <img class="avatar" src="https://overtrue.github.io/images/avatar.png?v=1581255360894" alt="">
+  <img class="avatar" src="https://overtrue.github.io/images/avatar.png?v=1581256206741" alt="">
   </a>
   <h1 class="site-title">
     overtrue
@@ -112,14 +112,14 @@
             
             <div class="post-content-wrapper">
               <div class="post-content">
-                <p><a href="https://lccdn.phphub.org/uploads/images/201806/14/76/FAOVLKIcez.png?imageView2/2/w/1240/h/0">file</a></p>
+                <figure data-type="image" tabindex="1"><img src="https://overtrue.github.io/post-images/1581256177860.png" alt="" loading="lazy"></figure>
 <p>其实网上有相当多的关于 Deployer 的使用教程，在这个社区也有不少同学写过，不过发现很难找到一个完整能跑通的文章，所以希望今天写这篇是一个小白就能完整走通的教程吧，当然了，这是回忆加参考外文写出来的，难免也有失误，欢迎小白同学在下面反馈使用过程中遇到的问题为谢！</p>
 <h2 id="基础知识">基础知识</h2>
 <p>在开始之前，有必要了解一下 Deployer 是一个什么样的东西。<br>
 Deployer 是一个基于 SSH 协议的无侵入 web 项目部署工具，因为它不需要你在目标服务器上装什么服务之类的东西即可使用，它只需要在你的开发机，或者你的笔记本，就是发起部署动作的一方安装即可。</p>
 <p>它的原理就是通过 SSH 到你的机器去创建目录，移动文件，执行指定的动作来完成项目的部署。</p>
 <p>我画了一张图来说明它的操作原理：</p>
-<p><img src="https://lccdn.phphub.org/uploads/images/201806/14/76/eQTmTiE2WF.png?imageView2/2/w/1240/h/0" alt="file" loading="lazy"><br>
+<p><img src="https://overtrue.github.io/post-images/1581256203934.png" alt="" loading="lazy"><br>
 绘图工具：https://www.draw.io/</p>
 <p>简单介绍一下，Deployer 安装在本地，它通过 SSH 协议登录到服务器 web server 上执行一系列我们预定的操作，其中包含从代码库 Git Server 拉取我们的项目代码部署到 web 服务器指定的目录完成部署。</p>
 <p>一共分为以下几个部分：</p>
