@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-    <id>https://overtrue.github.io</id>
+    <id>https://overtrue.me</id>
     <title>overtrue</title>
-    <updated>2020-02-09T15:36:18.178Z</updated>
+    <updated>2020-12-11T23:17:58.294Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
-    <link rel="alternate" href="https://overtrue.github.io"/>
-    <link rel="self" href="https://overtrue.github.io/atom.xml"/>
+    <link rel="alternate" href="https://overtrue.me"/>
+    <link rel="self" href="https://overtrue.me/atom.xml"/>
     <subtitle>🇨🇳 &lt;b&gt;China Shenzhen&lt;/b&gt;・🕹&lt;b&gt;Web developer&lt;/b&gt;</subtitle>
-    <logo>https://overtrue.github.io/images/avatar.png</logo>
-    <icon>https://overtrue.github.io/favicon.ico</icon>
+    <logo>https://overtrue.me/images/avatar.png</logo>
+    <icon>https://overtrue.me/favicon.ico</icon>
     <rights>All rights reserved 2020, overtrue</rights>
     <entry>
-        <title type="html"><![CDATA[如何在 And Design Pro 或 UmiJS 中使用 tailwindcss]]></title>
-        <id>https://overtrue.github.io/use-tailwindcss-in-and-design-pro</id>
-        <link href="https://overtrue.github.io/use-tailwindcss-in-and-design-pro">
+        <title type="html"><![CDATA[如何在 Ant Design Pro 或 UmiJS 中使用 tailwindcss]]></title>
+        <id>https://overtrue.me/use-tailwindcss-in-ant-design-pro</id>
+        <link href="https://overtrue.me/use-tailwindcss-in-ant-design-pro">
         </link>
         <updated>2020-01-02T15:02:36.000Z</updated>
         <content type="html"><![CDATA[<p>最近打算给已有的项目做个管理后台，找了一圈以后开箱即用又好看的，实属 <a href="https://pro.ant.design/index-cn">Ant Design Pro</a> 了，就像它的 Slogan 一样：“开箱即用的中台前端/设计解决方案”。不过对于 React 还不算入门的我，一路摸着石头过河，作为 Tailwindcss 死忠粉，尝试了在 Ant Design Pro 中集成它，这里分享给同样喜欢这俩的朋友。</p>
@@ -58,8 +58,8 @@
     </entry>
     <entry>
         <title type="html"><![CDATA[一种 Laravel 中简单设置多态关系模型别名的方式]]></title>
-        <id>https://overtrue.github.io/a-easy-way-to-set-laravel-morph-map</id>
-        <link href="https://overtrue.github.io/a-easy-way-to-set-laravel-morph-map">
+        <id>https://overtrue.me/a-easy-way-to-set-laravel-morph-map</id>
+        <link href="https://overtrue.me/a-easy-way-to-set-laravel-morph-map">
         </link>
         <updated>2019-10-10T15:01:23.000Z</updated>
         <content type="html"><![CDATA[<p>作为 Laravel 的重度使用者肯定都对多态关系不默生，以官方文档为例，文章有标签，视频有标签，那么文章和视频这些模型与标签模型的关系就是<a href="https://laravel.com/docs/6.x/eloquent-relationships#many-to-many-polymorphic-relations">多态多对多（Many To Many (Polymorphic)）</a></p>
@@ -141,8 +141,8 @@ class Post extends Model
     </entry>
     <entry>
         <title type="html"><![CDATA[我写了一份 PHP 拓展包开发教程]]></title>
-        <id>https://overtrue.github.io/php-package-develop-tutorial</id>
-        <link href="https://overtrue.github.io/php-package-develop-tutorial">
+        <id>https://overtrue.me/php-package-develop-tutorial</id>
+        <link href="https://overtrue.me/php-package-develop-tutorial">
         </link>
         <updated>2018-12-11T04:00:00.000Z</updated>
         <content type="html"><![CDATA[<p>这里所谓的拓展包，其实就是指的 Composer 包啦，很多人其实都有想去做自己的拓展包，但是又不知道从何下手，所以，作为一个还算熟悉的拓展包开发者当然有这个责任将这个技能分享给大家了。</p>
@@ -153,8 +153,8 @@ class Post extends Model
     </entry>
     <entry>
         <title type="html"><![CDATA[Laravel 中如何更方便的修改 Passport Personal Access Token 过期时间]]></title>
-        <id>https://overtrue.github.io/set-expired-at-for-laravel-passport-personal-access-token</id>
-        <link href="https://overtrue.github.io/set-expired-at-for-laravel-passport-personal-access-token">
+        <id>https://overtrue.me/set-expired-at-for-laravel-passport-personal-access-token</id>
+        <link href="https://overtrue.me/set-expired-at-for-laravel-passport-personal-access-token">
         </link>
         <updated>2018-11-01T04:00:00.000Z</updated>
         <content type="html"><![CDATA[<p>认真看过 <a href="https://laravel.com/docs/5.7/passport#configuration">Laravel Passport 文档</a> 的人应该知道，它的 Personal Access Token 是不支持自定义过期时间的，<code>tokensExpireIn</code> 对此类 token 无效，原文如下：</p>
@@ -192,18 +192,18 @@ class AppServiceProvider extends ServiceProvider
     </entry>
     <entry>
         <title type="html"><![CDATA[又一篇 Deployer 的使用攻略]]></title>
-        <id>https://overtrue.github.io/deployer-guide</id>
-        <link href="https://overtrue.github.io/deployer-guide">
+        <id>https://overtrue.me/deployer-guide</id>
+        <link href="https://overtrue.me/deployer-guide">
         </link>
         <updated>2018-06-25T04:00:00.000Z</updated>
-        <content type="html"><![CDATA[<figure data-type="image" tabindex="1"><img src="https://overtrue.github.io/post-images/1581256177860.png" alt="" loading="lazy"></figure>
+        <content type="html"><![CDATA[<figure data-type="image" tabindex="1"><img src="https://overtrue.me/post-images/1581256177860.png" alt="" loading="lazy"></figure>
 <p>其实网上有相当多的关于 Deployer 的使用教程，在这个社区也有不少同学写过，不过发现很难找到一个完整能跑通的文章，所以希望今天写这篇是一个小白就能完整走通的教程吧，当然了，这是回忆加参考外文写出来的，难免也有失误，欢迎小白同学在下面反馈使用过程中遇到的问题为谢！</p>
 <h2 id="基础知识">基础知识</h2>
 <p>在开始之前，有必要了解一下 Deployer 是一个什么样的东西。<br>
 Deployer 是一个基于 SSH 协议的无侵入 web 项目部署工具，因为它不需要你在目标服务器上装什么服务之类的东西即可使用，它只需要在你的开发机，或者你的笔记本，就是发起部署动作的一方安装即可。</p>
 <p>它的原理就是通过 SSH 到你的机器去创建目录，移动文件，执行指定的动作来完成项目的部署。</p>
 <p>我画了一张图来说明它的操作原理：</p>
-<p><img src="https://overtrue.github.io/post-images/1581256203934.png" alt="" loading="lazy"><br>
+<p><img src="https://overtrue.me/post-images/1581256203934.png" alt="" loading="lazy"><br>
 绘图工具：https://www.draw.io/</p>
 <p>简单介绍一下，Deployer 安装在本地，它通过 SSH 协议登录到服务器 web server 上执行一系列我们预定的操作，其中包含从代码库 Git Server 拉取我们的项目代码部署到 web 服务器指定的目录完成部署。</p>
 <p>一共分为以下几个部分：</p>
@@ -386,8 +386,8 @@ drwxr-sr-x 3 deployer www-data 4096 Jun 10 14:16 shared/
     </entry>
     <entry>
         <title type="html"><![CDATA[关于 Composer 版本约束表达式的使用]]></title>
-        <id>https://overtrue.github.io/about-composer-version-constraint</id>
-        <link href="https://overtrue.github.io/about-composer-version-constraint">
+        <id>https://overtrue.me/about-composer-version-constraint</id>
+        <link href="https://overtrue.me/about-composer-version-constraint">
         </link>
         <updated>2017-08-01T04:00:00.000Z</updated>
         <content type="html"><![CDATA[<p>相信 <code>Composer</code> 对你来说已经相当熟悉了，不过对于包的版本，我觉得应该还有不少同学不是那么清楚各种写法到底是啥意思。</p>
@@ -455,8 +455,8 @@ drwxr-sr-x 3 deployer www-data 4096 Jun 10 14:16 shared/
     </entry>
     <entry>
         <title type="html"><![CDATA[Summernote 图片上传到服务端实现方式]]></title>
-        <id>https://overtrue.github.io/summernote-image-upload-to-server</id>
-        <link href="https://overtrue.github.io/summernote-image-upload-to-server">
+        <id>https://overtrue.me/summernote-image-upload-to-server</id>
+        <link href="https://overtrue.me/summernote-image-upload-to-server">
         </link>
         <updated>2016-11-24T04:00:00.000Z</updated>
         <content type="html"><![CDATA[<p>Summernote 默认使用 data-url 形式来存储编辑器内的图片，稍大一些的图片生成的 <a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/data_URIs">data URIs</a> 就会特别长特别长，几度让我的 chrome 出现：<code>net::ERR_INCOMPLETE_CHUNKED_ENCODING</code> 的报错。</p>
@@ -503,8 +503,8 @@ drwxr-sr-x 3 deployer www-data 4096 Jun 10 14:16 shared/
     </entry>
     <entry>
         <title type="html"><![CDATA[我所理解的 PHP Trait]]></title>
-        <id>https://overtrue.github.io/about-php-trait</id>
-        <link href="https://overtrue.github.io/about-php-trait">
+        <id>https://overtrue.me/about-php-trait</id>
+        <link href="https://overtrue.me/about-php-trait">
         </link>
         <updated>2016-04-16T04:00:00.000Z</updated>
         <content type="html"><![CDATA[<p><a href="http://php.net/manual/zh/language.oop5.traits.php">Trait</a> 是从 PHP 5.4 加入的一种细粒度代码复用的语法。以下是官方手册对 Trait 的描述：</p>
@@ -632,8 +632,8 @@ class User extends AdvansedUser
     </entry>
     <entry>
         <title type="html"><![CDATA[npm 代理安装依赖]]></title>
-        <id>https://overtrue.github.io/npm-proxy</id>
-        <link href="https://overtrue.github.io/npm-proxy">
+        <id>https://overtrue.me/npm-proxy</id>
+        <link href="https://overtrue.me/npm-proxy">
         </link>
         <updated>2016-03-01T04:00:00.000Z</updated>
         <content type="html"><![CDATA[<p>虽然已经使用了<a href="http://npm.taobao.org/">淘宝 npm 镜像</a>, 但是有一些包的下载地址在国外，比如 <a href="https://github.com/ariya/phantomjs/">phantomjs</a> 的下载地址是 <code>https://bitbucket/xxxx</code>, 没有代理的话还是会卡在这里。</p>
@@ -665,8 +665,8 @@ $ npm config delete https-proxy
     </entry>
     <entry>
         <title type="html"><![CDATA[全局 exception handler 的黑科技用法]]></title>
-        <id>https://overtrue.github.io/about-set-exception-handler</id>
-        <link href="https://overtrue.github.io/about-set-exception-handler">
+        <id>https://overtrue.me/about-set-exception-handler</id>
+        <link href="https://overtrue.me/about-set-exception-handler">
         </link>
         <updated>2015-12-09T04:00:00.000Z</updated>
         <content type="html"><![CDATA[<p>昨天在写 <a href="https://github.com/overtrue/wechat/tree/3.0">overtrue/wechat 3.0</a> 的时候，考虑到用户 debug 的问题。期望把日志包括产生的异常日志都记到用户配置的日志文件里。</p>
