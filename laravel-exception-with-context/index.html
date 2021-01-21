@@ -1,0 +1,334 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>一种 Laravel 异常上下文解决方案 | overtrue</title>
+<link rel="shortcut icon" href="https://overtrue.me/favicon.ico?v=1611266844750">
+<link href="https://cdn.remixicon.com/releases/v2.1.0/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://overtrue.me/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="一种 Laravel 异常上下文解决方案 | overtrue - Atom Feed" href="https://overtrue.me/atom.xml">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-55452630-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-55452630-1');
+</script>
+
+
+    <meta name="description" content="异常时我们通常希望在用户测给一个友好的提示，但默认使用框架的异常处理方案是不 OK 的。
+最近项目遇到一个情况，我们在遇到用户访问某个信息没有权限的时候，希望提示详细的原因，比如当访问一个团队资源时非成员访问的场景下会提示一个：您不是 [x..." />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://overtrue.me">
+  <img class="avatar" src="https://overtrue.me/images/avatar.png?v=1611266844750" alt="">
+  </a>
+  <h1 class="site-title">
+    overtrue
+  </h1>
+  <p class="site-description">
+    🇨🇳 <b>China Shenzhen</b>・🕹<b>Web developer</b>
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="https://github.com/overtrue" class="menu" target="_blank">
+          开源
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/overtrue" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/overtrue666" target="_blank">
+          <i class="ri-twitter-line"></i>
+        </a>
+      
+    
+      
+        <a href="https://weibo.com/44294631" target="_blank">
+          <i class="ri-weibo-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              一种 Laravel 异常上下文解决方案
+            </h2>
+            <div class="post-info">
+              <span>
+                2021-01-20
+              </span>
+              <span>
+                4 min read
+              </span>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <p>异常时我们通常希望在用户测给一个友好的提示，但默认使用框架的异常处理方案是不 OK 的。</p>
+<p>最近项目遇到一个情况，我们在遇到用户访问某个信息没有权限的时候，希望提示详细的原因，比如当访问一个团队资源时非成员访问的场景下会提示一个：<code>您不是 [xxxxxx] 团队的成员，暂时无法查看，可&lt;申请加入&gt;</code>，同时需要显示打码后的团队名称，以及加入按钮，可是接口方的逻辑是当没有权限时直接 <code>abort</code> 了：</p>
+<pre><code class="language-php">abort_if(!$user-&gt;isMember($resouce-&gt;team), 403, '您无权访问该资源');
+</code></pre>
+<p>得到的响应结果如下：</p>
+<pre><code class="language-json">HTTP/1.0 403 Forbidden
+
+{
+	&quot;message&quot;: &quot;您无权访问该资源&quot;
+}
+</code></pre>
+<p>我们不肯能将 message 用 html 来完成前端提示页的展示，这样耦合性太强，违背了前后端分离的原则。我们的目标是返回如下的格式即可解决：</p>
+<pre><code class="language-json">HTTP/1.0 403 Forbidden
+
+{
+	&quot;message&quot;: &quot;您无权访问该资源&quot;,
+	&quot;team&quot;: {
+		&quot;id&quot;: &quot;abxT8sioa0Ms&quot;,
+		&quot;name&quot;: &quot;CoDesign****&quot;
+	}
+}
+</code></pre>
+<p>通过携带上下文的方法传递数据，方便了前端同学自由组合。</p>
+<h2 id="开始改造">开始改造</h2>
+<p>当然这并不是什么复杂的事情，直接修改原来的 <code>abort_if</code> 即可解决：</p>
+<pre><code class="language-diff">- abort_if(!$user-&gt;isMember($resouce-&gt;team), 403, '您无权访问该资源');
++ if (!$user-&gt;isMember($resouce-&gt;team)) {
++	return response()-&gt;json([
++		'message' =&gt; '您无权访问该资源',
++		'team' =&gt; [
++			'id' =&gt; $resouce-&gt;team_id,
++			'name'=&gt; $resouce-&gt;team-&gt;desensitised_name,
++		]
++	], 403);
++ }
+</code></pre>
+<p>这样看起来解决了问题，可是试想一下，如果是在闭包里面检测到异常想要退出，上面这种 <code>return</code> 式的写法就会比较难搞了，毕竟 <code>return</code> 只会终止最近的上下文环境，我们还是希望像 <code>abort</code> 一样能终止整个应用的执行，再进行另一番改造。</p>
+<h2 id="优化实现">优化实现</h2>
+<p>看了 <code>abort</code> 源码，我发现它的第一个参数其实支持 <code>\Symfony\Component\HttpFoundation\Response</code> 实例，而上面👆我们 <code>return</code> 的结果就是它的实例，所以我们只需要改成这样就可以了：</p>
+<pre><code class="language-php"> if (!$user-&gt;isMember($resouce-&gt;team)) {
+	abort(response()-&gt;json([
+		'message' =&gt; '您无权访问该资源',
+		'team' =&gt; [
+			'id' =&gt; $resouce-&gt;team_id,
+			'name'=&gt; $resouce-&gt;team-&gt;desensitised_name,
+		]
+	], 403));
+ }
+</code></pre>
+<p>新的问题来了，如果需要复用的时候还是比较尴尬，这段代码将会重复出现在各种有此权限判断的地方，这并不是我们想要的。</p>
+<h2 id="逻辑复用">逻辑复用</h2>
+<p>为了达到逻辑复用，我认证看了 <code>\App\Exceptions\Handler</code> 的实现，发现父类的 <code>render</code> 方法还有这么一个设计：</p>
+<pre><code class="language-php">public function render($request, Throwable $e)
+{
+    if (method_exists($e, 'render') &amp;&amp; $response = $e-&gt;render($request)) {
+        return Router::toResponse($request, $response);
+    } elseif ($e instanceof Responsable) {
+        return $e-&gt;toResponse($request);
+    }
+
+    //...
+</code></pre>
+<p>所以，我们可以将这个逻辑抽离为一个独立的异常类，实现 render 方法即可：</p>
+<pre><code class="language-bash">$ ./artisan make:exception NotTeamMemberException
+</code></pre>
+<p>代码如下：</p>
+<pre><code class="language-php">&lt;?php
+
+namespace App\Exceptions;
+
+use App\Team;
+
+class NotTeamMemberException extends \Exception
+{
+    public Team $team;
+
+    public function __construct(Team $team, $message = &quot;&quot;)
+    {
+        $this-&gt;team = $team;
+        parent::__construct($message, 403);
+    }
+
+    public function render()
+    {
+        return response()-&gt;json(
+            [
+                'message' =&gt; !empty($this-&gt;message) ? $this-&gt;message : '您无权访问该资源',
+                'team' =&gt; [
+                    'id' =&gt; $this-&gt;team-&gt;id,
+                    'name' =&gt; $this-&gt;team-&gt;desensitised_name,
+                ],
+            ],
+            403
+        );
+    }
+}
+
+</code></pre>
+<p>这样一来，我们的逻辑就变成了：</p>
+<pre><code class="language-php">if (!$user-&gt;isMember($resouce-&gt;team)) {
+ 	throw new NotTeamMemberException($resouce-&gt;team, '您无权访问该资源');
+}
+</code></pre>
+<p>当然也可以简化为：</p>
+<pre><code class="language-php">\throw_if(!$user-&gt;isMember($resouce-&gt;team), NotTeamMemberException::class, $resouce-&gt;team, '您无权访问该资源');
+</code></pre>
+<p>问题到这里总算以一个比较完美的方式解决了，如果你有更好的方案欢迎评论探讨。</p>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E5%BC%80%E5%A7%8B%E6%94%B9%E9%80%A0">开始改造</a></li>
+<li><a href="#%E4%BC%98%E5%8C%96%E5%AE%9E%E7%8E%B0">优化实现</a></li>
+<li><a href="#%E9%80%BB%E8%BE%91%E5%A4%8D%E7%94%A8">逻辑复用</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://overtrue.me/use-tailwindcss-in-ant-design-pro">
+              <h3 class="post-title">
+                如何在 Ant Design Pro 或 UmiJS 中使用 tailwindcss
+              </h3>
+            </a>
+          </div>
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: 'f2027ed0e5be934c16d5',
+    clientSecret: '37b4520fa4543c1565ed971e0e50ac215e110c99',
+    repo: 'blog',
+    owner: 'overtrue',
+    admin: ['overtrue'],
+    labels: ['gitalk', 'comment'],
+    id: location.pathname.slice(1, location.pathname.lastIndexOf('/')).substring(0, 49), 
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+
+        <div class="site-footer">
+  <span>Powered by  <span><a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+  <a class="rss" href="https://overtrue.me/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

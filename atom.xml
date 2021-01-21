@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://overtrue.me</id>
     <title>overtrue</title>
-    <updated>2021-01-21T22:00:45.551Z</updated>
+    <updated>2021-01-21T22:07:34.886Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://overtrue.me"/>
     <link rel="self" href="https://overtrue.me/atom.xml"/>
@@ -10,6 +10,121 @@
     <logo>https://overtrue.me/images/avatar.png</logo>
     <icon>https://overtrue.me/favicon.ico</icon>
     <rights>All rights reserved 2021, overtrue</rights>
+    <entry>
+        <title type="html"><![CDATA[一种 Laravel 异常上下文解决方案]]></title>
+        <id>https://overtrue.me/laravel-exception-with-context</id>
+        <link href="https://overtrue.me/laravel-exception-with-context">
+        </link>
+        <updated>2021-01-20T10:00:00.000Z</updated>
+        <content type="html"><![CDATA[<p>异常时我们通常希望在用户测给一个友好的提示，但默认使用框架的异常处理方案是不 OK 的。</p>
+<p>最近项目遇到一个情况，我们在遇到用户访问某个信息没有权限的时候，希望提示详细的原因，比如当访问一个团队资源时非成员访问的场景下会提示一个：<code>您不是 [xxxxxx] 团队的成员，暂时无法查看，可&lt;申请加入&gt;</code>，同时需要显示打码后的团队名称，以及加入按钮，可是接口方的逻辑是当没有权限时直接 <code>abort</code> 了：</p>
+<pre><code class="language-php">abort_if(!$user-&gt;isMember($resouce-&gt;team), 403, '您无权访问该资源');
+</code></pre>
+<p>得到的响应结果如下：</p>
+<pre><code class="language-json">HTTP/1.0 403 Forbidden
+
+{
+	&quot;message&quot;: &quot;您无权访问该资源&quot;
+}
+</code></pre>
+<p>我们不肯能将 message 用 html 来完成前端提示页的展示，这样耦合性太强，违背了前后端分离的原则。我们的目标是返回如下的格式即可解决：</p>
+<pre><code class="language-json">HTTP/1.0 403 Forbidden
+
+{
+	&quot;message&quot;: &quot;您无权访问该资源&quot;,
+	&quot;team&quot;: {
+		&quot;id&quot;: &quot;abxT8sioa0Ms&quot;,
+		&quot;name&quot;: &quot;CoDesign****&quot;
+	}
+}
+</code></pre>
+<p>通过携带上下文的方法传递数据，方便了前端同学自由组合。</p>
+<h2 id="开始改造">开始改造</h2>
+<p>当然这并不是什么复杂的事情，直接修改原来的 <code>abort_if</code> 即可解决：</p>
+<pre><code class="language-diff">- abort_if(!$user-&gt;isMember($resouce-&gt;team), 403, '您无权访问该资源');
++ if (!$user-&gt;isMember($resouce-&gt;team)) {
++	return response()-&gt;json([
++		'message' =&gt; '您无权访问该资源',
++		'team' =&gt; [
++			'id' =&gt; $resouce-&gt;team_id,
++			'name'=&gt; $resouce-&gt;team-&gt;desensitised_name,
++		]
++	], 403);
++ }
+</code></pre>
+<p>这样看起来解决了问题，可是试想一下，如果是在闭包里面检测到异常想要退出，上面这种 <code>return</code> 式的写法就会比较难搞了，毕竟 <code>return</code> 只会终止最近的上下文环境，我们还是希望像 <code>abort</code> 一样能终止整个应用的执行，再进行另一番改造。</p>
+<h2 id="优化实现">优化实现</h2>
+<p>看了 <code>abort</code> 源码，我发现它的第一个参数其实支持 <code>\Symfony\Component\HttpFoundation\Response</code> 实例，而上面👆我们 <code>return</code> 的结果就是它的实例，所以我们只需要改成这样就可以了：</p>
+<pre><code class="language-php"> if (!$user-&gt;isMember($resouce-&gt;team)) {
+	abort(response()-&gt;json([
+		'message' =&gt; '您无权访问该资源',
+		'team' =&gt; [
+			'id' =&gt; $resouce-&gt;team_id,
+			'name'=&gt; $resouce-&gt;team-&gt;desensitised_name,
+		]
+	], 403));
+ }
+</code></pre>
+<p>新的问题来了，如果需要复用的时候还是比较尴尬，这段代码将会重复出现在各种有此权限判断的地方，这并不是我们想要的。</p>
+<h2 id="逻辑复用">逻辑复用</h2>
+<p>为了达到逻辑复用，我认证看了 <code>\App\Exceptions\Handler</code> 的实现，发现父类的 <code>render</code> 方法还有这么一个设计：</p>
+<pre><code class="language-php">public function render($request, Throwable $e)
+{
+    if (method_exists($e, 'render') &amp;&amp; $response = $e-&gt;render($request)) {
+        return Router::toResponse($request, $response);
+    } elseif ($e instanceof Responsable) {
+        return $e-&gt;toResponse($request);
+    }
+
+    //...
+</code></pre>
+<p>所以，我们可以将这个逻辑抽离为一个独立的异常类，实现 render 方法即可：</p>
+<pre><code class="language-bash">$ ./artisan make:exception NotTeamMemberException
+</code></pre>
+<p>代码如下：</p>
+<pre><code class="language-php">&lt;?php
+
+namespace App\Exceptions;
+
+use App\Team;
+
+class NotTeamMemberException extends \Exception
+{
+    public Team $team;
+
+    public function __construct(Team $team, $message = &quot;&quot;)
+    {
+        $this-&gt;team = $team;
+        parent::__construct($message, 403);
+    }
+
+    public function render()
+    {
+        return response()-&gt;json(
+            [
+                'message' =&gt; !empty($this-&gt;message) ? $this-&gt;message : '您无权访问该资源',
+                'team' =&gt; [
+                    'id' =&gt; $this-&gt;team-&gt;id,
+                    'name' =&gt; $this-&gt;team-&gt;desensitised_name,
+                ],
+            ],
+            403
+        );
+    }
+}
+
+</code></pre>
+<p>这样一来，我们的逻辑就变成了：</p>
+<pre><code class="language-php">if (!$user-&gt;isMember($resouce-&gt;team)) {
+ 	throw new NotTeamMemberException($resouce-&gt;team, '您无权访问该资源');
+}
+</code></pre>
+<p>当然也可以简化为：</p>
+<pre><code class="language-php">\throw_if(!$user-&gt;isMember($resouce-&gt;team), NotTeamMemberException::class, $resouce-&gt;team, '您无权访问该资源');
+</code></pre>
+<p>问题到这里总算以一个比较完美的方式解决了，如果你有更好的方案欢迎评论探讨。</p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[如何在 Ant Design Pro 或 UmiJS 中使用 tailwindcss]]></title>
         <id>https://overtrue.me/use-tailwindcss-in-ant-design-pro</id>
@@ -661,77 +776,6 @@ $ npm config delete https-proxy
 <p>DEBUG 代理，使用以下命令：</p>
 <pre><code class="language-shell">DEBUG=proxy kneesocks PORT1 PORT2
 </code></pre>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[全局 exception handler 的黑科技用法]]></title>
-        <id>https://overtrue.me/about-set-exception-handler</id>
-        <link href="https://overtrue.me/about-set-exception-handler">
-        </link>
-        <updated>2015-12-09T04:00:00.000Z</updated>
-        <content type="html"><![CDATA[<p>昨天在写 <a href="https://github.com/overtrue/wechat/tree/3.0">overtrue/wechat 3.0</a> 的时候，考虑到用户 debug 的问题。期望把日志包括产生的异常日志都记到用户配置的日志文件里。</p>
-<p>因为代码在不同的组件，不可能用 <code>try...catch</code>。我打算使用 <a href="http://php.net/manual/en/function.set-exception-handler.php">set_exception_handler</a> 注册一个全局异常处理器来做这事儿，但是，我这个只是一个开源组件，可能会被用户用到各种各样的环境中，所以，不能破坏原有框架或者用户自己定义的异常处理器，因为 <code>set_exception_handler</code> 会覆盖前面设置的，所以问题就卡住了。</p>
-<p>然后我找到了 <a href="http://php.net/manual/en/function.restore-exception-handler.php">restore_exception_handler</a>，以为找到了救命稻草，于是我把代码改成如下：</p>
-<pre><code class="language-php?start_inline=1">&lt;?php
-
-class MyException extends Exception {}
-
-set_exception_handler(function(Exception $e){
-    echo &quot;Old handler:&quot;.$e-&gt;getMessage();
-});
-
-set_exception_handler(function(Exception $e) {
-    if ($e instanceof MyException) {
-        echo &quot;New handler:&quot;.$e-&gt;getMessage();
-        return;
-    }
-
-    restore_exception_handler(); // 还原之前的设定然后下面再抛出
-
-    throw $e;
-});
-
-// throw new MyException(&quot;Exception two&quot;, 1);
-throw new Exception(&quot;Exception two&quot;, 1);
-</code></pre>
-<p>然后就报错了...</p>
-<pre><code>PHP Fatal error:  Cannot destroy active lambda function in /Users/overtrue/www/foo.php on line 15
-</code></pre>
-<p>于是 google, stackoverflow... 都无解。</p>
-<p>后来又仔细研究了文档，终于，我发现了：</p>
-<blockquote>
-<p>Returns the name of the previously defined exception handler, or NULL on error. If no previous handler was defined, NULL is also returned.</p>
-</blockquote>
-<p>于是此问题得以圆满解决，虽然恢复原有的 handler 是不可能了，但是达到同样的效果就 OK 了。</p>
-<pre><code class="language-php?start_inline=1">&lt;?php
-
-class MyException extends Exception {}
-
-set_exception_handler(function(Exception $e){
-    echo &quot;Old handler:&quot;.$e-&gt;getMessage();
-});
-
-$lastHandler = set_exception_handler(function(Exception $e) use (&amp;$lastHandler) {
-    if ($e instanceof MyException) {
-        echo &quot;New handler:&quot;.$e-&gt;getMessage();
-        return;
-    }
-
-    if (is_callable($lastHandler)) {
-        return call_user_func_array($lastHandler, [$e]);
-    }
-});
-
-// throw new MyException(&quot;Exception two&quot;, 1);
-throw new Exception(&quot;Exception two&quot;, 1);
-</code></pre>
-<p>利用 PHP 的引用，把 <code>$lastHandler</code> 引用到闭包里，这样毕竟 <code>set_exception_handler</code> 会比闭包先运行，所以就会把前一个 <code>handler</code> 拿到了，然后异常的时候，发现不是我的 <code>MyException</code> 就直接调用原来的 handler 来处理就好了。</p>
-<p>然后我去回答了我之前搜索到没有答案的两个问题：</p>
-<ul>
-<li><a href="http://stackoverflow.com/questions/14411492/cannot-destroy-active-lambda-function/34181805#34181805">Cannot destroy active lambda function</a></li>
-<li><a href="http://stackoverflow.com/questions/12378644/how-can-i-retrieve-the-current-error-handler">How can I retrieve the current error handler?</a></li>
-</ul>
-<p>希望有此想法的同学能得到帮助。 😄</p>
 ]]></content>
     </entry>
 </feed>
