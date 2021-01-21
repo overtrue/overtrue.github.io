@@ -2,14 +2,14 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://overtrue.me</id>
     <title>overtrue</title>
-    <updated>2020-12-11T23:18:48.443Z</updated>
+    <updated>2021-01-21T22:00:45.551Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://overtrue.me"/>
     <link rel="self" href="https://overtrue.me/atom.xml"/>
     <subtitle>🇨🇳 &lt;b&gt;China Shenzhen&lt;/b&gt;・🕹&lt;b&gt;Web developer&lt;/b&gt;</subtitle>
     <logo>https://overtrue.me/images/avatar.png</logo>
     <icon>https://overtrue.me/favicon.ico</icon>
-    <rights>All rights reserved 2020, overtrue</rights>
+    <rights>All rights reserved 2021, overtrue</rights>
     <entry>
         <title type="html"><![CDATA[如何在 Ant Design Pro 或 UmiJS 中使用 tailwindcss]]></title>
         <id>https://overtrue.me/use-tailwindcss-in-ant-design-pro</id>
