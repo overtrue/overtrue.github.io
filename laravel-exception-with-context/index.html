@@ -3,7 +3,7 @@
     <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>一种 Laravel 异常上下文解决方案 | overtrue</title>
-<link rel="shortcut icon" href="https://overtrue.me/favicon.ico?v=1611266970256">
+<link rel="shortcut icon" href="https://overtrue.me/favicon.ico?v=1617147413939">
 <link href="https://cdn.remixicon.com/releases/v2.1.0/remixicon.css" rel="stylesheet">
 <link rel="stylesheet" href="https://overtrue.me/styles/main.css">
 <link rel="alternate" type="application/atom+xml" title="一种 Laravel 异常上下文解决方案 | overtrue - Atom Feed" href="https://overtrue.me/atom.xml">
@@ -19,7 +19,7 @@
 </script>
 
 
-    <meta name="description" content="异常时我们通常希望在用户测给一个友好的提示，但默认使用框架的异常处理方案是不 OK 的。
+    <meta name="description" content="异常时我们通常希望在用户侧给一个友好的提示，但默认使用框架的异常处理方案是不 OK 的。
 最近项目遇到一个情况，我们在遇到用户访问某个信息没有权限的时候，希望提示详细的原因，比如当访问一个团队资源时非成员访问的场景下会提示一个：您不是 [x..." />
     <meta name="keywords" content="" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
@@ -30,7 +30,7 @@
       <div class="main-content">
         <div class="site-header">
   <a href="https://overtrue.me">
-  <img class="avatar" src="https://overtrue.me/images/avatar.png?v=1611266970256" alt="">
+  <img class="avatar" src="https://overtrue.me/images/avatar.png?v=1617147413939" alt="">
   </a>
   <h1 class="site-title">
     overtrue
@@ -115,7 +115,7 @@
             
             <div class="post-content-wrapper">
               <div class="post-content">
-                <p>异常时我们通常希望在用户测给一个友好的提示，但默认使用框架的异常处理方案是不 OK 的。</p>
+                <p>异常时我们通常希望在用户侧给一个友好的提示，但默认使用框架的异常处理方案是不 OK 的。</p>
 <p>最近项目遇到一个情况，我们在遇到用户访问某个信息没有权限的时候，希望提示详细的原因，比如当访问一个团队资源时非成员访问的场景下会提示一个：<code>您不是 [xxxxxx] 团队的成员，暂时无法查看，可&lt;申请加入&gt;</code>，同时需要显示打码后的团队名称，以及加入按钮，可是接口方的逻辑是当没有权限时直接 <code>abort</code> 了：</p>
 <pre><code class="language-php">abort_if(!$user-&gt;isMember($resouce-&gt;team), 403, '您无权访问该资源');
 </code></pre>

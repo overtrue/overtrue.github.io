@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://overtrue.me</id>
     <title>overtrue</title>
-    <updated>2021-01-21T22:09:33.993Z</updated>
+    <updated>2021-03-30T23:37:00.900Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://overtrue.me"/>
     <link rel="self" href="https://overtrue.me/atom.xml"/>
@@ -16,7 +16,7 @@
         <link href="https://overtrue.me/laravel-exception-with-context">
         </link>
         <updated>2021-01-20T10:00:00.000Z</updated>
-        <content type="html"><![CDATA[<p>异常时我们通常希望在用户测给一个友好的提示，但默认使用框架的异常处理方案是不 OK 的。</p>
+        <content type="html"><![CDATA[<p>异常时我们通常希望在用户侧给一个友好的提示，但默认使用框架的异常处理方案是不 OK 的。</p>
 <p>最近项目遇到一个情况，我们在遇到用户访问某个信息没有权限的时候，希望提示详细的原因，比如当访问一个团队资源时非成员访问的场景下会提示一个：<code>您不是 [xxxxxx] 团队的成员，暂时无法查看，可&lt;申请加入&gt;</code>，同时需要显示打码后的团队名称，以及加入按钮，可是接口方的逻辑是当没有权限时直接 <code>abort</code> 了：</p>
 <pre><code class="language-php">abort_if(!$user-&gt;isMember($resouce-&gt;team), 403, '您无权访问该资源');
 </code></pre>
