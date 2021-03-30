@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://overtrue.me</id>
     <title>overtrue</title>
-    <updated>2021-03-30T23:37:00.900Z</updated>
+    <updated>2021-03-30T23:42:27.146Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://overtrue.me"/>
     <link rel="self" href="https://overtrue.me/atom.xml"/>
@@ -12,8 +12,8 @@
     <rights>All rights reserved 2021, overtrue</rights>
     <entry>
         <title type="html"><![CDATA[一种 Laravel 异常上下文解决方案]]></title>
-        <id>https://overtrue.me/laravel-exception-with-context</id>
-        <link href="https://overtrue.me/laravel-exception-with-context">
+        <id>https://overtrue.me/laravel-exception-with-context/</id>
+        <link href="https://overtrue.me/laravel-exception-with-context/">
         </link>
         <updated>2021-01-20T10:00:00.000Z</updated>
         <content type="html"><![CDATA[<p>异常时我们通常希望在用户侧给一个友好的提示，但默认使用框架的异常处理方案是不 OK 的。</p>
@@ -127,8 +127,8 @@ class NotTeamMemberException extends \Exception
     </entry>
     <entry>
         <title type="html"><![CDATA[如何在 Ant Design Pro 或 UmiJS 中使用 tailwindcss]]></title>
-        <id>https://overtrue.me/use-tailwindcss-in-ant-design-pro</id>
-        <link href="https://overtrue.me/use-tailwindcss-in-ant-design-pro">
+        <id>https://overtrue.me/use-tailwindcss-in-ant-design-pro/</id>
+        <link href="https://overtrue.me/use-tailwindcss-in-ant-design-pro/">
         </link>
         <updated>2020-01-02T15:02:36.000Z</updated>
         <content type="html"><![CDATA[<p>最近打算给已有的项目做个管理后台，找了一圈以后开箱即用又好看的，实属 <a href="https://pro.ant.design/index-cn">Ant Design Pro</a> 了，就像它的 Slogan 一样：“开箱即用的中台前端/设计解决方案”。不过对于 React 还不算入门的我，一路摸着石头过河，作为 Tailwindcss 死忠粉，尝试了在 Ant Design Pro 中集成它，这里分享给同样喜欢这俩的朋友。</p>
@@ -173,8 +173,8 @@ class NotTeamMemberException extends \Exception
     </entry>
     <entry>
         <title type="html"><![CDATA[一种 Laravel 中简单设置多态关系模型别名的方式]]></title>
-        <id>https://overtrue.me/a-easy-way-to-set-laravel-morph-map</id>
-        <link href="https://overtrue.me/a-easy-way-to-set-laravel-morph-map">
+        <id>https://overtrue.me/a-easy-way-to-set-laravel-morph-map/</id>
+        <link href="https://overtrue.me/a-easy-way-to-set-laravel-morph-map/">
         </link>
         <updated>2019-10-10T15:01:23.000Z</updated>
         <content type="html"><![CDATA[<p>作为 Laravel 的重度使用者肯定都对多态关系不默生，以官方文档为例，文章有标签，视频有标签，那么文章和视频这些模型与标签模型的关系就是<a href="https://laravel.com/docs/6.x/eloquent-relationships#many-to-many-polymorphic-relations">多态多对多（Many To Many (Polymorphic)）</a></p>
@@ -256,8 +256,8 @@ class Post extends Model
     </entry>
     <entry>
         <title type="html"><![CDATA[我写了一份 PHP 拓展包开发教程]]></title>
-        <id>https://overtrue.me/php-package-develop-tutorial</id>
-        <link href="https://overtrue.me/php-package-develop-tutorial">
+        <id>https://overtrue.me/php-package-develop-tutorial/</id>
+        <link href="https://overtrue.me/php-package-develop-tutorial/">
         </link>
         <updated>2018-12-11T04:00:00.000Z</updated>
         <content type="html"><![CDATA[<p>这里所谓的拓展包，其实就是指的 Composer 包啦，很多人其实都有想去做自己的拓展包，但是又不知道从何下手，所以，作为一个还算熟悉的拓展包开发者当然有这个责任将这个技能分享给大家了。</p>
@@ -268,8 +268,8 @@ class Post extends Model
     </entry>
     <entry>
         <title type="html"><![CDATA[Laravel 中如何更方便的修改 Passport Personal Access Token 过期时间]]></title>
-        <id>https://overtrue.me/set-expired-at-for-laravel-passport-personal-access-token</id>
-        <link href="https://overtrue.me/set-expired-at-for-laravel-passport-personal-access-token">
+        <id>https://overtrue.me/set-expired-at-for-laravel-passport-personal-access-token/</id>
+        <link href="https://overtrue.me/set-expired-at-for-laravel-passport-personal-access-token/">
         </link>
         <updated>2018-11-01T04:00:00.000Z</updated>
         <content type="html"><![CDATA[<p>认真看过 <a href="https://laravel.com/docs/5.7/passport#configuration">Laravel Passport 文档</a> 的人应该知道，它的 Personal Access Token 是不支持自定义过期时间的，<code>tokensExpireIn</code> 对此类 token 无效，原文如下：</p>
@@ -307,8 +307,8 @@ class AppServiceProvider extends ServiceProvider
     </entry>
     <entry>
         <title type="html"><![CDATA[又一篇 Deployer 的使用攻略]]></title>
-        <id>https://overtrue.me/deployer-guide</id>
-        <link href="https://overtrue.me/deployer-guide">
+        <id>https://overtrue.me/deployer-guide/</id>
+        <link href="https://overtrue.me/deployer-guide/">
         </link>
         <updated>2018-06-25T04:00:00.000Z</updated>
         <content type="html"><![CDATA[<figure data-type="image" tabindex="1"><img src="https://overtrue.me/post-images/1581256177860.png" alt="" loading="lazy"></figure>
@@ -501,8 +501,8 @@ drwxr-sr-x 3 deployer www-data 4096 Jun 10 14:16 shared/
     </entry>
     <entry>
         <title type="html"><![CDATA[关于 Composer 版本约束表达式的使用]]></title>
-        <id>https://overtrue.me/about-composer-version-constraint</id>
-        <link href="https://overtrue.me/about-composer-version-constraint">
+        <id>https://overtrue.me/about-composer-version-constraint/</id>
+        <link href="https://overtrue.me/about-composer-version-constraint/">
         </link>
         <updated>2017-08-01T04:00:00.000Z</updated>
         <content type="html"><![CDATA[<p>相信 <code>Composer</code> 对你来说已经相当熟悉了，不过对于包的版本，我觉得应该还有不少同学不是那么清楚各种写法到底是啥意思。</p>
@@ -570,8 +570,8 @@ drwxr-sr-x 3 deployer www-data 4096 Jun 10 14:16 shared/
     </entry>
     <entry>
         <title type="html"><![CDATA[Summernote 图片上传到服务端实现方式]]></title>
-        <id>https://overtrue.me/summernote-image-upload-to-server</id>
-        <link href="https://overtrue.me/summernote-image-upload-to-server">
+        <id>https://overtrue.me/summernote-image-upload-to-server/</id>
+        <link href="https://overtrue.me/summernote-image-upload-to-server/">
         </link>
         <updated>2016-11-24T04:00:00.000Z</updated>
         <content type="html"><![CDATA[<p>Summernote 默认使用 data-url 形式来存储编辑器内的图片，稍大一些的图片生成的 <a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/data_URIs">data URIs</a> 就会特别长特别长，几度让我的 chrome 出现：<code>net::ERR_INCOMPLETE_CHUNKED_ENCODING</code> 的报错。</p>
@@ -618,8 +618,8 @@ drwxr-sr-x 3 deployer www-data 4096 Jun 10 14:16 shared/
     </entry>
     <entry>
         <title type="html"><![CDATA[我所理解的 PHP Trait]]></title>
-        <id>https://overtrue.me/about-php-trait</id>
-        <link href="https://overtrue.me/about-php-trait">
+        <id>https://overtrue.me/about-php-trait/</id>
+        <link href="https://overtrue.me/about-php-trait/">
         </link>
         <updated>2016-04-16T04:00:00.000Z</updated>
         <content type="html"><![CDATA[<p><a href="http://php.net/manual/zh/language.oop5.traits.php">Trait</a> 是从 PHP 5.4 加入的一种细粒度代码复用的语法。以下是官方手册对 Trait 的描述：</p>
@@ -747,8 +747,8 @@ class User extends AdvansedUser
     </entry>
     <entry>
         <title type="html"><![CDATA[npm 代理安装依赖]]></title>
-        <id>https://overtrue.me/npm-proxy</id>
-        <link href="https://overtrue.me/npm-proxy">
+        <id>https://overtrue.me/npm-proxy/</id>
+        <link href="https://overtrue.me/npm-proxy/">
         </link>
         <updated>2016-03-01T04:00:00.000Z</updated>
         <content type="html"><![CDATA[<p>虽然已经使用了<a href="http://npm.taobao.org/">淘宝 npm 镜像</a>, 但是有一些包的下载地址在国外，比如 <a href="https://github.com/ariya/phantomjs/">phantomjs</a> 的下载地址是 <code>https://bitbucket/xxxx</code>, 没有代理的话还是会卡在这里。</p>
