@@ -1,301 +1,77 @@
-<html>
-  <head>
-    <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>关于 Composer 版本约束表达式的使用 | overtrue</title>
-<link rel="shortcut icon" href="https://overtrue.me/favicon.ico?v=1617147724333">
-<link href="https://cdn.remixicon.com/releases/v2.1.0/remixicon.css" rel="stylesheet">
-<link rel="stylesheet" href="https://overtrue.me/styles/main.css">
-<link rel="alternate" type="application/atom+xml" title="关于 Composer 版本约束表达式的使用 | overtrue - Atom Feed" href="https://overtrue.me/atom.xml">
-
-
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-55452630-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-55452630-1');
-</script>
-
-
-    <meta name="description" content="相信 Composer 对你来说已经相当熟悉了，不过对于包的版本，我觉得应该还有不少同学不是那么清楚各种写法到底是啥意思。
-语义化版本
-首先，我们来了解一个东西：语义化版本
-
-版本格式：主版本号.次版本号.修订号，版本号递增规则如下：
-主版..." />
-    <meta name="keywords" content="" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
-    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
-  </head>
-  <body>
-    <div class="main">
-      <div class="main-content">
-        <div class="site-header">
-  <a href="https://overtrue.me">
-  <img class="avatar" src="https://overtrue.me/images/avatar.png?v=1617147724333" alt="">
-  </a>
-  <h1 class="site-title">
-    overtrue
-  </h1>
-  <p class="site-description">
-    🇨🇳 <b>China Shenzhen</b>・🕹<b>Web developer</b>
-  </p>
-  <div class="menu-container">
-    
-      
-        <a href="/" class="menu">
-          首页
-        </a>
-      
-    
-      
-        <a href="https://github.com/overtrue" class="menu" target="_blank">
-          开源
-        </a>
-      
-    
-      
-        <a href="/archives" class="menu">
-          归档
-        </a>
-      
-    
-      
-        <a href="/tags" class="menu">
-          标签
-        </a>
-      
-    
-      
-        <a href="/about" class="menu">
-          关于
-        </a>
-      
-    
-  </div>
-  <div class="social-container">
-    
-      
-        <a href="https://github.com/overtrue" target="_blank">
-          <i class="ri-github-line"></i>
-        </a>
-      
-    
-      
-        <a href="https://twitter.com/overtrue666" target="_blank">
-          <i class="ri-twitter-line"></i>
-        </a>
-      
-    
-      
-        <a href="https://weibo.com/44294631" target="_blank">
-          <i class="ri-weibo-line"></i>
-        </a>
-      
-    
-      
-    
-      
-    
-  </div>
-</div>
-
-        <div class="post-detail">
-          <article class="post">
-            <h2 class="post-title">
-              关于 Composer 版本约束表达式的使用
-            </h2>
-            <div class="post-info">
-              <span>
-                2017-08-01
-              </span>
-              <span>
-                5 min read
-              </span>
-              
-            </div>
-            
-            <div class="post-content-wrapper">
-              <div class="post-content">
-                <p>相信 <code>Composer</code> 对你来说已经相当熟悉了，不过对于包的版本，我觉得应该还有不少同学不是那么清楚各种写法到底是啥意思。</p>
-<h2 id="语义化版本">语义化版本</h2>
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><script>
+      (() => {
+        const root = document.documentElement;
+        let theme = 'system';
+        let language = 'zh';
+        try {
+          theme = localStorage.getItem('overtrue-theme') || 'system';
+          language = localStorage.getItem('overtrue-language') || 'zh';
+        } catch {}
+        if (!['light', 'dark'].includes(theme)) theme = 'system';
+        root.dataset.themePreference = theme;
+        root.dataset.theme =
+          theme === 'system'
+            ? matchMedia('(prefers-color-scheme: dark)').matches
+              ? 'dark'
+              : 'light'
+            : theme;
+        root.lang = language === 'en' ? 'en' : 'zh-CN';
+      })();
+    </script><meta name="description" content="对于语意化版本你可能需要了解得更多一些，不然就轻易掉坑里去了。"><meta name="theme-color" content="#f0f1f4"><meta property="og:type" content="article"><meta property="og:title" content="关于 Composer 版本约束表达式的使用 · overtrue"><meta property="og:description" content="对于语意化版本你可能需要了解得更多一些，不然就轻易掉坑里去了。"><meta property="og:url" content="https://overtrue.me/about-composer-version-constraint/"><meta property="og:image" content="https://overtrue.me/social.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:creator" content="@overtrue666"><link rel="canonical" href="https://overtrue.me/about-composer-version-constraint/"><link rel="icon" type="image/svg+xml" href="/brand/mark-color.svg"><link rel="alternate" type="application/rss+xml" title="overtrue 的文章" href="/rss.xml"><title>关于 Composer 版本约束表达式的使用 · overtrue</title><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"关于 Composer 版本约束表达式的使用","datePublished":"2017-08-01","author":{"@type":"Person","name":"安正超","url":"https://overtrue.me"},"mainEntityOfPage":"https://overtrue.me/about-composer-version-constraint/"}</script><link rel="stylesheet" href="/_astro/Preferences.PdpZ8tH4.css"><link rel="stylesheet" href="/_astro/Footer.F4l1zD53.css"></head><body class="reading-page"><a class="skip-link" href="#main" data-i18n="skip">跳到内容</a><div id="top"></div><header class="site-header"><a class="reading-signature" href="/" aria-label="overtrue 首页" data-i18n-aria="home"><img src="/brand/mark-color.svg" width="44" height="44" alt=""></a><nav aria-label="主导航" data-i18n-aria="navigation"><a href="/#work"><span class="nav-number" aria-hidden="true">01</span><span data-i18n="navWork">开源</span></a><a href="/writing/" aria-current="page"><span class="nav-number" aria-hidden="true">02</span><span data-i18n="navWriting">文字</span></a><a href="/#about"><span class="nav-number" aria-hidden="true">03</span><span data-i18n="navAbout">联系</span></a></nav><div class="header-actions"><a class="github-link" href="https://github.com/overtrue" target="_blank" rel="noopener noreferrer">GitHub<svg class width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></a><div class="preferences" data-preferences hidden><div class="theme-picker"><button type="button" class="preference-button theme-toggle" aria-label="切换主题" data-i18n-aria="theme" aria-expanded="false" aria-controls="theme-options"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g data-theme-icon="system"><rect x="3" y="4" width="18" height="13" rx="2"></rect><path d="M8 21h8m-4-4v4"></path></g><g data-theme-icon="light" display="none"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.4 1.4m11.2 11.2L19 19M5 19l1.4-1.4M17.6 6.4 19 5"></path></g><g data-theme-icon="dark" display="none"><path d="M20.5 13.3A8.8 8.8 0 0 1 10.7 3.5a8.8 8.8 0 1 0 9.8 9.8Z"></path></g></svg></button><div class="theme-options" id="theme-options" role="group" aria-label="切换主题" data-i18n-aria="theme" hidden><button type="button" data-theme-choice="system" aria-pressed="true" data-i18n="themeSystem">跟随系统</button><button type="button" data-theme-choice="light" aria-pressed="false" data-i18n="themeLight">浅色</button><button type="button" data-theme-choice="dark" aria-pressed="false" data-i18n="themeDark">深色</button></div></div><button type="button" class="preference-button language-toggle" aria-label="Switch to English" lang="en">EN</button></div></div></header><script type="module">var e=document.querySelector(`.site-header`),t=()=>e?.classList.toggle(`is-scrolled`,scrollY>24);addEventListener(`scroll`,t,{passive:!0}),t();</script><div class="reading-progress" aria-hidden="true"><span data-reading-progress></span></div><main id="main" class="article-shell"><a href="/writing/" class="article-back"><svg class width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12h16m-7-7 7 7-7 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg><span data-i18n="allPosts">全部文字</span></a><article><header class="article-header"><p class="article-kicker">notes / PHP</p><h1 lang="zh-CN">关于 Composer 版本约束表达式的使用</h1><div class="article-meta"><a class="article-author" href="/#about"><img src="/images/overtrue.jpg" width="26" height="26" alt="">Chris An <span>安正超</span></a><time datetime="2017-08-01">2017.08.01</time><span data-i18n="readingTime" data-i18n-params="{&quot;minutes&quot;:3}">3 分钟阅读</span></div></header><div class="article-layout"><aside class="reading-rail"><details class="article-toc" open><summary><span data-i18n="toc">本文目录</span> <span class="toc-count">09</span></summary><nav aria-label="文章目录" data-i18n-aria="tocLabel" lang="zh-CN"><a href="#section-语义化版本" data-toc-link lang="zh-CN">语义化版本</a><a href="#section-不限定版本" data-toc-link lang="zh-CN" class="toc-nested">不限定版本</a><a href="#section-使用-dev--前缀加分支名" data-toc-link lang="zh-CN" class="toc-nested">使用 dev- 前缀加分支名</a><a href="#section-使用-约束符锁定小版本的方式" data-toc-link lang="zh-CN" class="toc-nested">使用 ~ 约束符锁定小版本的方式</a><a href="#section-使用-约束符锁定大版本" data-toc-link lang="zh-CN" class="toc-nested">使用 ^ 约束符锁定大版本</a><a href="#section-锁定版本范围" data-toc-link lang="zh-CN" class="toc-nested">锁定版本范围</a><a href="#section-最后就是使用具体版本号" data-toc-link lang="zh-CN" class="toc-nested">最后就是使用具体版本号</a><a href="#section-注意" data-toc-link lang="zh-CN">注意</a><a href="#section-总结" data-toc-link lang="zh-CN">总结</a></nav></details><a class="rail-top" href="#top"><span data-i18n="backTop">回到顶部</span> <svg class width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12h16m-7-7 7 7-7 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></a></aside><div class="article-body"><p class="archive-notice" data-i18n="oldPost" data-i18n-params="{&quot;year&quot;:&quot;2017&quot;}">写于 2017 年，内容保留原貌。文中版本和链接可能已有变化。</p><div class="prose" lang="zh-CN"><p>相信 <code>Composer</code> 对你来说已经相当熟悉了，不过对于包的版本，我觉得应该还有不少同学不是那么清楚各种写法到底是啥意思。</p>
+<h2 id="section-语义化版本">语义化版本<a class="heading-anchor" href="#section-语义化版本" aria-label="链接到：语义化版本" data-i18n-aria="headingLink" data-i18n-params="{&quot;name&quot;:&quot;语义化版本&quot;}">#</a></h2>
 <p>首先，我们来了解一个东西：<a href="http://semver.org/">语义化版本</a></p>
 <blockquote>
-<p>版本格式：主版本号.次版本号.修订号，版本号递增规则如下：<br>
-主版本号：当你做了不兼容的 API 修改，<br>
-次版本号：当你做了向下兼容的功能性新增，<br>
-修订号：当你做了向下兼容的问题修正。<br>
+<p>版本格式：主版本号.次版本号.修订号，版本号递增规则如下：
+主版本号：当你做了不兼容的 API 修改，
+次版本号：当你做了向下兼容的功能性新增，
+修订号：当你做了向下兼容的问题修正。
 先行版本号及版本编译信息可以加到“主版本号.次版本号.修订号”的后面，作为延伸。</p>
 </blockquote>
 <p>语义化版本一般我们使用 3 个部分来表示一个版本，例如：1.4.23，1 为主版本号，4 为次版本号，23 为修订号或者补丁版本号。当然你肯定也见过 1.0.0-alpha1 这样在后面添加修饰符号来表示先行版本。</p>
 <p>那在 composer 使用过程中我们通常会有这几种写法：</p>
-<h3 id="不限定版本">不限定版本</h3>
+<h3 id="section-不限定版本">不限定版本<a class="heading-anchor" href="#section-不限定版本" aria-label="链接到：不限定版本" data-i18n-aria="headingLink" data-i18n-params="{&quot;name&quot;:&quot;不限定版本&quot;}">#</a></h3>
 <blockquote>
 <p>极不推荐这样玩哦</p>
 </blockquote>
-<p>使用 <code>*</code> 号来表示版本的时候，composer 会根据你配置中的 <code>minimum-stability</code> 的值情况来决定安装最新的 dev 还是 stable 版本。<br>
+<p>使用 <code>*</code> 号来表示版本的时候，composer 会根据你配置中的 <code>minimum-stability</code> 的值情况来决定安装最新的 dev 还是 stable 版本。
 比如：</p>
-<pre><code class="language-json">    &quot;require&quot;: {
-        &quot;overtrue/wechat&quot;: &quot;*&quot;
-    }
-</code></pre>
+<figure class="code-block" data-language="json"><figcaption class="code-bar"><span><span>JSON</span><span class="code-lines" data-i18n="codeLines" data-i18n-params="{&quot;count&quot;:3}">3 行</span></span><button class="copy-code" type="button" aria-label="复制代码" data-i18n-aria="copyCode" hidden><svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" aria-hidden="true"><rect x="5" y="5" width="8" height="9" rx="1.5"/><path d="M3 11H2V2h8v1"/></svg><span aria-live="polite" data-i18n="copy">复制</span></button></figcaption><pre class="shiki github-dark-default" style="background-color:#0d1117;color:#e6edf3" tabindex="0"><code><span class="line"><span style="color:#A5D6FF">    "require"</span><span style="color:#E6EDF3">: {</span></span>
+<span class="line"><span style="color:#7EE787">        "overtrue/wechat"</span><span style="color:#E6EDF3">: </span><span style="color:#A5D6FF">"*"</span></span>
+<span class="line"><span style="color:#E6EDF3">    }</span></span></code></pre></figure>
 <p>根据上面语义化版本的定义，这样写就相当于允许大版本的安装，那你的代码在 composer 更新依赖后可能就跑不起来了（如果第三方包作者做了大版本更新）。</p>
-<h3 id="使用-dev-前缀加分支名">使用 <code>dev-</code> 前缀加分支名</h3>
+<h3 id="section-使用-dev--前缀加分支名">使用 <code>dev-</code> 前缀加分支名<a class="heading-anchor" href="#section-使用-dev--前缀加分支名" aria-label="链接到：使用 dev- 前缀加分支名" data-i18n-aria="headingLink" data-i18n-params="{&quot;name&quot;:&quot;使用 dev- 前缀加分支名&quot;}">#</a></h3>
 <p>我们在自己开发一个包的时候，经常会用 <code>dev-master</code> 或者 <code>dev-develop</code> 来指定版本，它表示使用该分支下最新的提交。</p>
 <p>比如：</p>
-<pre><code class="language-json">    &quot;require&quot;: {
-        &quot;overtrue/wechat&quot;: &quot;dev-master&quot;
-    }
-</code></pre>
+<figure class="code-block" data-language="json"><figcaption class="code-bar"><span><span>JSON</span><span class="code-lines" data-i18n="codeLines" data-i18n-params="{&quot;count&quot;:3}">3 行</span></span><button class="copy-code" type="button" aria-label="复制代码" data-i18n-aria="copyCode" hidden><svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" aria-hidden="true"><rect x="5" y="5" width="8" height="9" rx="1.5"/><path d="M3 11H2V2h8v1"/></svg><span aria-live="polite" data-i18n="copy">复制</span></button></figcaption><pre class="shiki github-dark-default" style="background-color:#0d1117;color:#e6edf3" tabindex="0"><code><span class="line"><span style="color:#A5D6FF">    "require"</span><span style="color:#E6EDF3">: {</span></span>
+<span class="line"><span style="color:#7EE787">        "overtrue/wechat"</span><span style="color:#E6EDF3">: </span><span style="color:#A5D6FF">"dev-master"</span></span>
+<span class="line"><span style="color:#E6EDF3">    }</span></span></code></pre></figure>
 <p>这个也是不推荐在生产环境使用的，因为它其实与 * 没有太大的差别，不过 * 在 <code>minimum-stability</code> 为 <code>stable</code> 时是安装最新的稳定版。但是二者都无法保证 API 兼容性。</p>
-<h3 id="使用-~-约束符锁定小版本的方式">使用 <code>~</code> 约束符锁定小版本的方式</h3>
-<p>这种方式比较常用，也是比较安全的，比如我们希望安装 &gt;= 1.2 并且 &lt; 2.0 的版本时，根据语义化版本的定义，次版本号的变化是新增功能，所以 API 是稳定的，也就是可以安全更新的。<br>
+<h3 id="section-使用-约束符锁定小版本的方式">使用 <code>~</code> 约束符锁定小版本的方式<a class="heading-anchor" href="#section-使用-约束符锁定小版本的方式" aria-label="链接到：使用 ~ 约束符锁定小版本的方式" data-i18n-aria="headingLink" data-i18n-params="{&quot;name&quot;:&quot;使用 ~ 约束符锁定小版本的方式&quot;}">#</a></h3>
+<p>这种方式比较常用，也是比较安全的，比如我们希望安装 &gt;= 1.2 并且 &lt; 2.0 的版本时，根据语义化版本的定义，次版本号的变化是新增功能，所以 API 是稳定的，也就是可以安全更新的。
 你可以写成：</p>
-<pre><code class="language-json">    &quot;require&quot;: {
-        &quot;overtrue/wechat&quot;: &quot;~1.2&quot;
-    }
-</code></pre>
+<figure class="code-block" data-language="json"><figcaption class="code-bar"><span><span>JSON</span><span class="code-lines" data-i18n="codeLines" data-i18n-params="{&quot;count&quot;:3}">3 行</span></span><button class="copy-code" type="button" aria-label="复制代码" data-i18n-aria="copyCode" hidden><svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" aria-hidden="true"><rect x="5" y="5" width="8" height="9" rx="1.5"/><path d="M3 11H2V2h8v1"/></svg><span aria-live="polite" data-i18n="copy">复制</span></button></figcaption><pre class="shiki github-dark-default" style="background-color:#0d1117;color:#e6edf3" tabindex="0"><code><span class="line"><span style="color:#A5D6FF">    "require"</span><span style="color:#E6EDF3">: {</span></span>
+<span class="line"><span style="color:#7EE787">        "overtrue/wechat"</span><span style="color:#E6EDF3">: </span><span style="color:#A5D6FF">"~1.2"</span></span>
+<span class="line"><span style="color:#E6EDF3">    }</span></span></code></pre></figure>
 <p>如果你希望次版本都不要更新，只允许修订版本（补丁版本）的变化，&gt;= 1.1.15 并且 &lt; 1.2.0，则写成：</p>
-<pre><code class="language-json">    &quot;require&quot;: {
-        &quot;overtrue/wechat&quot;: &quot;~1.1.15&quot;
-    }
-</code></pre>
+<figure class="code-block" data-language="json"><figcaption class="code-bar"><span><span>JSON</span><span class="code-lines" data-i18n="codeLines" data-i18n-params="{&quot;count&quot;:3}">3 行</span></span><button class="copy-code" type="button" aria-label="复制代码" data-i18n-aria="copyCode" hidden><svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" aria-hidden="true"><rect x="5" y="5" width="8" height="9" rx="1.5"/><path d="M3 11H2V2h8v1"/></svg><span aria-live="polite" data-i18n="copy">复制</span></button></figcaption><pre class="shiki github-dark-default" style="background-color:#0d1117;color:#e6edf3" tabindex="0"><code><span class="line"><span style="color:#A5D6FF">    "require"</span><span style="color:#E6EDF3">: {</span></span>
+<span class="line"><span style="color:#7EE787">        "overtrue/wechat"</span><span style="color:#E6EDF3">: </span><span style="color:#A5D6FF">"~1.1.15"</span></span>
+<span class="line"><span style="color:#E6EDF3">    }</span></span></code></pre></figure>
 <p>所以，你应该看出规律了，<code>~</code> 的作用是允许表达式中最后一位变到最大值，<code>~1.1</code> 表示可以为 大于等于 <code>1.1</code> 的任何版本，比如 <code>1.1.0</code>、<code>1.2.0</code>、<code>1.3.5</code> 、<code>1.99.9999</code>、 <code>1.9999.999999</code> 都可以安装，但是不能安装 <code>2.0.0</code>， 同理，<code>~1.1.2</code> 表示 大于等于 <code>1.1.2</code> 的任何版本，比如 <code>1.1.2</code>、<code>1.1.3</code>、<code>1.1.99</code>、 <code>1.1.9999</code> 都可以安装。</p>
-<h3 id="使用-约束符锁定大版本">使用 <code>^</code> 约束符锁定大版本</h3>
+<h3 id="section-使用-约束符锁定大版本">使用 <code>^</code> 约束符锁定大版本<a class="heading-anchor" href="#section-使用-约束符锁定大版本" aria-label="链接到：使用 ^ 约束符锁定大版本" data-i18n-aria="headingLink" data-i18n-params="{&quot;name&quot;:&quot;使用 ^ 约束符锁定大版本&quot;}">#</a></h3>
 <p>上面 <code>~</code> 表示最后一位可变，前面几位都不可变，那 <code>^</code> 的作用不一样的是：<code>^</code> <strong>锁定不允许变的第一位</strong>，其实学过正则的同学都知道  <code>^</code> 表示起始，<code>^a</code> 表示以 <code>a</code> 开头的全部。</p>
 <p>所以， <code>^1.2</code> 表示任意大于等于 <code>1.2</code> 的 <code>1.x.x</code> 版本，比如 <code>1.2.0</code>、<code>1.2.1</code>、<code>1.3.0</code>、<code>1.9.99999</code> 等。只要前面的 <code>1</code> 并且大于 <code>^</code> 后面指定的 <code>1.2</code> 都满足条件。</p>
-<h3 id="锁定版本范围">锁定版本范围</h3>
+<h3 id="section-锁定版本范围">锁定版本范围<a class="heading-anchor" href="#section-锁定版本范围" aria-label="链接到：锁定版本范围" data-i18n-aria="headingLink" data-i18n-params="{&quot;name&quot;:&quot;锁定版本范围&quot;}">#</a></h3>
 <p>有时候我们的使用场景要求只能安装某些版本范围内的时候，可以使用 <code>&gt;</code>、<code>&lt;</code>、<code>&gt;=</code>、<code>&lt;=</code>、<code>|</code> 这些符号来组合，比如：<code>&gt;= 1.3 &lt;1.6</code>、<code>&gt;=1.3 | &gt;=1.7</code> 、<code>3.0|4.0</code> 等。这样的使用场景并不多，根据你的情况来调整用法就好。</p>
-<h3 id="最后就是使用具体版本号">最后就是使用具体版本号</h3>
+<h3 id="section-最后就是使用具体版本号">最后就是使用具体版本号<a class="heading-anchor" href="#section-最后就是使用具体版本号" aria-label="链接到：最后就是使用具体版本号" data-i18n-aria="headingLink" data-i18n-params="{&quot;name&quot;:&quot;最后就是使用具体版本号&quot;}">#</a></h3>
 <p>使用 <code>=1.2.34</code> 或者 <code>1.2.34</code> 都是指定了具体的版本号， composer 不会考虑检查新版本来安装。</p>
-<h2 id="注意">注意</h2>
+<h2 id="section-注意">注意<a class="heading-anchor" href="#section-注意" aria-label="链接到：注意" data-i18n-aria="headingLink" data-i18n-params="{&quot;name&quot;:&quot;注意&quot;}">#</a></h2>
 <p>如果你的版本是 1.0 以下，<code>0.0.1</code>，<code>0.9.99999</code> 等这样的版本的时候， <code>^</code> 的作用与 <code>~</code> 一样，也就是说：</p>
 <p><code>^0.0.3</code> 表示：<code>&gt;=0.0.3 &lt; 0.0.4</code></p>
 <p>所以需要注意这个问题，之所以这样设计是有原因的：<a href="http://semver.org/lang/zh-CN/#spec-item-4">主版本号为零（0.y.z）的软件处于开发初始阶段，一切都可能随时被改变。这样的公共 API 不应该被视为稳定版。</a></p>
 <p>所以不要掉进这个坑哦。</p>
-<h2 id="总结">总结</h2>
+<h2 id="section-总结">总结<a class="heading-anchor" href="#section-总结" aria-label="链接到：总结" data-i18n-aria="headingLink" data-i18n-params="{&quot;name&quot;:&quot;总结&quot;}">#</a></h2>
 <p>无论你是包的作者，还是使用者，正确使用版本是非常重要的，尤其对于有一定使用量的包作者来讲，严格遵守语义化版本的规范是对你的用户负责。最后引入 semver.org 官网的一句话：</p>
 <blockquote>
 <p>记住， 语义化的版本控制就是透过版本号的改变来传达意义。若这些改变对你的使用者是重要的，那就透过版本号来向他们说明。</p>
 </blockquote>
-
-              </div>
-              <div class="toc-container">
-                <ul class="markdownIt-TOC">
-<li>
-<ul>
-<li><a href="#%E8%AF%AD%E4%B9%89%E5%8C%96%E7%89%88%E6%9C%AC">语义化版本</a>
-<ul>
-<li><a href="#%E4%B8%8D%E9%99%90%E5%AE%9A%E7%89%88%E6%9C%AC">不限定版本</a></li>
-<li><a href="#%E4%BD%BF%E7%94%A8-dev-%E5%89%8D%E7%BC%80%E5%8A%A0%E5%88%86%E6%94%AF%E5%90%8D">使用 <code>dev-</code> 前缀加分支名</a></li>
-<li><a href="#%E4%BD%BF%E7%94%A8-~-%E7%BA%A6%E6%9D%9F%E7%AC%A6%E9%94%81%E5%AE%9A%E5%B0%8F%E7%89%88%E6%9C%AC%E7%9A%84%E6%96%B9%E5%BC%8F">使用 <code>~</code> 约束符锁定小版本的方式</a></li>
-<li><a href="#%E4%BD%BF%E7%94%A8-%E7%BA%A6%E6%9D%9F%E7%AC%A6%E9%94%81%E5%AE%9A%E5%A4%A7%E7%89%88%E6%9C%AC">使用 <code>^</code> 约束符锁定大版本</a></li>
-<li><a href="#%E9%94%81%E5%AE%9A%E7%89%88%E6%9C%AC%E8%8C%83%E5%9B%B4">锁定版本范围</a></li>
-<li><a href="#%E6%9C%80%E5%90%8E%E5%B0%B1%E6%98%AF%E4%BD%BF%E7%94%A8%E5%85%B7%E4%BD%93%E7%89%88%E6%9C%AC%E5%8F%B7">最后就是使用具体版本号</a></li>
-</ul>
-</li>
-<li><a href="#%E6%B3%A8%E6%84%8F">注意</a></li>
-<li><a href="#%E6%80%BB%E7%BB%93">总结</a></li>
-</ul>
-</li>
-</ul>
-
-              </div>
-            </div>
-          </article>
-        </div>
-
-        
-          <div class="next-post">
-            <div class="next">下一篇</div>
-            <a href="https://overtrue.me/summernote-image-upload-to-server/">
-              <h3 class="post-title">
-                Summernote 图片上传到服务端实现方式
-              </h3>
-            </a>
-          </div>
-        
-
-        
-          
-            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
-<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
-
-<div id="gitalk-container"></div>
-
-<script>
-
-  var gitalk = new Gitalk({
-    clientID: 'f2027ed0e5be934c16d5',
-    clientSecret: '37b4520fa4543c1565ed971e0e50ac215e110c99',
-    repo: 'blog',
-    owner: 'overtrue',
-    admin: ['overtrue'],
-    labels: ['gitalk', 'comment'],
-    id: location.pathname.slice(1, location.pathname.lastIndexOf('/')).substring(0, 49), 
-    distractionFreeMode: false  // Facebook-like distraction free mode
-  })
-
-  gitalk.render('gitalk-container')
-
-</script>
-
-          
-
-          
-        
-
-        <div class="site-footer">
-  <span>Powered by  <span><a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
-  <a class="rss" href="https://overtrue.me/atom.xml" target="_blank">
-    <i class="ri-rss-line"></i> RSS
-  </a>
-</div>
-
-      </div>
-    </div>
-
-    <script>
-      hljs.initHighlightingOnLoad()
-
-      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
-
-      // This should probably be throttled.
-      // Especially because it triggers during smooth scrolling.
-      // https://lodash.com/docs/4.17.10#throttle
-      // You could do like...
-      // window.addEventListener("scroll", () => {
-      //    _.throttle(doThatStuff, 100);
-      // });
-      // Only not doing it here to keep this Pen dependency-free.
-
-      window.addEventListener("scroll", event => {
-        let fromTop = window.scrollY;
-
-        mainNavLinks.forEach((link, index) => {
-          let section = document.getElementById(decodeURI(link.hash).substring(1));
-          let nextSection = null
-          if (mainNavLinks[index + 1]) {
-            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
-          }
-          if (section.offsetTop <= fromTop) {
-            if (nextSection) {
-              if (nextSection.offsetTop > fromTop) {
-                link.classList.add("current");
-              } else {
-                link.classList.remove("current");    
-              }
-            } else {
-              link.classList.add("current");
-            }
-          } else {
-            link.classList.remove("current");
-          }
-        });
-      });
-
-    </script>
-  </body>
-</html>
+</div></div></div></article><div class="article-footer"><a href="/writing/" class="article-back"><svg class width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12h16m-7-7 7 7-7 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg> <span data-i18n="allPosts">全部文字</span></a><a href="/summernote-image-upload-to-server/" class="article-next"><span data-i18n="readNext">接着读</span><strong lang="zh-CN">Summernote 图片上传到服务端实现方式</strong><svg class width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></a></div></main><footer class="site-footer compact"><div class="footer-bottom"><a class="footer-identity" href="/"><img src="/brand/mark-color.svg" width="28" height="28" alt=""><span>Chris An<span>安正超 / overtrue</span></span></a><p>Keep calm and coding.</p><div><a href="https://github.com/overtrue" target="_blank" rel="noopener noreferrer">GitHub</a><a href="https://x.com/overtrue666" target="_blank" rel="noopener noreferrer">X / Twitter</a><a href="/rss.xml">RSS</a><a href="#top"><span data-i18n="backTop">回到顶部</span> <svg class width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></a></div></div><div class="footer-wordmark" aria-hidden="true">OVERTRUE</div></footer><script type="module" src="/_astro/_slug_.astro_astro_type_script_index_0_lang.uu2a7OVK.js"></script><script type="module" src="/_astro/Base.astro_astro_type_script_index_0_lang.F6bjS25y.js"></script></body></html>

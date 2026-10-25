@@ -1,416 +1,196 @@
-<html>
-  <head>
-    <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>在 Laravel 外使用 Eloquent（一） | overtrue</title>
-<link rel="shortcut icon" href="https://overtrue.me/favicon.ico?v=1617147724333">
-<link href="https://cdn.remixicon.com/releases/v2.1.0/remixicon.css" rel="stylesheet">
-<link rel="stylesheet" href="https://overtrue.me/styles/main.css">
-<link rel="alternate" type="application/atom+xml" title="在 Laravel 外使用 Eloquent（一） | overtrue - Atom Feed" href="https://overtrue.me/atom.xml">
-
-
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-55452630-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-55452630-1');
-</script>
-
-
-    <meta name="description" content="不得不承认 Laravel 的 Eloquent 是一个很棒的 ORM，其实 Laravel 框架的设计本身结构使用的是 subtree 实现(外层使用的git-subsplit) , 也就是说Eloquent是独立的模块，我们也可以在自己..." />
-    <meta name="keywords" content="" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
-    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
-  </head>
-  <body>
-    <div class="main">
-      <div class="main-content">
-        <div class="site-header">
-  <a href="https://overtrue.me">
-  <img class="avatar" src="https://overtrue.me/images/avatar.png?v=1617147724333" alt="">
-  </a>
-  <h1 class="site-title">
-    overtrue
-  </h1>
-  <p class="site-description">
-    🇨🇳 <b>China Shenzhen</b>・🕹<b>Web developer</b>
-  </p>
-  <div class="menu-container">
-    
-      
-        <a href="/" class="menu">
-          首页
-        </a>
-      
-    
-      
-        <a href="https://github.com/overtrue" class="menu" target="_blank">
-          开源
-        </a>
-      
-    
-      
-        <a href="/archives" class="menu">
-          归档
-        </a>
-      
-    
-      
-        <a href="/tags" class="menu">
-          标签
-        </a>
-      
-    
-      
-        <a href="/about" class="menu">
-          关于
-        </a>
-      
-    
-  </div>
-  <div class="social-container">
-    
-      
-        <a href="https://github.com/overtrue" target="_blank">
-          <i class="ri-github-line"></i>
-        </a>
-      
-    
-      
-        <a href="https://twitter.com/overtrue666" target="_blank">
-          <i class="ri-twitter-line"></i>
-        </a>
-      
-    
-      
-        <a href="https://weibo.com/44294631" target="_blank">
-          <i class="ri-weibo-line"></i>
-        </a>
-      
-    
-      
-    
-      
-    
-  </div>
-</div>
-
-        <div class="post-detail">
-          <article class="post">
-            <h2 class="post-title">
-              在 Laravel 外使用 Eloquent（一）
-            </h2>
-            <div class="post-info">
-              <span>
-                2014-10-30
-              </span>
-              <span>
-                5 min read
-              </span>
-              
-            </div>
-            
-            <div class="post-content-wrapper">
-              <div class="post-content">
-                <p>不得不承认 Laravel 的 Eloquent 是一个很棒的 ORM，其实 Laravel 框架的设计本身结构使用的是 subtree 实现(外层使用的<a href="https://github.com/dflydev/git-subsplit">git-subsplit</a>) , 也就是说Eloquent是独立的模块，我们也可以在自己的项目里通过composer来使用Eloquent，本文就详细讲解如何在自己的项目集成Eloquent。</p>
-<h2 id="安装">安装</h2>
-<p>首先我们得有<code>composer</code>，安装方法请详见：<a href="https://getcomposer.org/doc/00-intro.md">https://getcomposer.org/doc/00-intro.md </a><br>
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><script>
+      (() => {
+        const root = document.documentElement;
+        let theme = 'system';
+        let language = 'zh';
+        try {
+          theme = localStorage.getItem('overtrue-theme') || 'system';
+          language = localStorage.getItem('overtrue-language') || 'zh';
+        } catch {}
+        if (!['light', 'dark'].includes(theme)) theme = 'system';
+        root.dataset.themePreference = theme;
+        root.dataset.theme =
+          theme === 'system'
+            ? matchMedia('(prefers-color-scheme: dark)').matches
+              ? 'dark'
+              : 'light'
+            : theme;
+        root.lang = language === 'en' ? 'en' : 'zh-CN';
+      })();
+    </script><meta name="description" content="详细讲解如何在你自己的非Laravel项目里使用Laravel的强大ORM：Eloquent."><meta name="theme-color" content="#f0f1f4"><meta property="og:type" content="article"><meta property="og:title" content="在 Laravel 外使用 Eloquent（一） · overtrue"><meta property="og:description" content="详细讲解如何在你自己的非Laravel项目里使用Laravel的强大ORM：Eloquent."><meta property="og:url" content="https://overtrue.me/using-eloquent-outside-laravel/"><meta property="og:image" content="https://overtrue.me/social.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:creator" content="@overtrue666"><link rel="canonical" href="https://overtrue.me/using-eloquent-outside-laravel/"><link rel="icon" type="image/svg+xml" href="/brand/mark-color.svg"><link rel="alternate" type="application/rss+xml" title="overtrue 的文章" href="/rss.xml"><title>在 Laravel 外使用 Eloquent（一） · overtrue</title><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"在 Laravel 外使用 Eloquent（一）","datePublished":"2014-10-30","author":{"@type":"Person","name":"安正超","url":"https://overtrue.me"},"mainEntityOfPage":"https://overtrue.me/using-eloquent-outside-laravel/"}</script><link rel="stylesheet" href="/_astro/Preferences.PdpZ8tH4.css"><link rel="stylesheet" href="/_astro/Footer.F4l1zD53.css"></head><body class="reading-page"><a class="skip-link" href="#main" data-i18n="skip">跳到内容</a><div id="top"></div><header class="site-header"><a class="reading-signature" href="/" aria-label="overtrue 首页" data-i18n-aria="home"><img src="/brand/mark-color.svg" width="44" height="44" alt=""></a><nav aria-label="主导航" data-i18n-aria="navigation"><a href="/#work"><span class="nav-number" aria-hidden="true">01</span><span data-i18n="navWork">开源</span></a><a href="/writing/" aria-current="page"><span class="nav-number" aria-hidden="true">02</span><span data-i18n="navWriting">文字</span></a><a href="/#about"><span class="nav-number" aria-hidden="true">03</span><span data-i18n="navAbout">联系</span></a></nav><div class="header-actions"><a class="github-link" href="https://github.com/overtrue" target="_blank" rel="noopener noreferrer">GitHub<svg class width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></a><div class="preferences" data-preferences hidden><div class="theme-picker"><button type="button" class="preference-button theme-toggle" aria-label="切换主题" data-i18n-aria="theme" aria-expanded="false" aria-controls="theme-options"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g data-theme-icon="system"><rect x="3" y="4" width="18" height="13" rx="2"></rect><path d="M8 21h8m-4-4v4"></path></g><g data-theme-icon="light" display="none"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.4 1.4m11.2 11.2L19 19M5 19l1.4-1.4M17.6 6.4 19 5"></path></g><g data-theme-icon="dark" display="none"><path d="M20.5 13.3A8.8 8.8 0 0 1 10.7 3.5a8.8 8.8 0 1 0 9.8 9.8Z"></path></g></svg></button><div class="theme-options" id="theme-options" role="group" aria-label="切换主题" data-i18n-aria="theme" hidden><button type="button" data-theme-choice="system" aria-pressed="true" data-i18n="themeSystem">跟随系统</button><button type="button" data-theme-choice="light" aria-pressed="false" data-i18n="themeLight">浅色</button><button type="button" data-theme-choice="dark" aria-pressed="false" data-i18n="themeDark">深色</button></div></div><button type="button" class="preference-button language-toggle" aria-label="Switch to English" lang="en">EN</button></div></div></header><script type="module">var e=document.querySelector(`.site-header`),t=()=>e?.classList.toggle(`is-scrolled`,scrollY>24);addEventListener(`scroll`,t,{passive:!0}),t();</script><div class="reading-progress" aria-hidden="true"><span data-reading-progress></span></div><main id="main" class="article-shell"><a href="/writing/" class="article-back"><svg class width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12h16m-7-7 7 7-7 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg><span data-i18n="allPosts">全部文字</span></a><article><header class="article-header"><p class="article-kicker">notes / Laravel</p><h1 lang="zh-CN">在 Laravel 外使用 Eloquent（一）</h1><div class="article-meta"><a class="article-author" href="/#about"><img src="/images/overtrue.jpg" width="26" height="26" alt="">Chris An <span>安正超</span></a><time datetime="2014-10-30">2014.10.30</time><span data-i18n="readingTime" data-i18n-params="{&quot;minutes&quot;:6}">6 分钟阅读</span></div></header><div class="article-layout"><aside class="reading-rail"><details class="article-toc" open><summary><span data-i18n="toc">本文目录</span> <span class="toc-count">06</span></summary><nav aria-label="文章目录" data-i18n-aria="tocLabel" lang="zh-CN"><a href="#section-安装" data-toc-link lang="zh-CN">安装</a><a href="#section-配置" data-toc-link lang="zh-CN">配置</a><a href="#section-建表" data-toc-link lang="zh-CN">建表</a><a href="#section-写入数据" data-toc-link lang="zh-CN">写入数据</a><a href="#section-使用模型" data-toc-link lang="zh-CN">使用模型</a><a href="#section-有用的链接" data-toc-link lang="zh-CN">有用的链接</a></nav></details><a class="rail-top" href="#top"><span data-i18n="backTop">回到顶部</span> <svg class width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12h16m-7-7 7 7-7 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></a></aside><div class="article-body"><p class="archive-notice" data-i18n="oldPost" data-i18n-params="{&quot;year&quot;:&quot;2014&quot;}">写于 2014 年，内容保留原貌。文中版本和链接可能已有变化。</p><div class="prose" lang="zh-CN"><p>不得不承认Laravel的Eloquent是一个很棒的ORM，其实Laravel框架的设计本身结构使用的是subtree实现(外层使用的<a href="https://github.com/dflydev/git-subsplit">git-subsplit</a>) , 也就是说Eloquent是独立的模块，我们也可以在自己的项目里通过composer来使用Eloquent，本文就详细讲解如何在自己的项目集成Eloquent。</p>
+<h2 id="section-安装">安装<a class="heading-anchor" href="#section-安装" aria-label="链接到：安装" data-i18n-aria="headingLink" data-i18n-params="{&quot;name&quot;:&quot;安装&quot;}">#</a></h2>
+<p>首先我们得有<code>composer</code>，安装方法请详见：<a href="https://getcomposer.org/doc/00-intro.md">https://getcomposer.org/doc/00-intro.md </a>
 可能没有翻墙的情况下使用composer会比较慢，那么这里同样有福利：<a href="http://pkg.phpcomposer.com/">http://pkg.phpcomposer.com/</a> 。</p>
 <p>我们这里建议一个项目demo, 然后我们在demo目录下执行：</p>
-<pre><code class="language-shell">composer require illuminate/database:~4.2
-</code></pre>
+<figure class="code-block" data-language="shellscript"><figcaption class="code-bar"><span><span>Shell</span><span class="code-lines" data-i18n="codeLines" data-i18n-params="{&quot;count&quot;:1}">1 行</span></span><button class="copy-code" type="button" aria-label="复制代码" data-i18n-aria="copyCode" hidden><svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" aria-hidden="true"><rect x="5" y="5" width="8" height="9" rx="1.5"/><path d="M3 11H2V2h8v1"/></svg><span aria-live="polite" data-i18n="copy">复制</span></button></figcaption><pre class="shiki github-dark-default" style="background-color:#0d1117;color:#e6edf3" tabindex="0"><code><span class="line"><span style="color:#FFA657">composer</span><span style="color:#A5D6FF"> require</span><span style="color:#A5D6FF"> illuminate/database:~4.2</span></span></code></pre></figure>
 <p>那么你应该会看到：</p>
-<pre><code class="language-shell">Using version ~4.2 for illuminate/database
-./composer.json has been created
-Loading composer repositories with package information
-Updating dependencies (including require-dev)
-  - Installing nesbot/carbon (1.13.0)
-    Loading from cache
-
-  - Installing illuminate/support (v4.2.9)
-    Downloading: 100%
-    Downloading: 100%
-    Downloading: 100%
-
-    Failed, trying the next URL
-    Downloading: 100%
-
-  - Installing illuminate/container (v4.2.9)
-    Downloading: 100%
-
-  - Installing illuminate/events (v4.2.9)
-    Downloading: 100%
-
-  - Installing illuminate/database (v4.2.9)
-    Downloading: 100%
-
-Writing lock file
-Generating autoload files
-</code></pre>
+<figure class="code-block" data-language="shellscript"><figcaption class="code-bar"><span><span>Shell</span><span class="code-lines" data-i18n="codeLines" data-i18n-params="{&quot;count&quot;:26}">26 行</span></span><button class="copy-code" type="button" aria-label="复制代码" data-i18n-aria="copyCode" hidden><svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" aria-hidden="true"><rect x="5" y="5" width="8" height="9" rx="1.5"/><path d="M3 11H2V2h8v1"/></svg><span aria-live="polite" data-i18n="copy">复制</span></button></figcaption><pre class="shiki github-dark-default" style="background-color:#0d1117;color:#e6edf3" tabindex="0"><code><span class="line"><span style="color:#FFA657">Using</span><span style="color:#A5D6FF"> version</span><span style="color:#A5D6FF"> ~4.2</span><span style="color:#A5D6FF"> for</span><span style="color:#A5D6FF"> illuminate/database</span></span>
+<span class="line"><span style="color:#FFA657">./composer.json</span><span style="color:#A5D6FF"> has</span><span style="color:#A5D6FF"> been</span><span style="color:#A5D6FF"> created</span></span>
+<span class="line"><span style="color:#FFA657">Loading</span><span style="color:#A5D6FF"> composer</span><span style="color:#A5D6FF"> repositories</span><span style="color:#A5D6FF"> with</span><span style="color:#A5D6FF"> package</span><span style="color:#A5D6FF"> information</span></span>
+<span class="line"><span style="color:#FFA657">Updating</span><span style="color:#A5D6FF"> dependencies</span><span style="color:#E6EDF3"> (including </span><span style="color:#A5D6FF">require-dev</span><span style="color:#E6EDF3">)</span></span>
+<span class="line"><span style="color:#FFA657">  -</span><span style="color:#A5D6FF"> Installing</span><span style="color:#A5D6FF"> nesbot/carbon</span><span style="color:#E6EDF3"> (1.13.0)</span></span>
+<span class="line"><span style="color:#FFA657">    Loading</span><span style="color:#A5D6FF"> from</span><span style="color:#A5D6FF"> cache</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFA657">  -</span><span style="color:#A5D6FF"> Installing</span><span style="color:#A5D6FF"> illuminate/support</span><span style="color:#E6EDF3"> (v4.2.9)</span></span>
+<span class="line"><span style="color:#FFA657">    Downloading:</span><span style="color:#A5D6FF"> 100%</span></span>
+<span class="line"><span style="color:#FFA657">    Downloading:</span><span style="color:#A5D6FF"> 100%</span></span>
+<span class="line"><span style="color:#FFA657">    Downloading:</span><span style="color:#A5D6FF"> 100%</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFA657">    Failed,</span><span style="color:#A5D6FF"> trying</span><span style="color:#A5D6FF"> the</span><span style="color:#A5D6FF"> next</span><span style="color:#A5D6FF"> URL</span></span>
+<span class="line"><span style="color:#FFA657">    Downloading:</span><span style="color:#A5D6FF"> 100%</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFA657">  -</span><span style="color:#A5D6FF"> Installing</span><span style="color:#A5D6FF"> illuminate/container</span><span style="color:#E6EDF3"> (v4.2.9)</span></span>
+<span class="line"><span style="color:#FFA657">    Downloading:</span><span style="color:#A5D6FF"> 100%</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFA657">  -</span><span style="color:#A5D6FF"> Installing</span><span style="color:#A5D6FF"> illuminate/events</span><span style="color:#E6EDF3"> (v4.2.9)</span></span>
+<span class="line"><span style="color:#FFA657">    Downloading:</span><span style="color:#A5D6FF"> 100%</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFA657">  -</span><span style="color:#A5D6FF"> Installing</span><span style="color:#A5D6FF"> illuminate/database</span><span style="color:#E6EDF3"> (v4.2.9)</span></span>
+<span class="line"><span style="color:#FFA657">    Downloading:</span><span style="color:#A5D6FF"> 100%</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFA657">Writing</span><span style="color:#A5D6FF"> lock</span><span style="color:#A5D6FF"> file</span></span>
+<span class="line"><span style="color:#FFA657">Generating</span><span style="color:#A5D6FF"> autoload</span><span style="color:#A5D6FF"> files</span></span></code></pre></figure>
 <p>这样就表示Eloquent已经安装好了。</p>
-<h2 id="配置">配置</h2>
+<h2 id="section-配置">配置<a class="heading-anchor" href="#section-配置" aria-label="链接到：配置" data-i18n-aria="headingLink" data-i18n-params="{&quot;name&quot;:&quot;配置&quot;}">#</a></h2>
 <p>下面我们来配置Eloquent。</p>
 <ol>
 <li>首先我们创建一个入口文件，如果你的项目已经有内容，那么同理在你的项目入口文件加入即可：</li>
 </ol>
 <p>demo/start.php:</p>
-<pre><code class="language-php?start_inline=1">&lt;?php
-
-// 载入composer的autoload文件
-include __DIR__ . '/vendor/autoload.php';
-</code></pre>
+<figure class="code-block" data-language="php"><figcaption class="code-bar"><span><span>PHP</span><span class="code-lines" data-i18n="codeLines" data-i18n-params="{&quot;count&quot;:4}">4 行</span></span><button class="copy-code" type="button" aria-label="复制代码" data-i18n-aria="copyCode" hidden><svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" aria-hidden="true"><rect x="5" y="5" width="8" height="9" rx="1.5"/><path d="M3 11H2V2h8v1"/></svg><span aria-live="polite" data-i18n="copy">复制</span></button></figcaption><pre class="shiki github-dark-default" style="background-color:#0d1117;color:#e6edf3" tabindex="0"><code><span class="line"><span style="color:#FF7B72">&#x3C;?</span><span style="color:#79C0FF">php</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#8B949E">// 载入composer的autoload文件</span></span>
+<span class="line"><span style="color:#FF7B72">include</span><span style="color:#79C0FF"> __DIR__</span><span style="color:#FF7B72"> .</span><span style="color:#A5D6FF"> '/vendor/autoload.php'</span><span style="color:#E6EDF3">;</span></span></code></pre></figure>
 <p>然后我们加入数据库配置：</p>
-<pre><code class="language-php?start_inline=1">$database = [
-    'driver'    =&gt; 'mysql',
-    'host'      =&gt; 'localhost',
-    'database'  =&gt; 'demo',
-    'username'  =&gt; 'root',
-    'password'  =&gt; '',
-    'charset'   =&gt; 'utf8',
-    'collation' =&gt; 'utf8_unicode_ci',
-    'prefix'    =&gt; '',
-];
-</code></pre>
+<figure class="code-block" data-language="php"><figcaption class="code-bar"><span><span>PHP</span><span class="code-lines" data-i18n="codeLines" data-i18n-params="{&quot;count&quot;:10}">10 行</span></span><button class="copy-code" type="button" aria-label="复制代码" data-i18n-aria="copyCode" hidden><svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" aria-hidden="true"><rect x="5" y="5" width="8" height="9" rx="1.5"/><path d="M3 11H2V2h8v1"/></svg><span aria-live="polite" data-i18n="copy">复制</span></button></figcaption><pre class="shiki github-dark-default" style="background-color:#0d1117;color:#e6edf3" tabindex="0"><code><span class="line"><span style="color:#E6EDF3">$database </span><span style="color:#FF7B72">=</span><span style="color:#E6EDF3"> [</span></span>
+<span class="line"><span style="color:#A5D6FF">    'driver'</span><span style="color:#FF7B72">    =></span><span style="color:#A5D6FF"> 'mysql'</span><span style="color:#E6EDF3">,</span></span>
+<span class="line"><span style="color:#A5D6FF">    'host'</span><span style="color:#FF7B72">      =></span><span style="color:#A5D6FF"> 'localhost'</span><span style="color:#E6EDF3">,</span></span>
+<span class="line"><span style="color:#A5D6FF">    'database'</span><span style="color:#FF7B72">  =></span><span style="color:#A5D6FF"> 'demo'</span><span style="color:#E6EDF3">,</span></span>
+<span class="line"><span style="color:#A5D6FF">    'username'</span><span style="color:#FF7B72">  =></span><span style="color:#A5D6FF"> 'root'</span><span style="color:#E6EDF3">,</span></span>
+<span class="line"><span style="color:#A5D6FF">    'password'</span><span style="color:#FF7B72">  =></span><span style="color:#A5D6FF"> ''</span><span style="color:#E6EDF3">,</span></span>
+<span class="line"><span style="color:#A5D6FF">    'charset'</span><span style="color:#FF7B72">   =></span><span style="color:#A5D6FF"> 'utf8'</span><span style="color:#E6EDF3">,</span></span>
+<span class="line"><span style="color:#A5D6FF">    'collation'</span><span style="color:#FF7B72"> =></span><span style="color:#A5D6FF"> 'utf8_unicode_ci'</span><span style="color:#E6EDF3">,</span></span>
+<span class="line"><span style="color:#A5D6FF">    'prefix'</span><span style="color:#FF7B72">    =></span><span style="color:#A5D6FF"> ''</span><span style="color:#E6EDF3">,</span></span>
+<span class="line"><span style="color:#E6EDF3">];</span></span></code></pre></figure>
 <p>上面我们的数据库配置，库名<code>demo</code>,用户名<code>root</code>,密码为空,这个<code>demo</code>是我在mysql里建立好的空数据库。</p>
 <p>然后我们加入Eloquent初始化代码：</p>
-<pre><code class="language-php?start_inline=1">use Illuminate\Container\Container;
-use Illuminate\Database\Capsule\Manager as Capsule;
-
-$capsule = new Capsule;
-
-// 创建链接
-$capsule-&gt;addConnection($database);
-
-// 设置全局静态可访问
-$capsule-&gt;setAsGlobal();
-
-// 启动Eloquent
-$capsule-&gt;bootEloquent();
-
-</code></pre>
+<figure class="code-block" data-language="php"><figcaption class="code-bar"><span><span>PHP</span><span class="code-lines" data-i18n="codeLines" data-i18n-params="{&quot;count&quot;:14}">14 行</span></span><button class="copy-code" type="button" aria-label="复制代码" data-i18n-aria="copyCode" hidden><svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" aria-hidden="true"><rect x="5" y="5" width="8" height="9" rx="1.5"/><path d="M3 11H2V2h8v1"/></svg><span aria-live="polite" data-i18n="copy">复制</span></button></figcaption><pre class="shiki github-dark-default" style="background-color:#0d1117;color:#e6edf3" tabindex="0"><code><span class="line"><span style="color:#FF7B72">use</span><span style="color:#79C0FF"> Illuminate\Container\Container</span><span style="color:#E6EDF3">;</span></span>
+<span class="line"><span style="color:#FF7B72">use</span><span style="color:#79C0FF"> Illuminate\Database\Capsule\Manager</span><span style="color:#FF7B72"> as</span><span style="color:#79C0FF"> Capsule</span><span style="color:#E6EDF3">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E6EDF3">$capsule </span><span style="color:#FF7B72">=</span><span style="color:#FF7B72"> new</span><span style="color:#79C0FF"> Capsule</span><span style="color:#E6EDF3">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#8B949E">// 创建链接</span></span>
+<span class="line"><span style="color:#E6EDF3">$capsule</span><span style="color:#FF7B72">-></span><span style="color:#D2A8FF">addConnection</span><span style="color:#E6EDF3">($database);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#8B949E">// 设置全局静态可访问</span></span>
+<span class="line"><span style="color:#E6EDF3">$capsule</span><span style="color:#FF7B72">-></span><span style="color:#D2A8FF">setAsGlobal</span><span style="color:#E6EDF3">();</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#8B949E">// 启动Eloquent</span></span>
+<span class="line"><span style="color:#E6EDF3">$capsule</span><span style="color:#FF7B72">-></span><span style="color:#D2A8FF">bootEloquent</span><span style="color:#E6EDF3">();</span></span>
+<span class="line"></span></code></pre></figure>
 <p>那么Eloquent就配置完成了。</p>
 <p>最终的文件<code>demo/start.php</code>应该是这样：</p>
 <p>demo/start.php:</p>
-<pre><code class="language-php?start_inline=1">&lt;?php
-
-// 载入composer的autoload文件
-include __DIR__ . '/vendor/autoload.php';
-
-$database = [
-    'driver'    =&gt; 'mysql',
-    'host'      =&gt; 'localhost',
-    'database'  =&gt; 'demo',
-    'username'  =&gt; 'root',
-    'password'  =&gt; '',
-    'charset'   =&gt; 'utf8',
-    'collation' =&gt; 'utf8_unicode_ci',
-    'prefix'    =&gt; '',
-];
-
-use Illuminate\Container\Container;
-use Illuminate\Database\Capsule\Manager as Capsule;//如果你不喜欢这个名称，as DB;就好
-
-$capsule = new Capsule;
-
-// 创建链接
-$capsule-&gt;addConnection($database);
-
-// 设置全局静态可访问
-$capsule-&gt;setAsGlobal();
-
-// 启动Eloquent
-$capsule-&gt;bootEloquent();
-</code></pre>
+<figure class="code-block" data-language="php"><figcaption class="code-bar"><span><span>PHP</span><span class="code-lines" data-i18n="codeLines" data-i18n-params="{&quot;count&quot;:29}">29 行</span></span><button class="copy-code" type="button" aria-label="复制代码" data-i18n-aria="copyCode" hidden><svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" aria-hidden="true"><rect x="5" y="5" width="8" height="9" rx="1.5"/><path d="M3 11H2V2h8v1"/></svg><span aria-live="polite" data-i18n="copy">复制</span></button></figcaption><pre class="shiki github-dark-default" style="background-color:#0d1117;color:#e6edf3" tabindex="0"><code><span class="line"><span style="color:#FF7B72">&#x3C;?</span><span style="color:#79C0FF">php</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#8B949E">// 载入composer的autoload文件</span></span>
+<span class="line"><span style="color:#FF7B72">include</span><span style="color:#79C0FF"> __DIR__</span><span style="color:#FF7B72"> .</span><span style="color:#A5D6FF"> '/vendor/autoload.php'</span><span style="color:#E6EDF3">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E6EDF3">$database </span><span style="color:#FF7B72">=</span><span style="color:#E6EDF3"> [</span></span>
+<span class="line"><span style="color:#A5D6FF">    'driver'</span><span style="color:#FF7B72">    =></span><span style="color:#A5D6FF"> 'mysql'</span><span style="color:#E6EDF3">,</span></span>
+<span class="line"><span style="color:#A5D6FF">    'host'</span><span style="color:#FF7B72">      =></span><span style="color:#A5D6FF"> 'localhost'</span><span style="color:#E6EDF3">,</span></span>
+<span class="line"><span style="color:#A5D6FF">    'database'</span><span style="color:#FF7B72">  =></span><span style="color:#A5D6FF"> 'demo'</span><span style="color:#E6EDF3">,</span></span>
+<span class="line"><span style="color:#A5D6FF">    'username'</span><span style="color:#FF7B72">  =></span><span style="color:#A5D6FF"> 'root'</span><span style="color:#E6EDF3">,</span></span>
+<span class="line"><span style="color:#A5D6FF">    'password'</span><span style="color:#FF7B72">  =></span><span style="color:#A5D6FF"> ''</span><span style="color:#E6EDF3">,</span></span>
+<span class="line"><span style="color:#A5D6FF">    'charset'</span><span style="color:#FF7B72">   =></span><span style="color:#A5D6FF"> 'utf8'</span><span style="color:#E6EDF3">,</span></span>
+<span class="line"><span style="color:#A5D6FF">    'collation'</span><span style="color:#FF7B72"> =></span><span style="color:#A5D6FF"> 'utf8_unicode_ci'</span><span style="color:#E6EDF3">,</span></span>
+<span class="line"><span style="color:#A5D6FF">    'prefix'</span><span style="color:#FF7B72">    =></span><span style="color:#A5D6FF"> ''</span><span style="color:#E6EDF3">,</span></span>
+<span class="line"><span style="color:#E6EDF3">];</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FF7B72">use</span><span style="color:#79C0FF"> Illuminate\Container\Container</span><span style="color:#E6EDF3">;</span></span>
+<span class="line"><span style="color:#FF7B72">use</span><span style="color:#79C0FF"> Illuminate\Database\Capsule\Manager</span><span style="color:#FF7B72"> as</span><span style="color:#79C0FF"> Capsule</span><span style="color:#E6EDF3">;</span><span style="color:#8B949E">//如果你不喜欢这个名称，as DB;就好</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E6EDF3">$capsule </span><span style="color:#FF7B72">=</span><span style="color:#FF7B72"> new</span><span style="color:#79C0FF"> Capsule</span><span style="color:#E6EDF3">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#8B949E">// 创建链接</span></span>
+<span class="line"><span style="color:#E6EDF3">$capsule</span><span style="color:#FF7B72">-></span><span style="color:#D2A8FF">addConnection</span><span style="color:#E6EDF3">($database);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#8B949E">// 设置全局静态可访问</span></span>
+<span class="line"><span style="color:#E6EDF3">$capsule</span><span style="color:#FF7B72">-></span><span style="color:#D2A8FF">setAsGlobal</span><span style="color:#E6EDF3">();</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#8B949E">// 启动Eloquent</span></span>
+<span class="line"><span style="color:#E6EDF3">$capsule</span><span style="color:#FF7B72">-></span><span style="color:#D2A8FF">bootEloquent</span><span style="color:#E6EDF3">();</span></span></code></pre></figure>
 <p>那么现在只要你需要使用到Eloquent的地方载入这个文件即可， 下面我们来简单介绍一下使用。</p>
-<h2 id="建表">建表</h2>
+<h2 id="section-建表">建表<a class="heading-anchor" href="#section-建表" aria-label="链接到：建表" data-i18n-aria="headingLink" data-i18n-params="{&quot;name&quot;:&quot;建表&quot;}">#</a></h2>
 <p>配置完成了，我们再来使用Eloquent的结构生成器创建数据库的表：</p>
 <p>demo/table.php</p>
-<pre><code class="language-php?start_inline=1">&lt;?php
-
-//包含Eloquent的初始化文件
-include __DIR__ . '/start.php';
-
-use Illuminate\Database\Capsule\Manager as Capsule;
-
-Capsule::schema()-&gt;create('users', function($table)
-{
-    $table-&gt;increments('id');
-    $table-&gt;string('username', 40);
-    $table-&gt;string('email')-&gt;unique();
-    $table-&gt;timestamps();
-});
-</code></pre>
+<figure class="code-block" data-language="php"><figcaption class="code-bar"><span><span>PHP</span><span class="code-lines" data-i18n="codeLines" data-i18n-params="{&quot;count&quot;:14}">14 行</span></span><button class="copy-code" type="button" aria-label="复制代码" data-i18n-aria="copyCode" hidden><svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" aria-hidden="true"><rect x="5" y="5" width="8" height="9" rx="1.5"/><path d="M3 11H2V2h8v1"/></svg><span aria-live="polite" data-i18n="copy">复制</span></button></figcaption><pre class="shiki github-dark-default" style="background-color:#0d1117;color:#e6edf3" tabindex="0"><code><span class="line"><span style="color:#FF7B72">&#x3C;?</span><span style="color:#79C0FF">php</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#8B949E">//包含Eloquent的初始化文件</span></span>
+<span class="line"><span style="color:#FF7B72">include</span><span style="color:#79C0FF"> __DIR__</span><span style="color:#FF7B72"> .</span><span style="color:#A5D6FF"> '/start.php'</span><span style="color:#E6EDF3">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FF7B72">use</span><span style="color:#79C0FF"> Illuminate\Database\Capsule\Manager</span><span style="color:#FF7B72"> as</span><span style="color:#79C0FF"> Capsule</span><span style="color:#E6EDF3">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#79C0FF">Capsule</span><span style="color:#FF7B72">::</span><span style="color:#D2A8FF">schema</span><span style="color:#E6EDF3">()</span><span style="color:#FF7B72">-></span><span style="color:#D2A8FF">create</span><span style="color:#E6EDF3">(</span><span style="color:#A5D6FF">'users'</span><span style="color:#E6EDF3">, </span><span style="color:#FF7B72">function</span><span style="color:#E6EDF3">($table)</span></span>
+<span class="line"><span style="color:#E6EDF3">{</span></span>
+<span class="line"><span style="color:#E6EDF3">    $table</span><span style="color:#FF7B72">-></span><span style="color:#D2A8FF">increments</span><span style="color:#E6EDF3">(</span><span style="color:#A5D6FF">'id'</span><span style="color:#E6EDF3">);</span></span>
+<span class="line"><span style="color:#E6EDF3">    $table</span><span style="color:#FF7B72">-></span><span style="color:#D2A8FF">string</span><span style="color:#E6EDF3">(</span><span style="color:#A5D6FF">'username'</span><span style="color:#E6EDF3">, </span><span style="color:#79C0FF">40</span><span style="color:#E6EDF3">);</span></span>
+<span class="line"><span style="color:#E6EDF3">    $table</span><span style="color:#FF7B72">-></span><span style="color:#D2A8FF">string</span><span style="color:#E6EDF3">(</span><span style="color:#A5D6FF">'email'</span><span style="color:#E6EDF3">)</span><span style="color:#FF7B72">-></span><span style="color:#D2A8FF">unique</span><span style="color:#E6EDF3">();</span></span>
+<span class="line"><span style="color:#E6EDF3">    $table</span><span style="color:#FF7B72">-></span><span style="color:#D2A8FF">timestamps</span><span style="color:#E6EDF3">();</span></span>
+<span class="line"><span style="color:#E6EDF3">});</span></span></code></pre></figure>
 <p>然后我们运行table.php，两种方式：浏览器打开，或者命令行运行：</p>
-<pre><code class="language-shell">php table.php
-</code></pre>
+<figure class="code-block" data-language="shellscript"><figcaption class="code-bar"><span><span>Shell</span><span class="code-lines" data-i18n="codeLines" data-i18n-params="{&quot;count&quot;:1}">1 行</span></span><button class="copy-code" type="button" aria-label="复制代码" data-i18n-aria="copyCode" hidden><svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" aria-hidden="true"><rect x="5" y="5" width="8" height="9" rx="1.5"/><path d="M3 11H2V2h8v1"/></svg><span aria-live="polite" data-i18n="copy">复制</span></button></figcaption><pre class="shiki github-dark-default" style="background-color:#0d1117;color:#e6edf3" tabindex="0"><code><span class="line"><span style="color:#FFA657">php</span><span style="color:#A5D6FF"> table.php</span></span></code></pre></figure>
 <p>然后我们的查看MySQL数据库<code>domo</code>里就会有一个<code>users</code>表了:</p>
-<p>![demo-db]({{ site.url }}/attachments/images/db-demo.png)</p>
-<h2 id="写入数据">写入数据</h2>
+<p><img loading="lazy" decoding="async" src="/attachments/images/db-demo.png" alt="demo-db"></p>
+<h2 id="section-写入数据">写入数据<a class="heading-anchor" href="#section-写入数据" aria-label="链接到：写入数据" data-i18n-aria="headingLink" data-i18n-params="{&quot;name&quot;:&quot;写入数据&quot;}">#</a></h2>
 <p>表建立好了，然后我们插入数据，我们同样创建一个文件 <code>demo/insert.php</code>来做实验：</p>
-<pre><code class="language-php?start_inline=1">&lt;?php
-
-//包含Eloquent的初始化文件
-include __DIR__ . '/start.php';
-
-use Illuminate\Database\Capsule\Manager as Capsule;
-
-Capsule::table('users')-&gt;insert(array(
-        array('username' =&gt; 'Hello',  'email' =&gt; 'hello@world.com'),
-        array('username' =&gt; 'Carlos',  'email' =&gt; 'anzhengchao@gmail.com'),
-        array('username' =&gt; 'Overtrue',  'email' =&gt; 'i@overtrue.me'),
-    ));
-
-
-</code></pre>
+<figure class="code-block" data-language="php"><figcaption class="code-bar"><span><span>PHP</span><span class="code-lines" data-i18n="codeLines" data-i18n-params="{&quot;count&quot;:14}">14 行</span></span><button class="copy-code" type="button" aria-label="复制代码" data-i18n-aria="copyCode" hidden><svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" aria-hidden="true"><rect x="5" y="5" width="8" height="9" rx="1.5"/><path d="M3 11H2V2h8v1"/></svg><span aria-live="polite" data-i18n="copy">复制</span></button></figcaption><pre class="shiki github-dark-default" style="background-color:#0d1117;color:#e6edf3" tabindex="0"><code><span class="line"><span style="color:#FF7B72">&#x3C;?</span><span style="color:#79C0FF">php</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#8B949E">//包含Eloquent的初始化文件</span></span>
+<span class="line"><span style="color:#FF7B72">include</span><span style="color:#79C0FF"> __DIR__</span><span style="color:#FF7B72"> .</span><span style="color:#A5D6FF"> '/start.php'</span><span style="color:#E6EDF3">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FF7B72">use</span><span style="color:#79C0FF"> Illuminate\Database\Capsule\Manager</span><span style="color:#FF7B72"> as</span><span style="color:#79C0FF"> Capsule</span><span style="color:#E6EDF3">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#79C0FF">Capsule</span><span style="color:#FF7B72">::</span><span style="color:#D2A8FF">table</span><span style="color:#E6EDF3">(</span><span style="color:#A5D6FF">'users'</span><span style="color:#E6EDF3">)</span><span style="color:#FF7B72">-></span><span style="color:#D2A8FF">insert</span><span style="color:#E6EDF3">(</span><span style="color:#79C0FF">array</span><span style="color:#E6EDF3">(</span></span>
+<span class="line"><span style="color:#79C0FF">        array</span><span style="color:#E6EDF3">(</span><span style="color:#A5D6FF">'username'</span><span style="color:#FF7B72"> =></span><span style="color:#A5D6FF"> 'Hello'</span><span style="color:#E6EDF3">,  </span><span style="color:#A5D6FF">'email'</span><span style="color:#FF7B72"> =></span><span style="color:#A5D6FF"> 'hello@world.com'</span><span style="color:#E6EDF3">),</span></span>
+<span class="line"><span style="color:#79C0FF">        array</span><span style="color:#E6EDF3">(</span><span style="color:#A5D6FF">'username'</span><span style="color:#FF7B72"> =></span><span style="color:#A5D6FF"> 'Carlos'</span><span style="color:#E6EDF3">,  </span><span style="color:#A5D6FF">'email'</span><span style="color:#FF7B72"> =></span><span style="color:#A5D6FF"> 'anzhengchao@gmail.com'</span><span style="color:#E6EDF3">),</span></span>
+<span class="line"><span style="color:#79C0FF">        array</span><span style="color:#E6EDF3">(</span><span style="color:#A5D6FF">'username'</span><span style="color:#FF7B72"> =></span><span style="color:#A5D6FF"> 'Overtrue'</span><span style="color:#E6EDF3">,  </span><span style="color:#A5D6FF">'email'</span><span style="color:#FF7B72"> =></span><span style="color:#A5D6FF"> 'i@overtrue.me'</span><span style="color:#E6EDF3">),</span></span>
+<span class="line"><span style="color:#E6EDF3">    ));</span></span>
+<span class="line"></span>
+<span class="line"></span></code></pre></figure>
 <p>我们写入了3条数据。</p>
-<h2 id="使用模型">使用模型</h2>
+<h2 id="section-使用模型">使用模型<a class="heading-anchor" href="#section-使用模型" aria-label="链接到：使用模型" data-i18n-aria="headingLink" data-i18n-params="{&quot;name&quot;:&quot;使用模型&quot;}">#</a></h2>
 <p>只要你的模型继承Eloquent的Model类，就没问题了：</p>
-<pre><code class="language-php?start_inline=1">
-use  Illuminate\Database\Eloquent\Model  as Eloquent;
-
-class User extends  Eloquent
-{
-	protected $table = 'users';
-}
-
-</code></pre>
+<figure class="code-block" data-language="php"><figcaption class="code-bar"><span><span>PHP</span><span class="code-lines" data-i18n="codeLines" data-i18n-params="{&quot;count&quot;:8}">8 行</span></span><button class="copy-code" type="button" aria-label="复制代码" data-i18n-aria="copyCode" hidden><svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" aria-hidden="true"><rect x="5" y="5" width="8" height="9" rx="1.5"/><path d="M3 11H2V2h8v1"/></svg><span aria-live="polite" data-i18n="copy">复制</span></button></figcaption><pre class="shiki github-dark-default" style="background-color:#0d1117;color:#e6edf3" tabindex="0"><code><span class="line"></span>
+<span class="line"><span style="color:#FF7B72">use</span><span style="color:#79C0FF">  Illuminate\Database\Eloquent\Model</span><span style="color:#FF7B72">  as</span><span style="color:#79C0FF"> Eloquent</span><span style="color:#E6EDF3">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FF7B72">class</span><span style="color:#FFA657"> User</span><span style="color:#FF7B72"> extends</span><span style="color:#79C0FF">  Eloquent</span></span>
+<span class="line"><span style="color:#E6EDF3">{</span></span>
+<span class="line"><span style="color:#FF7B72">	protected</span><span style="color:#E6EDF3"> $table </span><span style="color:#FF7B72">=</span><span style="color:#A5D6FF"> 'users'</span><span style="color:#E6EDF3">;</span></span>
+<span class="line"><span style="color:#E6EDF3">}</span></span>
+<span class="line"></span></code></pre></figure>
 <p>那么你就可以很方便的像在Laravel框架里一样使用Eloquent了：</p>
-<pre><code class="language-php?start_inline=1">// 查询id为2的
-$users = User::find(2);
-
-// 查询全部
-$users = User::all();
-
-// 创建数据
-$user = new User;
-$user-&gt;username = 'someone';
-$user-&gt;email = 'some@overtrue.me';
-$user-&gt;save();
-
-// ... 更多
-
-</code></pre>
+<figure class="code-block" data-language="php"><figcaption class="code-bar"><span><span>PHP</span><span class="code-lines" data-i18n="codeLines" data-i18n-params="{&quot;count&quot;:14}">14 行</span></span><button class="copy-code" type="button" aria-label="复制代码" data-i18n-aria="copyCode" hidden><svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" aria-hidden="true"><rect x="5" y="5" width="8" height="9" rx="1.5"/><path d="M3 11H2V2h8v1"/></svg><span aria-live="polite" data-i18n="copy">复制</span></button></figcaption><pre class="shiki github-dark-default" style="background-color:#0d1117;color:#e6edf3" tabindex="0"><code><span class="line"><span style="color:#8B949E">// 查询id为2的</span></span>
+<span class="line"><span style="color:#E6EDF3">$users </span><span style="color:#FF7B72">=</span><span style="color:#79C0FF"> User</span><span style="color:#FF7B72">::</span><span style="color:#D2A8FF">find</span><span style="color:#E6EDF3">(</span><span style="color:#79C0FF">2</span><span style="color:#E6EDF3">);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#8B949E">// 查询全部</span></span>
+<span class="line"><span style="color:#E6EDF3">$users </span><span style="color:#FF7B72">=</span><span style="color:#79C0FF"> User</span><span style="color:#FF7B72">::</span><span style="color:#D2A8FF">all</span><span style="color:#E6EDF3">();</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#8B949E">// 创建数据</span></span>
+<span class="line"><span style="color:#E6EDF3">$user </span><span style="color:#FF7B72">=</span><span style="color:#FF7B72"> new</span><span style="color:#79C0FF"> User</span><span style="color:#E6EDF3">;</span></span>
+<span class="line"><span style="color:#E6EDF3">$user</span><span style="color:#FF7B72">-></span><span style="color:#E6EDF3">username </span><span style="color:#FF7B72">=</span><span style="color:#A5D6FF"> 'someone'</span><span style="color:#E6EDF3">;</span></span>
+<span class="line"><span style="color:#E6EDF3">$user</span><span style="color:#FF7B72">-></span><span style="color:#E6EDF3">email </span><span style="color:#FF7B72">=</span><span style="color:#A5D6FF"> 'some@overtrue.me'</span><span style="color:#E6EDF3">;</span></span>
+<span class="line"><span style="color:#E6EDF3">$user</span><span style="color:#FF7B72">-></span><span style="color:#D2A8FF">save</span><span style="color:#E6EDF3">();</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#8B949E">// ... 更多</span></span>
+<span class="line"></span></code></pre></figure>
 <p>OK，这基本上就搞定了，当然，你用分页的时候会出问题，我们下一节再讲。</p>
 <p>为了给大家一个完整的示例，我这里使用<a href="https://github.com/codeguy/slim">Slim</a>结合Eloquent做了一个实例：<a href="https://github.com/overtrue/rester">overtrue/rester</a></p>
 <p><a href="/2014/11/25/using-eloquent-outside-laravel-2.html">《在Laravel外使用Eloquent（二）- 分页问题》</a></p>
 <p>更多关于Eloquent的使用请参考: <a href="http://v4.golaravel.com/docs/4.1/eloquent">http://v4.golaravel.com/docs/4.1/eloquent</a></p>
-<h2 id="有用的链接">有用的链接</h2>
+<h2 id="section-有用的链接">有用的链接<a class="heading-anchor" href="#section-有用的链接" aria-label="链接到：有用的链接" data-i18n-aria="headingLink" data-i18n-params="{&quot;name&quot;:&quot;有用的链接&quot;}">#</a></h2>
 <ul>
 <li><a href="http://laravel.com">Laravel官网</a></li>
 <li><a href="http://golaravel.com">Laravel中文网</a></li>
 </ul>
-
-              </div>
-              <div class="toc-container">
-                <ul class="markdownIt-TOC">
-<li>
-<ul>
-<li><a href="#%E5%AE%89%E8%A3%85">安装</a></li>
-<li><a href="#%E9%85%8D%E7%BD%AE">配置</a></li>
-<li><a href="#%E5%BB%BA%E8%A1%A8">建表</a></li>
-<li><a href="#%E5%86%99%E5%85%A5%E6%95%B0%E6%8D%AE">写入数据</a></li>
-<li><a href="#%E4%BD%BF%E7%94%A8%E6%A8%A1%E5%9E%8B">使用模型</a></li>
-<li><a href="#%E6%9C%89%E7%94%A8%E7%9A%84%E9%93%BE%E6%8E%A5">有用的链接</a></li>
-</ul>
-</li>
-</ul>
-
-              </div>
-            </div>
-          </article>
-        </div>
-
-        
-          <div class="next-post">
-            <div class="next">下一篇</div>
-            <a href="https://overtrue.me/mysql-explain/">
-              <h3 class="post-title">
-                MySQL 中 EXPLAIN 命令详解
-              </h3>
-            </a>
-          </div>
-        
-
-        
-          
-            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
-<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
-
-<div id="gitalk-container"></div>
-
-<script>
-
-  var gitalk = new Gitalk({
-    clientID: 'f2027ed0e5be934c16d5',
-    clientSecret: '37b4520fa4543c1565ed971e0e50ac215e110c99',
-    repo: 'blog',
-    owner: 'overtrue',
-    admin: ['overtrue'],
-    labels: ['gitalk', 'comment'],
-    id: location.pathname.slice(1, location.pathname.lastIndexOf('/')).substring(0, 49), 
-    distractionFreeMode: false  // Facebook-like distraction free mode
-  })
-
-  gitalk.render('gitalk-container')
-
-</script>
-
-          
-
-          
-        
-
-        <div class="site-footer">
-  <span>Powered by  <span><a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
-  <a class="rss" href="https://overtrue.me/atom.xml" target="_blank">
-    <i class="ri-rss-line"></i> RSS
-  </a>
-</div>
-
-      </div>
-    </div>
-
-    <script>
-      hljs.initHighlightingOnLoad()
-
-      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
-
-      // This should probably be throttled.
-      // Especially because it triggers during smooth scrolling.
-      // https://lodash.com/docs/4.17.10#throttle
-      // You could do like...
-      // window.addEventListener("scroll", () => {
-      //    _.throttle(doThatStuff, 100);
-      // });
-      // Only not doing it here to keep this Pen dependency-free.
-
-      window.addEventListener("scroll", event => {
-        let fromTop = window.scrollY;
-
-        mainNavLinks.forEach((link, index) => {
-          let section = document.getElementById(decodeURI(link.hash).substring(1));
-          let nextSection = null
-          if (mainNavLinks[index + 1]) {
-            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
-          }
-          if (section.offsetTop <= fromTop) {
-            if (nextSection) {
-              if (nextSection.offsetTop > fromTop) {
-                link.classList.add("current");
-              } else {
-                link.classList.remove("current");    
-              }
-            } else {
-              link.classList.add("current");
-            }
-          } else {
-            link.classList.remove("current");
-          }
-        });
-      });
-
-    </script>
-  </body>
-</html>
+</div></div></div></article><div class="article-footer"><a href="/writing/" class="article-back"><svg class width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12h16m-7-7 7 7-7 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg> <span data-i18n="allPosts">全部文字</span></a><a href="/mysql-explain/" class="article-next"><span data-i18n="readNext">接着读</span><strong lang="zh-CN">MySQL 中 EXPLAIN 命令详解</strong><svg class width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></a></div></main><footer class="site-footer compact"><div class="footer-bottom"><a class="footer-identity" href="/"><img src="/brand/mark-color.svg" width="28" height="28" alt=""><span>Chris An<span>安正超 / overtrue</span></span></a><p>Keep calm and coding.</p><div><a href="https://github.com/overtrue" target="_blank" rel="noopener noreferrer">GitHub</a><a href="https://x.com/overtrue666" target="_blank" rel="noopener noreferrer">X / Twitter</a><a href="/rss.xml">RSS</a><a href="#top"><span data-i18n="backTop">回到顶部</span> <svg class width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></a></div></div><div class="footer-wordmark" aria-hidden="true">OVERTRUE</div></footer><script type="module" src="/_astro/_slug_.astro_astro_type_script_index_0_lang.uu2a7OVK.js"></script><script type="module" src="/_astro/Base.astro_astro_type_script_index_0_lang.F6bjS25y.js"></script></body></html>

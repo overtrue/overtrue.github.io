@@ -1,369 +1,151 @@
-<html>
-  <head>
-    <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>更准确的 PHP 汉字转拼音解决方案 | overtrue</title>
-<link rel="shortcut icon" href="https://overtrue.me/favicon.ico?v=1617147724333">
-<link href="https://cdn.remixicon.com/releases/v2.1.0/remixicon.css" rel="stylesheet">
-<link rel="stylesheet" href="https://overtrue.me/styles/main.css">
-<link rel="alternate" type="application/atom+xml" title="更准确的 PHP 汉字转拼音解决方案 | overtrue - Atom Feed" href="https://overtrue.me/atom.xml">
-
-
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-55452630-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-55452630-1');
-</script>
-
-
-    <meta name="description" content="目前为止这可能是最准确的一个解决方案了，大GitHub上各种找，没有一个好用的，大部分都只是汉字转拼音，所以包含多音字的结果基本都错误。当然也有基于词典的转换工具，不过还是解决不了词库不全造成的多音字问题（当然，完全解决是不太可能的，或者词..." />
-    <meta name="keywords" content="" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
-    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
-  </head>
-  <body>
-    <div class="main">
-      <div class="main-content">
-        <div class="site-header">
-  <a href="https://overtrue.me">
-  <img class="avatar" src="https://overtrue.me/images/avatar.png?v=1617147724333" alt="">
-  </a>
-  <h1 class="site-title">
-    overtrue
-  </h1>
-  <p class="site-description">
-    🇨🇳 <b>China Shenzhen</b>・🕹<b>Web developer</b>
-  </p>
-  <div class="menu-container">
-    
-      
-        <a href="/" class="menu">
-          首页
-        </a>
-      
-    
-      
-        <a href="https://github.com/overtrue" class="menu" target="_blank">
-          开源
-        </a>
-      
-    
-      
-        <a href="/archives" class="menu">
-          归档
-        </a>
-      
-    
-      
-        <a href="/tags" class="menu">
-          标签
-        </a>
-      
-    
-      
-        <a href="/about" class="menu">
-          关于
-        </a>
-      
-    
-  </div>
-  <div class="social-container">
-    
-      
-        <a href="https://github.com/overtrue" target="_blank">
-          <i class="ri-github-line"></i>
-        </a>
-      
-    
-      
-        <a href="https://twitter.com/overtrue666" target="_blank">
-          <i class="ri-twitter-line"></i>
-        </a>
-      
-    
-      
-        <a href="https://weibo.com/44294631" target="_blank">
-          <i class="ri-weibo-line"></i>
-        </a>
-      
-    
-      
-    
-      
-    
-  </div>
-</div>
-
-        <div class="post-detail">
-          <article class="post">
-            <h2 class="post-title">
-              更准确的 PHP 汉字转拼音解决方案
-            </h2>
-            <div class="post-info">
-              <span>
-                2014-10-06
-              </span>
-              <span>
-                5 min read
-              </span>
-              
-            </div>
-            
-            <div class="post-content-wrapper">
-              <div class="post-content">
-                <p>目前为止这可能是最准确的一个解决方案了，大GitHub上各种找，没有一个好用的，大部分都只是汉字转拼音，所以包含多音字的结果基本都错误。当然也有基于词典的转换工具，不过还是解决不了词库不全造成的多音字问题（当然，完全解决是不太可能的，或者词库会无比的大）。比如<code>康熙来了</code> 大部分工具的试用结果是：kang xi lai liao.</p>
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><script>
+      (() => {
+        const root = document.documentElement;
+        let theme = 'system';
+        let language = 'zh';
+        try {
+          theme = localStorage.getItem('overtrue-theme') || 'system';
+          language = localStorage.getItem('overtrue-language') || 'zh';
+        } catch {}
+        if (!['light', 'dark'].includes(theme)) theme = 'system';
+        root.dataset.themePreference = theme;
+        root.dataset.theme =
+          theme === 'system'
+            ? matchMedia('(prefers-color-scheme: dark)').matches
+              ? 'dark'
+              : 'light'
+            : theme;
+        root.lang = language === 'en' ? 'en' : 'zh-CN';
+      })();
+    </script><meta name="description" content="到目前为止这可能是最准确的一个解决方案了，大GitHub上各种找，没有一个好用的，大部分都只是汉字转拼音,所以我造了这个轮子..."><meta name="theme-color" content="#f0f1f4"><meta property="og:type" content="article"><meta property="og:title" content="更准确的 PHP 汉字转拼音解决方案 · overtrue"><meta property="og:description" content="到目前为止这可能是最准确的一个解决方案了，大GitHub上各种找，没有一个好用的，大部分都只是汉字转拼音,所以我造了这个轮子..."><meta property="og:url" content="https://overtrue.me/php-chinese-to-pinyin/"><meta property="og:image" content="https://overtrue.me/social.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:creator" content="@overtrue666"><link rel="canonical" href="https://overtrue.me/php-chinese-to-pinyin/"><link rel="icon" type="image/svg+xml" href="/brand/mark-color.svg"><link rel="alternate" type="application/rss+xml" title="overtrue 的文章" href="/rss.xml"><title>更准确的 PHP 汉字转拼音解决方案 · overtrue</title><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"更准确的 PHP 汉字转拼音解决方案","datePublished":"2014-10-06","author":{"@type":"Person","name":"安正超","url":"https://overtrue.me"},"mainEntityOfPage":"https://overtrue.me/php-chinese-to-pinyin/"}</script><link rel="stylesheet" href="/_astro/Preferences.PdpZ8tH4.css"><link rel="stylesheet" href="/_astro/Footer.F4l1zD53.css"></head><body class="reading-page"><a class="skip-link" href="#main" data-i18n="skip">跳到内容</a><div id="top"></div><header class="site-header"><a class="reading-signature" href="/" aria-label="overtrue 首页" data-i18n-aria="home"><img src="/brand/mark-color.svg" width="44" height="44" alt=""></a><nav aria-label="主导航" data-i18n-aria="navigation"><a href="/#work"><span class="nav-number" aria-hidden="true">01</span><span data-i18n="navWork">开源</span></a><a href="/writing/" aria-current="page"><span class="nav-number" aria-hidden="true">02</span><span data-i18n="navWriting">文字</span></a><a href="/#about"><span class="nav-number" aria-hidden="true">03</span><span data-i18n="navAbout">联系</span></a></nav><div class="header-actions"><a class="github-link" href="https://github.com/overtrue" target="_blank" rel="noopener noreferrer">GitHub<svg class width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></a><div class="preferences" data-preferences hidden><div class="theme-picker"><button type="button" class="preference-button theme-toggle" aria-label="切换主题" data-i18n-aria="theme" aria-expanded="false" aria-controls="theme-options"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g data-theme-icon="system"><rect x="3" y="4" width="18" height="13" rx="2"></rect><path d="M8 21h8m-4-4v4"></path></g><g data-theme-icon="light" display="none"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.4 1.4m11.2 11.2L19 19M5 19l1.4-1.4M17.6 6.4 19 5"></path></g><g data-theme-icon="dark" display="none"><path d="M20.5 13.3A8.8 8.8 0 0 1 10.7 3.5a8.8 8.8 0 1 0 9.8 9.8Z"></path></g></svg></button><div class="theme-options" id="theme-options" role="group" aria-label="切换主题" data-i18n-aria="theme" hidden><button type="button" data-theme-choice="system" aria-pressed="true" data-i18n="themeSystem">跟随系统</button><button type="button" data-theme-choice="light" aria-pressed="false" data-i18n="themeLight">浅色</button><button type="button" data-theme-choice="dark" aria-pressed="false" data-i18n="themeDark">深色</button></div></div><button type="button" class="preference-button language-toggle" aria-label="Switch to English" lang="en">EN</button></div></div></header><script type="module">var e=document.querySelector(`.site-header`),t=()=>e?.classList.toggle(`is-scrolled`,scrollY>24);addEventListener(`scroll`,t,{passive:!0}),t();</script><div class="reading-progress" aria-hidden="true"><span data-reading-progress></span></div><main id="main" class="article-shell"><a href="/writing/" class="article-back"><svg class width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12h16m-7-7 7 7-7 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg><span data-i18n="allPosts">全部文字</span></a><article><header class="article-header"><p class="article-kicker">notes / PHP</p><h1 lang="zh-CN">更准确的 PHP 汉字转拼音解决方案</h1><div class="article-meta"><a class="article-author" href="/#about"><img src="/images/overtrue.jpg" width="26" height="26" alt="">Chris An <span>安正超</span></a><time datetime="2014-10-06">2014.10.06</time><span data-i18n="readingTime" data-i18n-params="{&quot;minutes&quot;:4}">4 分钟阅读</span></div></header><div class="article-layout"><aside class="reading-rail"><details class="article-toc" open><summary><span data-i18n="toc">本文目录</span> <span class="toc-count">07</span></summary><nav aria-label="文章目录" data-i18n-aria="tocLabel" lang="zh-CN"><a href="#section-pinyin" data-toc-link lang="zh-CN">Pinyin</a><a href="#section-安装" data-toc-link lang="zh-CN">安装</a><a href="#section-使用" data-toc-link lang="zh-CN">使用</a><a href="#section-设置" data-toc-link lang="zh-CN">设置</a><a href="#section-contribution" data-toc-link lang="zh-CN">Contribution</a><a href="#section-参考" data-toc-link lang="zh-CN">参考</a><a href="#section-license" data-toc-link lang="zh-CN">License</a></nav></details><a class="rail-top" href="#top"><span data-i18n="backTop">回到顶部</span> <svg class width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12h16m-7-7 7 7-7 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></a></aside><div class="article-body"><p class="archive-notice" data-i18n="oldPost" data-i18n-params="{&quot;year&quot;:&quot;2014&quot;}">写于 2014 年，内容保留原貌。文中版本和链接可能已有变化。</p><div class="prose" lang="zh-CN"><p>到目前为止这可能是最准确的一个解决方案了，大GitHub上各种找，没有一个好用的，大部分都只是汉字转拼音，所以包含多音字的结果基本都错误。当然也有基于词典的转换工具，不过还是解决不了词库不全造成的多音字问题（当然，完全解决是不太可能的，或者词库会无比的大）。比如<code>康熙来了</code> 大部分工具的试用结果是：kang xi lai liao.</p>
 <p>基于上面的原因，我造了下面这个轮子。特点如下:</p>
 <ul>
 <li>基于<a href="http://cc-cedict.org/wiki/">CC-CEDICT</a>.词典，解决大部分词汇问题；</li>
 <li>添加补充词典，解决CC-CEDICT不全或者不准确的问题；</li>
 <li>添加词频表，根据使用频率再一步提高多音字的准确度；</li>
 </ul>
-<h1 id="pinyin"><a href="http://overtrue.me/pinyin">Pinyin</a></h1>
+<h2 id="section-pinyin"><a href="http://overtrue.me/pinyin">Pinyin</a><a class="heading-anchor" href="#section-pinyin" aria-label="链接到：Pinyin" data-i18n-aria="headingLink" data-i18n-params="{&quot;name&quot;:&quot;Pinyin&quot;}">#</a></h2>
 <p>主页：<a href="http://overtrue.me/pinyin">http://overtrue.me/pinyin</a></p>
 <p>基于CC-CEDICT词典的中文转拼音工具, 更准确的汉字转拼音解决方案。 <a href="http://cc-cedict.org/wiki/">CC-CEDICT</a>.</p>
-<pre><code class="language-php?start_inline=1">use \Overtrue\Pinyin;
-
-echo Pinyin::pinyin('带着希望去旅行，比到达终点更美好');
-// dài zhe xī wàng qù lǔ xíng bǐ dào dá zhōng diǎn gèng měi hǎo
-
-//多音字
-// 了
-Pinyin::pinyin('了然'); // liǎo rán
-Pinyin::pinyin('来了'); // lái le
-
-// 还
-Pinyin::pinyin('还有'); // hái yǒu
-Pinyin::pinyin('交还'); // jiāo huán
-
-// 什
-Pinyin::pinyin('什么'); // shén me
-Pinyin::pinyin('什锦'); // shí jǐn
-
-// 便
-Pinyin::pinyin('便当'); // biàn dāng
-Pinyin::pinyin('便宜'); // pián yí
-
-// 剥
-Pinyin::pinyin('剥皮'); // bāo pí
-Pinyin::pinyin('剥皮器'); // bō pí qì
-
-// 不
-Pinyin::pinyin('赔不是'); // péi bú shi
-Pinyin::pinyin('跑了和尚，跑不了庙'); // pǎo le hé shàng , pǎo bù liǎo miào
-
-// 降
-Pinyin::pinyin('降温'); // jiàng wēn
-Pinyin::pinyin('投降'); // tóu xiáng
-
-// 都
-Pinyin::pinyin('首都'); // shǒu dū
-Pinyin::pinyin('都什么年代了'); // dōu shén me nián dài le
-
-// 乐
-Pinyin::pinyin('快乐'); // kuài lè
-Pinyin::pinyin('音乐'); // yīn yuè
-
-// 长
-Pinyin::pinyin('成长'); // chéng zhǎng
-Pinyin::pinyin('长江'); // cháng jiāng
-
-// 难
-Pinyin::pinyin('难民'); // nàn mín
-Pinyin::pinyin('难过'); // nán guò
-...
-
-</code></pre>
-<h1 id="安装">安装</h1>
+<figure class="code-block" data-language="php"><figcaption class="code-bar"><span><span>PHP</span><span class="code-lines" data-i18n="codeLines" data-i18n-params="{&quot;count&quot;:51}">51 行</span></span><button class="copy-code" type="button" aria-label="复制代码" data-i18n-aria="copyCode" hidden><svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" aria-hidden="true"><rect x="5" y="5" width="8" height="9" rx="1.5"/><path d="M3 11H2V2h8v1"/></svg><span aria-live="polite" data-i18n="copy">复制</span></button></figcaption><pre class="shiki github-dark-default" style="background-color:#0d1117;color:#e6edf3" tabindex="0"><code><span class="line"><span style="color:#FF7B72">use</span><span style="color:#79C0FF"> \Overtrue\Pinyin</span><span style="color:#E6EDF3">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#79C0FF">echo</span><span style="color:#79C0FF"> Pinyin</span><span style="color:#FF7B72">::</span><span style="color:#D2A8FF">pinyin</span><span style="color:#E6EDF3">(</span><span style="color:#A5D6FF">'带着希望去旅行，比到达终点更美好'</span><span style="color:#E6EDF3">);</span></span>
+<span class="line"><span style="color:#8B949E">// dài zhe xī wàng qù lǔ xíng bǐ dào dá zhōng diǎn gèng měi hǎo</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#8B949E">//多音字</span></span>
+<span class="line"><span style="color:#8B949E">// 了</span></span>
+<span class="line"><span style="color:#79C0FF">Pinyin</span><span style="color:#FF7B72">::</span><span style="color:#D2A8FF">pinyin</span><span style="color:#E6EDF3">(</span><span style="color:#A5D6FF">'了然'</span><span style="color:#E6EDF3">); </span><span style="color:#8B949E">// liǎo rán</span></span>
+<span class="line"><span style="color:#79C0FF">Pinyin</span><span style="color:#FF7B72">::</span><span style="color:#D2A8FF">pinyin</span><span style="color:#E6EDF3">(</span><span style="color:#A5D6FF">'来了'</span><span style="color:#E6EDF3">); </span><span style="color:#8B949E">// lái le</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#8B949E">// 还</span></span>
+<span class="line"><span style="color:#79C0FF">Pinyin</span><span style="color:#FF7B72">::</span><span style="color:#D2A8FF">pinyin</span><span style="color:#E6EDF3">(</span><span style="color:#A5D6FF">'还有'</span><span style="color:#E6EDF3">); </span><span style="color:#8B949E">// hái yǒu</span></span>
+<span class="line"><span style="color:#79C0FF">Pinyin</span><span style="color:#FF7B72">::</span><span style="color:#D2A8FF">pinyin</span><span style="color:#E6EDF3">(</span><span style="color:#A5D6FF">'交还'</span><span style="color:#E6EDF3">); </span><span style="color:#8B949E">// jiāo huán</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#8B949E">// 什</span></span>
+<span class="line"><span style="color:#79C0FF">Pinyin</span><span style="color:#FF7B72">::</span><span style="color:#D2A8FF">pinyin</span><span style="color:#E6EDF3">(</span><span style="color:#A5D6FF">'什么'</span><span style="color:#E6EDF3">); </span><span style="color:#8B949E">// shén me</span></span>
+<span class="line"><span style="color:#79C0FF">Pinyin</span><span style="color:#FF7B72">::</span><span style="color:#D2A8FF">pinyin</span><span style="color:#E6EDF3">(</span><span style="color:#A5D6FF">'什锦'</span><span style="color:#E6EDF3">); </span><span style="color:#8B949E">// shí jǐn</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#8B949E">// 便</span></span>
+<span class="line"><span style="color:#79C0FF">Pinyin</span><span style="color:#FF7B72">::</span><span style="color:#D2A8FF">pinyin</span><span style="color:#E6EDF3">(</span><span style="color:#A5D6FF">'便当'</span><span style="color:#E6EDF3">); </span><span style="color:#8B949E">// biàn dāng</span></span>
+<span class="line"><span style="color:#79C0FF">Pinyin</span><span style="color:#FF7B72">::</span><span style="color:#D2A8FF">pinyin</span><span style="color:#E6EDF3">(</span><span style="color:#A5D6FF">'便宜'</span><span style="color:#E6EDF3">); </span><span style="color:#8B949E">// pián yí</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#8B949E">// 剥</span></span>
+<span class="line"><span style="color:#79C0FF">Pinyin</span><span style="color:#FF7B72">::</span><span style="color:#D2A8FF">pinyin</span><span style="color:#E6EDF3">(</span><span style="color:#A5D6FF">'剥皮'</span><span style="color:#E6EDF3">); </span><span style="color:#8B949E">// bāo pí</span></span>
+<span class="line"><span style="color:#79C0FF">Pinyin</span><span style="color:#FF7B72">::</span><span style="color:#D2A8FF">pinyin</span><span style="color:#E6EDF3">(</span><span style="color:#A5D6FF">'剥皮器'</span><span style="color:#E6EDF3">); </span><span style="color:#8B949E">// bō pí qì</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#8B949E">// 不</span></span>
+<span class="line"><span style="color:#79C0FF">Pinyin</span><span style="color:#FF7B72">::</span><span style="color:#D2A8FF">pinyin</span><span style="color:#E6EDF3">(</span><span style="color:#A5D6FF">'赔不是'</span><span style="color:#E6EDF3">); </span><span style="color:#8B949E">// péi bú shi</span></span>
+<span class="line"><span style="color:#79C0FF">Pinyin</span><span style="color:#FF7B72">::</span><span style="color:#D2A8FF">pinyin</span><span style="color:#E6EDF3">(</span><span style="color:#A5D6FF">'跑了和尚，跑不了庙'</span><span style="color:#E6EDF3">); </span><span style="color:#8B949E">// pǎo le hé shàng , pǎo bù liǎo miào</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#8B949E">// 降</span></span>
+<span class="line"><span style="color:#79C0FF">Pinyin</span><span style="color:#FF7B72">::</span><span style="color:#D2A8FF">pinyin</span><span style="color:#E6EDF3">(</span><span style="color:#A5D6FF">'降温'</span><span style="color:#E6EDF3">); </span><span style="color:#8B949E">// jiàng wēn</span></span>
+<span class="line"><span style="color:#79C0FF">Pinyin</span><span style="color:#FF7B72">::</span><span style="color:#D2A8FF">pinyin</span><span style="color:#E6EDF3">(</span><span style="color:#A5D6FF">'投降'</span><span style="color:#E6EDF3">); </span><span style="color:#8B949E">// tóu xiáng</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#8B949E">// 都</span></span>
+<span class="line"><span style="color:#79C0FF">Pinyin</span><span style="color:#FF7B72">::</span><span style="color:#D2A8FF">pinyin</span><span style="color:#E6EDF3">(</span><span style="color:#A5D6FF">'首都'</span><span style="color:#E6EDF3">); </span><span style="color:#8B949E">// shǒu dū</span></span>
+<span class="line"><span style="color:#79C0FF">Pinyin</span><span style="color:#FF7B72">::</span><span style="color:#D2A8FF">pinyin</span><span style="color:#E6EDF3">(</span><span style="color:#A5D6FF">'都什么年代了'</span><span style="color:#E6EDF3">); </span><span style="color:#8B949E">// dōu shén me nián dài le</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#8B949E">// 乐</span></span>
+<span class="line"><span style="color:#79C0FF">Pinyin</span><span style="color:#FF7B72">::</span><span style="color:#D2A8FF">pinyin</span><span style="color:#E6EDF3">(</span><span style="color:#A5D6FF">'快乐'</span><span style="color:#E6EDF3">); </span><span style="color:#8B949E">// kuài lè</span></span>
+<span class="line"><span style="color:#79C0FF">Pinyin</span><span style="color:#FF7B72">::</span><span style="color:#D2A8FF">pinyin</span><span style="color:#E6EDF3">(</span><span style="color:#A5D6FF">'音乐'</span><span style="color:#E6EDF3">); </span><span style="color:#8B949E">// yīn yuè</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#8B949E">// 长</span></span>
+<span class="line"><span style="color:#79C0FF">Pinyin</span><span style="color:#FF7B72">::</span><span style="color:#D2A8FF">pinyin</span><span style="color:#E6EDF3">(</span><span style="color:#A5D6FF">'成长'</span><span style="color:#E6EDF3">); </span><span style="color:#8B949E">// chéng zhǎng</span></span>
+<span class="line"><span style="color:#79C0FF">Pinyin</span><span style="color:#FF7B72">::</span><span style="color:#D2A8FF">pinyin</span><span style="color:#E6EDF3">(</span><span style="color:#A5D6FF">'长江'</span><span style="color:#E6EDF3">); </span><span style="color:#8B949E">// cháng jiāng</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#8B949E">// 难</span></span>
+<span class="line"><span style="color:#79C0FF">Pinyin</span><span style="color:#FF7B72">::</span><span style="color:#D2A8FF">pinyin</span><span style="color:#E6EDF3">(</span><span style="color:#A5D6FF">'难民'</span><span style="color:#E6EDF3">); </span><span style="color:#8B949E">// nàn mín</span></span>
+<span class="line"><span style="color:#79C0FF">Pinyin</span><span style="color:#FF7B72">::</span><span style="color:#D2A8FF">pinyin</span><span style="color:#E6EDF3">(</span><span style="color:#A5D6FF">'难过'</span><span style="color:#E6EDF3">); </span><span style="color:#8B949E">// nán guò</span></span>
+<span class="line"><span style="color:#FF7B72">...</span></span>
+<span class="line"></span></code></pre></figure>
+<h2 id="section-安装">安装<a class="heading-anchor" href="#section-安装" aria-label="链接到：安装" data-i18n-aria="headingLink" data-i18n-params="{&quot;name&quot;:&quot;安装&quot;}">#</a></h2>
 <ol>
 <li>使用 Composer 安装:</li>
 </ol>
-<pre><code class="language-shell">composer require overtrue/pinyin &gt;=1.4
-</code></pre>
+<figure class="code-block" data-language="shellscript"><figcaption class="code-bar"><span><span>Shell</span><span class="code-lines" data-i18n="codeLines" data-i18n-params="{&quot;count&quot;:1}">1 行</span></span><button class="copy-code" type="button" aria-label="复制代码" data-i18n-aria="copyCode" hidden><svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" aria-hidden="true"><rect x="5" y="5" width="8" height="9" rx="1.5"/><path d="M3 11H2V2h8v1"/></svg><span aria-live="polite" data-i18n="copy">复制</span></button></figcaption><pre class="shiki github-dark-default" style="background-color:#0d1117;color:#e6edf3" tabindex="0"><code><span class="line"><span style="color:#FFA657">composer</span><span style="color:#A5D6FF"> require</span><span style="color:#A5D6FF"> overtrue/pinyin</span><span style="color:#FF7B72"> ></span><span style="color:#A5D6FF">=</span><span style="color:#79C0FF">1.4</span></span></code></pre></figure>
 <p>或者在你的项目composer.json加入：</p>
-<pre><code class="language-javascript">{
-    &quot;require&quot;: {
-        &quot;overtrue/pinyin&quot;: &quot;&gt;=1.4&quot;
-    }
-}
-</code></pre>
+<figure class="code-block" data-language="javascript"><figcaption class="code-bar"><span><span>JavaScript</span><span class="code-lines" data-i18n="codeLines" data-i18n-params="{&quot;count&quot;:5}">5 行</span></span><button class="copy-code" type="button" aria-label="复制代码" data-i18n-aria="copyCode" hidden><svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" aria-hidden="true"><rect x="5" y="5" width="8" height="9" rx="1.5"/><path d="M3 11H2V2h8v1"/></svg><span aria-live="polite" data-i18n="copy">复制</span></button></figcaption><pre class="shiki github-dark-default" style="background-color:#0d1117;color:#e6edf3" tabindex="0"><code><span class="line"><span style="color:#E6EDF3">{</span></span>
+<span class="line"><span style="color:#A5D6FF">    "require"</span><span style="color:#E6EDF3">: {</span></span>
+<span class="line"><span style="color:#A5D6FF">        "overtrue/pinyin"</span><span style="color:#E6EDF3">: </span><span style="color:#A5D6FF">">=1.4"</span></span>
+<span class="line"><span style="color:#E6EDF3">    }</span></span>
+<span class="line"><span style="color:#E6EDF3">}</span></span></code></pre></figure>
 <ol start="2">
 <li>直接下载文件 <code>src/Overtrue/Pinyin.php</code> 引入到项目中。</li>
 </ol>
-<h1 id="使用">使用</h1>
-<pre><code class="language-php?start_inline=1">&lt;?php
-use \Overtrue\Pinyin;
-
-//获取拼音
-echo Pinyin::pinyin('带着希望去旅行，比到达终点更美好');
-//或者: Overtrue\pinyin($string);
-// dài zhe xī wàng qù lǔ xíng bǐ dào dá zhōng diǎn gèng měi hǎo
-
-//获取首字母
-echo Pinyin::letter('带着希望去旅行，比到达终点更美好');
-// D Z X W Q L X B D D Z D G M H
-
-</code></pre>
-<h2 id="设置">设置</h2>
+<h2 id="section-使用">使用<a class="heading-anchor" href="#section-使用" aria-label="链接到：使用" data-i18n-aria="headingLink" data-i18n-params="{&quot;name&quot;:&quot;使用&quot;}">#</a></h2>
+<figure class="code-block" data-language="php"><figcaption class="code-bar"><span><span>PHP</span><span class="code-lines" data-i18n="codeLines" data-i18n-params="{&quot;count&quot;:12}">12 行</span></span><button class="copy-code" type="button" aria-label="复制代码" data-i18n-aria="copyCode" hidden><svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" aria-hidden="true"><rect x="5" y="5" width="8" height="9" rx="1.5"/><path d="M3 11H2V2h8v1"/></svg><span aria-live="polite" data-i18n="copy">复制</span></button></figcaption><pre class="shiki github-dark-default" style="background-color:#0d1117;color:#e6edf3" tabindex="0"><code><span class="line"><span style="color:#FF7B72">&#x3C;?</span><span style="color:#79C0FF">php</span></span>
+<span class="line"><span style="color:#FF7B72">use</span><span style="color:#79C0FF"> \Overtrue\Pinyin</span><span style="color:#E6EDF3">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#8B949E">//获取拼音</span></span>
+<span class="line"><span style="color:#79C0FF">echo</span><span style="color:#79C0FF"> Pinyin</span><span style="color:#FF7B72">::</span><span style="color:#D2A8FF">pinyin</span><span style="color:#E6EDF3">(</span><span style="color:#A5D6FF">'带着希望去旅行，比到达终点更美好'</span><span style="color:#E6EDF3">);</span></span>
+<span class="line"><span style="color:#8B949E">//或者: Overtrue\pinyin($string);</span></span>
+<span class="line"><span style="color:#8B949E">// dài zhe xī wàng qù lǔ xíng bǐ dào dá zhōng diǎn gèng měi hǎo</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#8B949E">//获取首字母</span></span>
+<span class="line"><span style="color:#79C0FF">echo</span><span style="color:#79C0FF"> Pinyin</span><span style="color:#FF7B72">::</span><span style="color:#D2A8FF">letter</span><span style="color:#E6EDF3">(</span><span style="color:#A5D6FF">'带着希望去旅行，比到达终点更美好'</span><span style="color:#E6EDF3">);</span></span>
+<span class="line"><span style="color:#8B949E">// D Z X W Q L X B D D Z D G M H</span></span>
+<span class="line"></span></code></pre></figure>
+<h2 id="section-设置">设置<a class="heading-anchor" href="#section-设置" aria-label="链接到：设置" data-i18n-aria="headingLink" data-i18n-params="{&quot;name&quot;:&quot;设置&quot;}">#</a></h2>
 <ul>
-<li><code>delimiter</code> 分隔符，默认为一个空格 ' '；</li>
+<li><code>delimiter</code> 分隔符，默认为一个空格 &#39; &#39;；</li>
 <li><code>traditional</code> 繁体</li>
 <li><code>accent</code> 是否输出音调；</li>
 <li><code>letter</code> 只输出首字母，或者直接使用<code>Pinyin::letter($string)</code>;</li>
 <li><code>only_chinese</code> 只保留$string中中文部分。</li>
 </ul>
 <ul>
-<li>
-<p>全局设置：*  <code>Pinyin::set('delimiter', '-');</code></p>
+<li><p>全局设置：*  <code>Pinyin::set(&#39;delimiter&#39;, &#39;-&#39;);</code></p>
 </li>
-<li>
-<p>临时设置：*  <code>Pinyin::pinyin($word, $settings)</code> 在调用的方法后传参</p>
+<li><p>临时设置：*  <code>Pinyin::pinyin($word, $settings)</code> 在调用的方法后传参</p>
 </li>
 </ul>
 <p>example:</p>
-<pre><code class="language-php?start_inline=1">
-Pinyin::set('delimiter', '-');//全局
-echo Pinyin::pinyin('带着希望去旅行，比到达终点更美好');
-
-// dài-zhe-xī-wàng-qù-lǔ-xíng-bǐ-dào-dá-zhōng-diǎn-gèng-měi-hǎo
-</code></pre>
-<pre><code class="language-php?start_inline=1">
-$setting = [
-            'delimiter' =&gt; '-',
-            'accent' =&gt; false,
-           ];
-
-echo Pinyin::pinyin('带着希望去旅行，比到达终点更美好', $setting);//这里的setting只是临时修改，并非全局设置
-
-// dai-zhe-xi-wang-qu-lu-xing-bi-dao-da-zhong-dian-geng-mei-hao
-</code></pre>
-<pre><code class="language-php?start_inline=1">Pinyin::set('accent', false);
-echo Pinyin::pinyin('带着希望去旅行，比到达终点更美好');
-
-// dai zhe xi wang qu lu xing bi dao da zhong dian geng mei hao
-</code></pre>
-<h1 id="contribution">Contribution</h1>
-<p>欢迎提意见及完善补充词库 <code>src/Overtrue/data/additional.php</code>! 💋</p>
-<h1 id="参考">参考</h1>
+<figure class="code-block" data-language="php"><figcaption class="code-bar"><span><span>PHP</span><span class="code-lines" data-i18n="codeLines" data-i18n-params="{&quot;count&quot;:5}">5 行</span></span><button class="copy-code" type="button" aria-label="复制代码" data-i18n-aria="copyCode" hidden><svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" aria-hidden="true"><rect x="5" y="5" width="8" height="9" rx="1.5"/><path d="M3 11H2V2h8v1"/></svg><span aria-live="polite" data-i18n="copy">复制</span></button></figcaption><pre class="shiki github-dark-default" style="background-color:#0d1117;color:#e6edf3" tabindex="0"><code><span class="line"></span>
+<span class="line"><span style="color:#79C0FF">Pinyin</span><span style="color:#FF7B72">::</span><span style="color:#D2A8FF">set</span><span style="color:#E6EDF3">(</span><span style="color:#A5D6FF">'delimiter'</span><span style="color:#E6EDF3">, </span><span style="color:#A5D6FF">'-'</span><span style="color:#E6EDF3">);</span><span style="color:#8B949E">//全局</span></span>
+<span class="line"><span style="color:#79C0FF">echo</span><span style="color:#79C0FF"> Pinyin</span><span style="color:#FF7B72">::</span><span style="color:#D2A8FF">pinyin</span><span style="color:#E6EDF3">(</span><span style="color:#A5D6FF">'带着希望去旅行，比到达终点更美好'</span><span style="color:#E6EDF3">);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#8B949E">// dài-zhe-xī-wàng-qù-lǔ-xíng-bǐ-dào-dá-zhōng-diǎn-gèng-měi-hǎo</span></span></code></pre></figure>
+<figure class="code-block" data-language="php"><figcaption class="code-bar"><span><span>PHP</span><span class="code-lines" data-i18n="codeLines" data-i18n-params="{&quot;count&quot;:9}">9 行</span></span><button class="copy-code" type="button" aria-label="复制代码" data-i18n-aria="copyCode" hidden><svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" aria-hidden="true"><rect x="5" y="5" width="8" height="9" rx="1.5"/><path d="M3 11H2V2h8v1"/></svg><span aria-live="polite" data-i18n="copy">复制</span></button></figcaption><pre class="shiki github-dark-default" style="background-color:#0d1117;color:#e6edf3" tabindex="0"><code><span class="line"></span>
+<span class="line"><span style="color:#E6EDF3">$setting </span><span style="color:#FF7B72">=</span><span style="color:#E6EDF3"> [</span></span>
+<span class="line"><span style="color:#A5D6FF">            'delimiter'</span><span style="color:#FF7B72"> =></span><span style="color:#A5D6FF"> '-'</span><span style="color:#E6EDF3">,</span></span>
+<span class="line"><span style="color:#A5D6FF">            'accent'</span><span style="color:#FF7B72"> =></span><span style="color:#79C0FF"> false</span><span style="color:#E6EDF3">,</span></span>
+<span class="line"><span style="color:#E6EDF3">           ];</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#79C0FF">echo</span><span style="color:#79C0FF"> Pinyin</span><span style="color:#FF7B72">::</span><span style="color:#D2A8FF">pinyin</span><span style="color:#E6EDF3">(</span><span style="color:#A5D6FF">'带着希望去旅行，比到达终点更美好'</span><span style="color:#E6EDF3">, $setting);</span><span style="color:#8B949E">//这里的setting只是临时修改，并非全局设置</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#8B949E">// dai-zhe-xi-wang-qu-lu-xing-bi-dao-da-zhong-dian-geng-mei-hao</span></span></code></pre></figure>
+<figure class="code-block" data-language="php"><figcaption class="code-bar"><span><span>PHP</span><span class="code-lines" data-i18n="codeLines" data-i18n-params="{&quot;count&quot;:4}">4 行</span></span><button class="copy-code" type="button" aria-label="复制代码" data-i18n-aria="copyCode" hidden><svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" aria-hidden="true"><rect x="5" y="5" width="8" height="9" rx="1.5"/><path d="M3 11H2V2h8v1"/></svg><span aria-live="polite" data-i18n="copy">复制</span></button></figcaption><pre class="shiki github-dark-default" style="background-color:#0d1117;color:#e6edf3" tabindex="0"><code><span class="line"><span style="color:#79C0FF">Pinyin</span><span style="color:#FF7B72">::</span><span style="color:#D2A8FF">set</span><span style="color:#E6EDF3">(</span><span style="color:#A5D6FF">'accent'</span><span style="color:#E6EDF3">, </span><span style="color:#79C0FF">false</span><span style="color:#E6EDF3">);</span></span>
+<span class="line"><span style="color:#79C0FF">echo</span><span style="color:#79C0FF"> Pinyin</span><span style="color:#FF7B72">::</span><span style="color:#D2A8FF">pinyin</span><span style="color:#E6EDF3">(</span><span style="color:#A5D6FF">'带着希望去旅行，比到达终点更美好'</span><span style="color:#E6EDF3">);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#8B949E">// dai zhe xi wang qu lu xing bi dao da zhong dian geng mei hao</span></span></code></pre></figure>
+<h2 id="section-contribution">Contribution<a class="heading-anchor" href="#section-contribution" aria-label="链接到：Contribution" data-i18n-aria="headingLink" data-i18n-params="{&quot;name&quot;:&quot;Contribution&quot;}">#</a></h2>
+<p>欢迎提意见及完善补充词库 <code>src/Overtrue/data/additional.php</code>! :kiss:</p>
+<h2 id="section-参考">参考<a class="heading-anchor" href="#section-参考" aria-label="链接到：参考" data-i18n-aria="headingLink" data-i18n-params="{&quot;name&quot;:&quot;参考&quot;}">#</a></h2>
 <ul>
 <li><a href="http://cc-cedict.org/wiki/">CC-CEDICT</a></li>
 <li><a href="http://mmc.sinica.edu.tw/intro_c_01.html">現代漢語語音語料庫</a></li>
 <li><a href="http://www.zdic.net/">汉典</a></li>
 </ul>
-<h1 id="license">License</h1>
+<h2 id="section-license">License<a class="heading-anchor" href="#section-license" aria-label="链接到：License" data-i18n-aria="headingLink" data-i18n-params="{&quot;name&quot;:&quot;License&quot;}">#</a></h2>
 <p>MIT</p>
-
-              </div>
-              <div class="toc-container">
-                <ul class="markdownIt-TOC">
-<li><a href="#pinyin">Pinyin</a></li>
-<li><a href="#%E5%AE%89%E8%A3%85">安装</a></li>
-<li><a href="#%E4%BD%BF%E7%94%A8">使用</a>
-<ul>
-<li><a href="#%E8%AE%BE%E7%BD%AE">设置</a></li>
-</ul>
-</li>
-<li><a href="#contribution">Contribution</a></li>
-<li><a href="#%E5%8F%82%E8%80%83">参考</a></li>
-<li><a href="#license">License</a></li>
-</ul>
-
-              </div>
-            </div>
-          </article>
-        </div>
-
-        
-          <div class="next-post">
-            <div class="next">下一篇</div>
-            <a href="https://overtrue.me/github-windows-https-error/">
-              <h3 class="post-title">
-                GitHub windows 客户端报 https 错误解决办法
-              </h3>
-            </a>
-          </div>
-        
-
-        
-          
-            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
-<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
-
-<div id="gitalk-container"></div>
-
-<script>
-
-  var gitalk = new Gitalk({
-    clientID: 'f2027ed0e5be934c16d5',
-    clientSecret: '37b4520fa4543c1565ed971e0e50ac215e110c99',
-    repo: 'blog',
-    owner: 'overtrue',
-    admin: ['overtrue'],
-    labels: ['gitalk', 'comment'],
-    id: location.pathname.slice(1, location.pathname.lastIndexOf('/')).substring(0, 49), 
-    distractionFreeMode: false  // Facebook-like distraction free mode
-  })
-
-  gitalk.render('gitalk-container')
-
-</script>
-
-          
-
-          
-        
-
-        <div class="site-footer">
-  <span>Powered by  <span><a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
-  <a class="rss" href="https://overtrue.me/atom.xml" target="_blank">
-    <i class="ri-rss-line"></i> RSS
-  </a>
-</div>
-
-      </div>
-    </div>
-
-    <script>
-      hljs.initHighlightingOnLoad()
-
-      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
-
-      // This should probably be throttled.
-      // Especially because it triggers during smooth scrolling.
-      // https://lodash.com/docs/4.17.10#throttle
-      // You could do like...
-      // window.addEventListener("scroll", () => {
-      //    _.throttle(doThatStuff, 100);
-      // });
-      // Only not doing it here to keep this Pen dependency-free.
-
-      window.addEventListener("scroll", event => {
-        let fromTop = window.scrollY;
-
-        mainNavLinks.forEach((link, index) => {
-          let section = document.getElementById(decodeURI(link.hash).substring(1));
-          let nextSection = null
-          if (mainNavLinks[index + 1]) {
-            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
-          }
-          if (section.offsetTop <= fromTop) {
-            if (nextSection) {
-              if (nextSection.offsetTop > fromTop) {
-                link.classList.add("current");
-              } else {
-                link.classList.remove("current");    
-              }
-            } else {
-              link.classList.add("current");
-            }
-          } else {
-            link.classList.remove("current");
-          }
-        });
-      });
-
-    </script>
-  </body>
-</html>
+</div></div></div></article><div class="article-footer"><a href="/writing/" class="article-back"><svg class width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12h16m-7-7 7 7-7 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg> <span data-i18n="allPosts">全部文字</span></a><a href="/github-windows-https-error/" class="article-next"><span data-i18n="readNext">接着读</span><strong lang="zh-CN">GitHub windows 客户端报 https 错误解决办法</strong><svg class width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></a></div></main><footer class="site-footer compact"><div class="footer-bottom"><a class="footer-identity" href="/"><img src="/brand/mark-color.svg" width="28" height="28" alt=""><span>Chris An<span>安正超 / overtrue</span></span></a><p>Keep calm and coding.</p><div><a href="https://github.com/overtrue" target="_blank" rel="noopener noreferrer">GitHub</a><a href="https://x.com/overtrue666" target="_blank" rel="noopener noreferrer">X / Twitter</a><a href="/rss.xml">RSS</a><a href="#top"><span data-i18n="backTop">回到顶部</span> <svg class width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></a></div></div><div class="footer-wordmark" aria-hidden="true">OVERTRUE</div></footer><script type="module" src="/_astro/_slug_.astro_astro_type_script_index_0_lang.uu2a7OVK.js"></script><script type="module" src="/_astro/Base.astro_astro_type_script_index_0_lang.F6bjS25y.js"></script></body></html>

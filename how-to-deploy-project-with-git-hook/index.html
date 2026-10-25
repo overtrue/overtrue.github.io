@@ -1,292 +1,75 @@
-<html>
-  <head>
-    <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>使用 PHP 脚本远程部署 git 项目 | overtrue</title>
-<link rel="shortcut icon" href="https://overtrue.me/favicon.ico?v=1617147724333">
-<link href="https://cdn.remixicon.com/releases/v2.1.0/remixicon.css" rel="stylesheet">
-<link rel="stylesheet" href="https://overtrue.me/styles/main.css">
-<link rel="alternate" type="application/atom+xml" title="使用 PHP 脚本远程部署 git 项目 | overtrue - Atom Feed" href="https://overtrue.me/atom.xml">
-
-
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-55452630-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-55452630-1');
-</script>
-
-
-    <meta name="description" content="2015第一篇文章，没啥技术含量，权当作个笔记。
-我们通常在一些git托管网站托管我们的代码，除了大家耳熟能详的GitHub, 还有国外的Bitbucket等，国内的开源中国、Coding等都是不错的选择。
-今天以Coding上私有库的部署..." />
-    <meta name="keywords" content="" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
-    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
-  </head>
-  <body>
-    <div class="main">
-      <div class="main-content">
-        <div class="site-header">
-  <a href="https://overtrue.me">
-  <img class="avatar" src="https://overtrue.me/images/avatar.png?v=1617147724333" alt="">
-  </a>
-  <h1 class="site-title">
-    overtrue
-  </h1>
-  <p class="site-description">
-    🇨🇳 <b>China Shenzhen</b>・🕹<b>Web developer</b>
-  </p>
-  <div class="menu-container">
-    
-      
-        <a href="/" class="menu">
-          首页
-        </a>
-      
-    
-      
-        <a href="https://github.com/overtrue" class="menu" target="_blank">
-          开源
-        </a>
-      
-    
-      
-        <a href="/archives" class="menu">
-          归档
-        </a>
-      
-    
-      
-        <a href="/tags" class="menu">
-          标签
-        </a>
-      
-    
-      
-        <a href="/about" class="menu">
-          关于
-        </a>
-      
-    
-  </div>
-  <div class="social-container">
-    
-      
-        <a href="https://github.com/overtrue" target="_blank">
-          <i class="ri-github-line"></i>
-        </a>
-      
-    
-      
-        <a href="https://twitter.com/overtrue666" target="_blank">
-          <i class="ri-twitter-line"></i>
-        </a>
-      
-    
-      
-        <a href="https://weibo.com/44294631" target="_blank">
-          <i class="ri-weibo-line"></i>
-        </a>
-      
-    
-      
-    
-      
-    
-  </div>
-</div>
-
-        <div class="post-detail">
-          <article class="post">
-            <h2 class="post-title">
-              使用 PHP 脚本远程部署 git 项目
-            </h2>
-            <div class="post-info">
-              <span>
-                2015-01-19
-              </span>
-              <span>
-                3 min read
-              </span>
-              
-            </div>
-            
-            <div class="post-content-wrapper">
-              <div class="post-content">
-                <p>2015第一篇文章，没啥技术含量，权当作个笔记。</p>
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><script>
+      (() => {
+        const root = document.documentElement;
+        let theme = 'system';
+        let language = 'zh';
+        try {
+          theme = localStorage.getItem('overtrue-theme') || 'system';
+          language = localStorage.getItem('overtrue-language') || 'zh';
+        } catch {}
+        if (!['light', 'dark'].includes(theme)) theme = 'system';
+        root.dataset.themePreference = theme;
+        root.dataset.theme =
+          theme === 'system'
+            ? matchMedia('(prefers-color-scheme: dark)').matches
+              ? 'dark'
+              : 'light'
+            : theme;
+        root.lang = language === 'en' ? 'en' : 'zh-CN';
+      })();
+    </script><meta name="description" content="以Coding上私有库的部署为例来讲解如何使用Coding的hook服务结合PHP脚本来自动部署到生产环境的服务器"><meta name="theme-color" content="#f0f1f4"><meta property="og:type" content="article"><meta property="og:title" content="使用 PHP 脚本远程部署 git 项目 · overtrue"><meta property="og:description" content="以Coding上私有库的部署为例来讲解如何使用Coding的hook服务结合PHP脚本来自动部署到生产环境的服务器"><meta property="og:url" content="https://overtrue.me/how-to-deploy-project-with-git-hook/"><meta property="og:image" content="https://overtrue.me/social.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:creator" content="@overtrue666"><link rel="canonical" href="https://overtrue.me/how-to-deploy-project-with-git-hook/"><link rel="icon" type="image/svg+xml" href="/brand/mark-color.svg"><link rel="alternate" type="application/rss+xml" title="overtrue 的文章" href="/rss.xml"><title>使用 PHP 脚本远程部署 git 项目 · overtrue</title><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"使用 PHP 脚本远程部署 git 项目","datePublished":"2015-01-19","author":{"@type":"Person","name":"安正超","url":"https://overtrue.me"},"mainEntityOfPage":"https://overtrue.me/how-to-deploy-project-with-git-hook/"}</script><link rel="stylesheet" href="/_astro/Preferences.PdpZ8tH4.css"><link rel="stylesheet" href="/_astro/Footer.F4l1zD53.css"></head><body class="reading-page"><a class="skip-link" href="#main" data-i18n="skip">跳到内容</a><div id="top"></div><header class="site-header"><a class="reading-signature" href="/" aria-label="overtrue 首页" data-i18n-aria="home"><img src="/brand/mark-color.svg" width="44" height="44" alt=""></a><nav aria-label="主导航" data-i18n-aria="navigation"><a href="/#work"><span class="nav-number" aria-hidden="true">01</span><span data-i18n="navWork">开源</span></a><a href="/writing/" aria-current="page"><span class="nav-number" aria-hidden="true">02</span><span data-i18n="navWriting">文字</span></a><a href="/#about"><span class="nav-number" aria-hidden="true">03</span><span data-i18n="navAbout">联系</span></a></nav><div class="header-actions"><a class="github-link" href="https://github.com/overtrue" target="_blank" rel="noopener noreferrer">GitHub<svg class width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></a><div class="preferences" data-preferences hidden><div class="theme-picker"><button type="button" class="preference-button theme-toggle" aria-label="切换主题" data-i18n-aria="theme" aria-expanded="false" aria-controls="theme-options"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g data-theme-icon="system"><rect x="3" y="4" width="18" height="13" rx="2"></rect><path d="M8 21h8m-4-4v4"></path></g><g data-theme-icon="light" display="none"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.4 1.4m11.2 11.2L19 19M5 19l1.4-1.4M17.6 6.4 19 5"></path></g><g data-theme-icon="dark" display="none"><path d="M20.5 13.3A8.8 8.8 0 0 1 10.7 3.5a8.8 8.8 0 1 0 9.8 9.8Z"></path></g></svg></button><div class="theme-options" id="theme-options" role="group" aria-label="切换主题" data-i18n-aria="theme" hidden><button type="button" data-theme-choice="system" aria-pressed="true" data-i18n="themeSystem">跟随系统</button><button type="button" data-theme-choice="light" aria-pressed="false" data-i18n="themeLight">浅色</button><button type="button" data-theme-choice="dark" aria-pressed="false" data-i18n="themeDark">深色</button></div></div><button type="button" class="preference-button language-toggle" aria-label="Switch to English" lang="en">EN</button></div></div></header><script type="module">var e=document.querySelector(`.site-header`),t=()=>e?.classList.toggle(`is-scrolled`,scrollY>24);addEventListener(`scroll`,t,{passive:!0}),t();</script><div class="reading-progress" aria-hidden="true"><span data-reading-progress></span></div><main id="main" class="article-shell"><a href="/writing/" class="article-back"><svg class width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12h16m-7-7 7 7-7 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg><span data-i18n="allPosts">全部文字</span></a><article><header class="article-header"><p class="article-kicker">notes / 开发手记</p><h1 lang="zh-CN">使用 PHP 脚本远程部署 git 项目</h1><div class="article-meta"><a class="article-author" href="/#about"><img src="/images/overtrue.jpg" width="26" height="26" alt="">Chris An <span>安正超</span></a><time datetime="2015-01-19">2015.01.19</time><span data-i18n="readingTime" data-i18n-params="{&quot;minutes&quot;:3}">3 分钟阅读</span></div></header><div class="article-layout"><aside class="reading-rail"><details class="article-toc" open><summary><span data-i18n="toc">本文目录</span> <span class="toc-count">04</span></summary><nav aria-label="文章目录" data-i18n-aria="tocLabel" lang="zh-CN"><a href="#section-准备工作" data-toc-link lang="zh-CN">准备工作</a><a href="#section-在服务器上" data-toc-link lang="zh-CN">在服务器上</a><a href="#section-在代码托管网站" data-toc-link lang="zh-CN">在代码托管网站</a><a href="#section-初始化" data-toc-link lang="zh-CN">初始化</a></nav></details><a class="rail-top" href="#top"><span data-i18n="backTop">回到顶部</span> <svg class width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12h16m-7-7 7 7-7 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></a></aside><div class="article-body"><p class="archive-notice" data-i18n="oldPost" data-i18n-params="{&quot;year&quot;:&quot;2015&quot;}">写于 2015 年，内容保留原貌。文中版本和链接可能已有变化。</p><div class="prose" lang="zh-CN"><p>2015第一篇文章，没啥技术含量，权当作个笔记。</p>
 <p>我们通常在一些git托管网站托管我们的代码，除了大家耳熟能详的<a href="https://github.com">GitHub</a>, 还有国外的<a href="https://bitbucket.org/">Bitbucket</a>等，国内的<a href="http://git.oschina.net/">开源中国</a>、<a href="https://coding.net/">Coding</a>等都是不错的选择。</p>
 <p>今天以Coding上私有库的部署为例来讲解如何使用Coding的hook服务来自动部署到生产环境的服务器。</p>
-<h2 id="准备工作">准备工作</h2>
+<h2 id="section-准备工作">准备工作<a class="heading-anchor" href="#section-准备工作" aria-label="链接到：准备工作" data-i18n-aria="headingLink" data-i18n-params="{&quot;name&quot;:&quot;准备工作&quot;}">#</a></h2>
 <ul>
 <li>在Coding.net上创建一个私有库</li>
 <li>安装了web服务与git服务的服务器</li>
 </ul>
-<h2 id="在服务器上">在服务器上</h2>
+<h2 id="section-在服务器上">在服务器上<a class="heading-anchor" href="#section-在服务器上" aria-label="链接到：在服务器上" data-i18n-aria="headingLink" data-i18n-params="{&quot;name&quot;:&quot;在服务器上&quot;}">#</a></h2>
 <p>1.创建web服务器用户目录，这里以apache用户为例，不同的环境请根据自己环境自行修改：</p>
-<pre><code class="language-shell"> sudo mkdir /var/www/.ssh
- sudo chown -R apache:apache /var/www/.ssh/
-</code></pre>
+<figure class="code-block" data-language="shellscript"><figcaption class="code-bar"><span><span>Shell</span><span class="code-lines" data-i18n="codeLines" data-i18n-params="{&quot;count&quot;:2}">2 行</span></span><button class="copy-code" type="button" aria-label="复制代码" data-i18n-aria="copyCode" hidden><svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" aria-hidden="true"><rect x="5" y="5" width="8" height="9" rx="1.5"/><path d="M3 11H2V2h8v1"/></svg><span aria-live="polite" data-i18n="copy">复制</span></button></figcaption><pre class="shiki github-dark-default" style="background-color:#0d1117;color:#e6edf3" tabindex="0"><code><span class="line"><span style="color:#FFA657"> sudo</span><span style="color:#A5D6FF"> mkdir</span><span style="color:#A5D6FF"> /var/www/.ssh</span></span>
+<span class="line"><span style="color:#FFA657"> sudo</span><span style="color:#A5D6FF"> chown</span><span style="color:#79C0FF"> -R</span><span style="color:#A5D6FF"> apache:apache</span><span style="color:#A5D6FF"> /var/www/.ssh/</span></span></code></pre></figure>
 <p>2.生成公钥</p>
 <p>公钥有两个：1. git用户公钥，2. 部署公钥：</p>
 <p>3.用户公钥（用于git clone时认证权限）</p>
-<pre><code class="language-shell"> ssh-keygen -t rsa -C &quot;anzhengchao@gmail.com&quot;
- # 然后一直回车就行
- # 生成的文件通常是 /root/.ssh/id_rsa，如果非root用户请查看提示上的路径
-</code></pre>
+<figure class="code-block" data-language="shellscript"><figcaption class="code-bar"><span><span>Shell</span><span class="code-lines" data-i18n="codeLines" data-i18n-params="{&quot;count&quot;:3}">3 行</span></span><button class="copy-code" type="button" aria-label="复制代码" data-i18n-aria="copyCode" hidden><svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" aria-hidden="true"><rect x="5" y="5" width="8" height="9" rx="1.5"/><path d="M3 11H2V2h8v1"/></svg><span aria-live="polite" data-i18n="copy">复制</span></button></figcaption><pre class="shiki github-dark-default" style="background-color:#0d1117;color:#e6edf3" tabindex="0"><code><span class="line"><span style="color:#FFA657"> ssh-keygen</span><span style="color:#79C0FF"> -t</span><span style="color:#A5D6FF"> rsa</span><span style="color:#79C0FF"> -C</span><span style="color:#A5D6FF"> "anzhengchao@gmail.com"</span></span>
+<span class="line"><span style="color:#8B949E"> # 然后一直回车就行</span></span>
+<span class="line"><span style="color:#8B949E"> # 生成的文件通常是 /root/.ssh/id_rsa，如果非root用户请查看提示上的路径</span></span></code></pre></figure>
 <p>4.部署公钥</p>
-<pre><code class="language-shell"> sudo -Hu apache ssh-keygen -t rsa # 请选择 &quot;no passphrase&quot;，一直回车下去
- sudo cat /var/www/.ssh/id_rsa.pub # 查看生成的密钥内容，复制全部
-</code></pre>
+<figure class="code-block" data-language="shellscript"><figcaption class="code-bar"><span><span>Shell</span><span class="code-lines" data-i18n="codeLines" data-i18n-params="{&quot;count&quot;:2}">2 行</span></span><button class="copy-code" type="button" aria-label="复制代码" data-i18n-aria="copyCode" hidden><svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" aria-hidden="true"><rect x="5" y="5" width="8" height="9" rx="1.5"/><path d="M3 11H2V2h8v1"/></svg><span aria-live="polite" data-i18n="copy">复制</span></button></figcaption><pre class="shiki github-dark-default" style="background-color:#0d1117;color:#e6edf3" tabindex="0"><code><span class="line"><span style="color:#FFA657"> sudo</span><span style="color:#79C0FF"> -Hu</span><span style="color:#A5D6FF"> apache</span><span style="color:#A5D6FF"> ssh-keygen</span><span style="color:#79C0FF"> -t</span><span style="color:#A5D6FF"> rsa</span><span style="color:#8B949E"> # 请选择 "no passphrase"，一直回车下去</span></span>
+<span class="line"><span style="color:#FFA657"> sudo</span><span style="color:#A5D6FF"> cat</span><span style="color:#A5D6FF"> /var/www/.ssh/id_rsa.pub</span><span style="color:#8B949E"> # 查看生成的密钥内容，复制全部</span></span></code></pre></figure>
 <p>5.准备钩子文件</p>
-<p>在你的www目录建立一个目录<code>hook</code>, 里面放上一个php文件<code>index.php</code>，内容如下：</p>
-  <script src="https://gist.github.com/overtrue/0bf1cd704bf804de2e2c.js"></script>
-<p>在此目录下建立一个目录<code>repos</code>:</p>
-<pre><code class="language-shell"> mkdir repos
-</code></pre>
-<p>修改目录权限：</p>
-<pre><code class="language-shell"> chown -R apache:apache /www/hook # 这里请改成你创建的hook目录
-</code></pre>
-<p>确保你的hook文件可以访问：http://example.com/hook/index.php，钩子准备完成。</p>
+<p>  在你的www目录建立一个目录<code>hook</code>, 里面放上一个php文件<code>index.php</code>，内容如下：</p>
+  <p><a href="https://gist.github.com/overtrue/0bf1cd704bf804de2e2c">在 GitHub Gist 查看原始代码</a></p>
+
+<p>  在此目录下建立一个目录<code>repos</code>:</p>
+<figure class="code-block" data-language="shellscript"><figcaption class="code-bar"><span><span>Shell</span><span class="code-lines" data-i18n="codeLines" data-i18n-params="{&quot;count&quot;:1}">1 行</span></span><button class="copy-code" type="button" aria-label="复制代码" data-i18n-aria="copyCode" hidden><svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" aria-hidden="true"><rect x="5" y="5" width="8" height="9" rx="1.5"/><path d="M3 11H2V2h8v1"/></svg><span aria-live="polite" data-i18n="copy">复制</span></button></figcaption><pre class="shiki github-dark-default" style="background-color:#0d1117;color:#e6edf3" tabindex="0"><code><span class="line"><span style="color:#FFA657"> mkdir</span><span style="color:#A5D6FF"> repos</span></span></code></pre></figure>
+<p>  修改目录权限：</p>
+<figure class="code-block" data-language="shellscript"><figcaption class="code-bar"><span><span>Shell</span><span class="code-lines" data-i18n="codeLines" data-i18n-params="{&quot;count&quot;:1}">1 行</span></span><button class="copy-code" type="button" aria-label="复制代码" data-i18n-aria="copyCode" hidden><svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" aria-hidden="true"><rect x="5" y="5" width="8" height="9" rx="1.5"/><path d="M3 11H2V2h8v1"/></svg><span aria-live="polite" data-i18n="copy">复制</span></button></figcaption><pre class="shiki github-dark-default" style="background-color:#0d1117;color:#e6edf3" tabindex="0"><code><span class="line"><span style="color:#FFA657"> chown</span><span style="color:#79C0FF"> -R</span><span style="color:#A5D6FF"> apache:apache</span><span style="color:#A5D6FF"> /www/hook</span><span style="color:#8B949E"> # 这里请改成你创建的hook目录</span></span></code></pre></figure>
+<p>  确保你的hook文件可以访问：<a href="http://example.com/hook/index.php%EF%BC%8C%E9%92%A9%E5%AD%90%E5%87%86%E5%A4%87%E5%AE%8C%E6%88%90%E3%80%82">http://example.com/hook/index.php，钩子准备完成。</a></p>
 <p>4.修改git配置</p>
-<pre><code class="language-shell"> git config --global user.name &quot;overtrue&quot;
- git config --global user.email &quot;anzhengchao@gmail.com&quot; # 邮箱请与conding上一致
-</code></pre>
-<h2 id="在代码托管网站">在代码托管网站</h2>
+<figure class="code-block" data-language="shellscript"><figcaption class="code-bar"><span><span>Shell</span><span class="code-lines" data-i18n="codeLines" data-i18n-params="{&quot;count&quot;:2}">2 行</span></span><button class="copy-code" type="button" aria-label="复制代码" data-i18n-aria="copyCode" hidden><svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" aria-hidden="true"><rect x="5" y="5" width="8" height="9" rx="1.5"/><path d="M3 11H2V2h8v1"/></svg><span aria-live="polite" data-i18n="copy">复制</span></button></figcaption><pre class="shiki github-dark-default" style="background-color:#0d1117;color:#e6edf3" tabindex="0"><code><span class="line"><span style="color:#FFA657"> git</span><span style="color:#A5D6FF"> config</span><span style="color:#79C0FF"> --global</span><span style="color:#A5D6FF"> user.name</span><span style="color:#A5D6FF"> "overtrue"</span></span>
+<span class="line"><span style="color:#FFA657"> git</span><span style="color:#A5D6FF"> config</span><span style="color:#79C0FF"> --global</span><span style="color:#A5D6FF"> user.email</span><span style="color:#A5D6FF"> "anzhengchao@gmail.com"</span><span style="color:#8B949E"> # 邮箱请与conding上一致</span></span></code></pre></figure>
+<h2 id="section-在代码托管网站">在代码托管网站<a class="heading-anchor" href="#section-在代码托管网站" aria-label="链接到：在代码托管网站" data-i18n-aria="headingLink" data-i18n-params="{&quot;name&quot;:&quot;在代码托管网站&quot;}">#</a></h2>
 <p>1.添加用户公钥</p>
-<p>复制上面的<code>/root/.ssh/id_rsa.pub</code>的内容到个人设置页<code>https://coding.net/user/setting/keys</code>添加即可</p>
+<p>  复制上面的<code>/root/.ssh/id_rsa.pub</code>的内容到个人设置页<code>https://coding.net/user/setting/keys</code>添加即可</p>
 <p>2.复制<code>/var/www/.ssh/id_rsa.pub</code>的内容并添加到Coding.net公钥:</p>
 <blockquote>
 <p>选择项目 &gt; 设置 &gt; 部署公钥 &gt; 新建 &gt; 粘贴到下面框并确认</p>
 </blockquote>
 <p>3.添加hook</p>
 <blockquote>
-<p>选择项目 &gt; 设置 &gt; WebHook &gt; 新建hook &gt; 粘贴你的hook/index.php所在的网址。比如:http://example.com/hook/index.php, 令牌可选，但是建议写上。</p>
+<p>选择项目 &gt; 设置 &gt; WebHook &gt; 新建hook &gt; 粘贴你的hook/index.php所在的网址。比如:<a href="http://example.com/hook/index.php">http://example.com/hook/index.php</a>, 令牌可选，但是建议写上。</p>
 </blockquote>
-<p>稍过几秒刷新页面查看hook状态，显示为绿色勾就OK了。</p>
-<h2 id="初始化">初始化</h2>
+<p>  稍过几秒刷新页面查看hook状态，显示为绿色勾就OK了。</p>
+<h2 id="section-初始化">初始化<a class="heading-anchor" href="#section-初始化" aria-label="链接到：初始化" data-i18n-aria="headingLink" data-i18n-params="{&quot;name&quot;:&quot;初始化&quot;}">#</a></h2>
 <p>1.我们需要先在服务器上clone一次，以后都可以实现自动部署了：</p>
-<pre><code class="language-shell">  sudo chown -R apache:apache /www/hook/repos
-  sudo -Hu apache git clone git@coding.net:you/repo.git /www/hook/repos/  --depth=1
-</code></pre>
-<pre><code>**！！注意，这里初始化clone必须要用www用户**
-</code></pre>
+<figure class="code-block" data-language="shellscript"><figcaption class="code-bar"><span><span>Shell</span><span class="code-lines" data-i18n="codeLines" data-i18n-params="{&quot;count&quot;:2}">2 行</span></span><button class="copy-code" type="button" aria-label="复制代码" data-i18n-aria="copyCode" hidden><svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" aria-hidden="true"><rect x="5" y="5" width="8" height="9" rx="1.5"/><path d="M3 11H2V2h8v1"/></svg><span aria-live="polite" data-i18n="copy">复制</span></button></figcaption><pre class="shiki github-dark-default" style="background-color:#0d1117;color:#e6edf3" tabindex="0"><code><span class="line"><span style="color:#FFA657">  sudo</span><span style="color:#A5D6FF"> chown</span><span style="color:#79C0FF"> -R</span><span style="color:#A5D6FF"> apache:apache</span><span style="color:#A5D6FF"> /www/hook/repos</span></span>
+<span class="line"><span style="color:#FFA657">  sudo</span><span style="color:#79C0FF"> -Hu</span><span style="color:#A5D6FF"> apache</span><span style="color:#A5D6FF"> git</span><span style="color:#A5D6FF"> clone</span><span style="color:#A5D6FF"> git@coding.net:you/repo.git</span><span style="color:#A5D6FF"> /www/hook/repos/</span><span style="color:#79C0FF">  --depth=1</span></span></code></pre></figure>
+<figure class="code-block" data-language="text"><figcaption class="code-bar"><span><span data-i18n="code">代码</span><span class="code-lines" data-i18n="codeLines" data-i18n-params="{&quot;count&quot;:1}">1 行</span></span><button class="copy-code" type="button" aria-label="复制代码" data-i18n-aria="copyCode" hidden><svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" aria-hidden="true"><rect x="5" y="5" width="8" height="9" rx="1.5"/><path d="M3 11H2V2h8v1"/></svg><span aria-live="polite" data-i18n="copy">复制</span></button></figcaption><pre class="shiki github-dark-default" style="background-color:#0d1117;color:#e6edf3" tabindex="0"><code><span class="line"><span>**！！注意，这里初始化clone必须要用www用户**</span></span></code></pre></figure>
 <p>2.往Coding.net提交一次代码测试：</p>
-<pre><code class="language-shell">  git commit -am &quot;test hook&quot; --allow-empty
-  git push
-</code></pre>
+<figure class="code-block" data-language="shellscript"><figcaption class="code-bar"><span><span>Shell</span><span class="code-lines" data-i18n="codeLines" data-i18n-params="{&quot;count&quot;:2}">2 行</span></span><button class="copy-code" type="button" aria-label="复制代码" data-i18n-aria="copyCode" hidden><svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" aria-hidden="true"><rect x="5" y="5" width="8" height="9" rx="1.5"/><path d="M3 11H2V2h8v1"/></svg><span aria-live="polite" data-i18n="copy">复制</span></button></figcaption><pre class="shiki github-dark-default" style="background-color:#0d1117;color:#e6edf3" tabindex="0"><code><span class="line"><span style="color:#FFA657">  git</span><span style="color:#A5D6FF"> commit</span><span style="color:#79C0FF"> -am</span><span style="color:#A5D6FF"> "test hook"</span><span style="color:#79C0FF"> --allow-empty</span></span>
+<span class="line"><span style="color:#FFA657">  git</span><span style="color:#A5D6FF"> push</span></span></code></pre></figure>
 <p>OK，稍微一几秒，正常的话你在代码里配置的目标目录里就会有你的项目文件了。</p>
-<p>有问题请随时反馈：https://gist.github.com/overtrue/0bf1cd704bf804de2e2c</p>
-
-              </div>
-              <div class="toc-container">
-                <ul class="markdownIt-TOC">
-<li>
-<ul>
-<li><a href="#%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C">准备工作</a></li>
-<li><a href="#%E5%9C%A8%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8A">在服务器上</a></li>
-<li><a href="#%E5%9C%A8%E4%BB%A3%E7%A0%81%E6%89%98%E7%AE%A1%E7%BD%91%E7%AB%99">在代码托管网站</a></li>
-<li><a href="#%E5%88%9D%E5%A7%8B%E5%8C%96">初始化</a></li>
-</ul>
-</li>
-</ul>
-
-              </div>
-            </div>
-          </article>
-        </div>
-
-        
-          <div class="next-post">
-            <div class="next">下一篇</div>
-            <a href="https://overtrue.me/laravel-mongodb-field-type-bug/">
-              <h3 class="post-title">
-                laravel-mongodb 拓展与 MySQL 关联问题
-              </h3>
-            </a>
-          </div>
-        
-
-        
-          
-            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
-<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
-
-<div id="gitalk-container"></div>
-
-<script>
-
-  var gitalk = new Gitalk({
-    clientID: 'f2027ed0e5be934c16d5',
-    clientSecret: '37b4520fa4543c1565ed971e0e50ac215e110c99',
-    repo: 'blog',
-    owner: 'overtrue',
-    admin: ['overtrue'],
-    labels: ['gitalk', 'comment'],
-    id: location.pathname.slice(1, location.pathname.lastIndexOf('/')).substring(0, 49), 
-    distractionFreeMode: false  // Facebook-like distraction free mode
-  })
-
-  gitalk.render('gitalk-container')
-
-</script>
-
-          
-
-          
-        
-
-        <div class="site-footer">
-  <span>Powered by  <span><a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
-  <a class="rss" href="https://overtrue.me/atom.xml" target="_blank">
-    <i class="ri-rss-line"></i> RSS
-  </a>
-</div>
-
-      </div>
-    </div>
-
-    <script>
-      hljs.initHighlightingOnLoad()
-
-      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
-
-      // This should probably be throttled.
-      // Especially because it triggers during smooth scrolling.
-      // https://lodash.com/docs/4.17.10#throttle
-      // You could do like...
-      // window.addEventListener("scroll", () => {
-      //    _.throttle(doThatStuff, 100);
-      // });
-      // Only not doing it here to keep this Pen dependency-free.
-
-      window.addEventListener("scroll", event => {
-        let fromTop = window.scrollY;
-
-        mainNavLinks.forEach((link, index) => {
-          let section = document.getElementById(decodeURI(link.hash).substring(1));
-          let nextSection = null
-          if (mainNavLinks[index + 1]) {
-            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
-          }
-          if (section.offsetTop <= fromTop) {
-            if (nextSection) {
-              if (nextSection.offsetTop > fromTop) {
-                link.classList.add("current");
-              } else {
-                link.classList.remove("current");    
-              }
-            } else {
-              link.classList.add("current");
-            }
-          } else {
-            link.classList.remove("current");
-          }
-        });
-      });
-
-    </script>
-  </body>
-</html>
+<p>有问题请随时反馈：<a href="https://gist.github.com/overtrue/0bf1cd704bf804de2e2c">https://gist.github.com/overtrue/0bf1cd704bf804de2e2c</a></p>
+</div></div></div></article><div class="article-footer"><a href="/writing/" class="article-back"><svg class width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12h16m-7-7 7 7-7 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg> <span data-i18n="allPosts">全部文字</span></a><a href="/laravel-mongodb-field-type-bug/" class="article-next"><span data-i18n="readNext">接着读</span><strong lang="zh-CN">laravel-mongodb 拓展与 MySQL 关联问题</strong><svg class width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></a></div></main><footer class="site-footer compact"><div class="footer-bottom"><a class="footer-identity" href="/"><img src="/brand/mark-color.svg" width="28" height="28" alt=""><span>Chris An<span>安正超 / overtrue</span></span></a><p>Keep calm and coding.</p><div><a href="https://github.com/overtrue" target="_blank" rel="noopener noreferrer">GitHub</a><a href="https://x.com/overtrue666" target="_blank" rel="noopener noreferrer">X / Twitter</a><a href="/rss.xml">RSS</a><a href="#top"><span data-i18n="backTop">回到顶部</span> <svg class width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></a></div></div><div class="footer-wordmark" aria-hidden="true">OVERTRUE</div></footer><script type="module" src="/_astro/_slug_.astro_astro_type_script_index_0_lang.uu2a7OVK.js"></script><script type="module" src="/_astro/Base.astro_astro_type_script_index_0_lang.F6bjS25y.js"></script></body></html>

@@ -1,230 +1,125 @@
-<html>
-  <head>
-    <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>我所理解的 PHP Trait | overtrue</title>
-<link rel="shortcut icon" href="https://overtrue.me/favicon.ico?v=1617147724333">
-<link href="https://cdn.remixicon.com/releases/v2.1.0/remixicon.css" rel="stylesheet">
-<link rel="stylesheet" href="https://overtrue.me/styles/main.css">
-<link rel="alternate" type="application/atom+xml" title="我所理解的 PHP Trait | overtrue - Atom Feed" href="https://overtrue.me/atom.xml">
-
-
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-55452630-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-55452630-1');
-</script>
-
-
-    <meta name="description" content="Trait 是从 PHP 5.4 加入的一种细粒度代码复用的语法。以下是官方手册对 Trait 的描述：
-
-Trait 是为类似 PHP 的单继承语言而准备的一种代码复用机制。Trait 为了减少单继承语言的限制，使开发人员能够自由地在不同..." />
-    <meta name="keywords" content="" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
-    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
-  </head>
-  <body>
-    <div class="main">
-      <div class="main-content">
-        <div class="site-header">
-  <a href="https://overtrue.me">
-  <img class="avatar" src="https://overtrue.me/images/avatar.png?v=1617147724333" alt="">
-  </a>
-  <h1 class="site-title">
-    overtrue
-  </h1>
-  <p class="site-description">
-    🇨🇳 <b>China Shenzhen</b>・🕹<b>Web developer</b>
-  </p>
-  <div class="menu-container">
-    
-      
-        <a href="/" class="menu">
-          首页
-        </a>
-      
-    
-      
-        <a href="https://github.com/overtrue" class="menu" target="_blank">
-          开源
-        </a>
-      
-    
-      
-        <a href="/archives" class="menu">
-          归档
-        </a>
-      
-    
-      
-        <a href="/tags" class="menu">
-          标签
-        </a>
-      
-    
-      
-        <a href="/about" class="menu">
-          关于
-        </a>
-      
-    
-  </div>
-  <div class="social-container">
-    
-      
-        <a href="https://github.com/overtrue" target="_blank">
-          <i class="ri-github-line"></i>
-        </a>
-      
-    
-      
-        <a href="https://twitter.com/overtrue666" target="_blank">
-          <i class="ri-twitter-line"></i>
-        </a>
-      
-    
-      
-        <a href="https://weibo.com/44294631" target="_blank">
-          <i class="ri-weibo-line"></i>
-        </a>
-      
-    
-      
-    
-      
-    
-  </div>
-</div>
-
-        <div class="post-detail">
-          <article class="post">
-            <h2 class="post-title">
-              我所理解的 PHP Trait
-            </h2>
-            <div class="post-info">
-              <span>
-                2016-04-16
-              </span>
-              <span>
-                5 min read
-              </span>
-              
-            </div>
-            
-            <div class="post-content-wrapper">
-              <div class="post-content">
-                <p><a href="http://php.net/manual/zh/language.oop5.traits.php">Trait</a> 是从 PHP 5.4 加入的一种细粒度代码复用的语法。以下是官方手册对 Trait 的描述：</p>
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><script>
+      (() => {
+        const root = document.documentElement;
+        let theme = 'system';
+        let language = 'zh';
+        try {
+          theme = localStorage.getItem('overtrue-theme') || 'system';
+          language = localStorage.getItem('overtrue-language') || 'zh';
+        } catch {}
+        if (!['light', 'dark'].includes(theme)) theme = 'system';
+        root.dataset.themePreference = theme;
+        root.dataset.theme =
+          theme === 'system'
+            ? matchMedia('(prefers-color-scheme: dark)').matches
+              ? 'dark'
+              : 'light'
+            : theme;
+        root.lang = language === 'en' ? 'en' : 'zh-CN';
+      })();
+    </script><meta name="description" content="以我的解理来描述 PHP 5.4 加入的 Trait 语法。"><meta name="theme-color" content="#f0f1f4"><meta property="og:type" content="article"><meta property="og:title" content="我所理解的 PHP Trait · overtrue"><meta property="og:description" content="以我的解理来描述 PHP 5.4 加入的 Trait 语法。"><meta property="og:url" content="https://overtrue.me/about-php-trait/"><meta property="og:image" content="https://overtrue.me/social.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:creator" content="@overtrue666"><link rel="canonical" href="https://overtrue.me/about-php-trait/"><link rel="icon" type="image/svg+xml" href="/brand/mark-color.svg"><link rel="alternate" type="application/rss+xml" title="overtrue 的文章" href="/rss.xml"><title>我所理解的 PHP Trait · overtrue</title><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"我所理解的 PHP Trait","datePublished":"2016-04-16","author":{"@type":"Person","name":"安正超","url":"https://overtrue.me"},"mainEntityOfPage":"https://overtrue.me/about-php-trait/"}</script><link rel="stylesheet" href="/_astro/Preferences.PdpZ8tH4.css"><link rel="stylesheet" href="/_astro/Footer.F4l1zD53.css"></head><body class="reading-page"><a class="skip-link" href="#main" data-i18n="skip">跳到内容</a><div id="top"></div><header class="site-header"><a class="reading-signature" href="/" aria-label="overtrue 首页" data-i18n-aria="home"><img src="/brand/mark-color.svg" width="44" height="44" alt=""></a><nav aria-label="主导航" data-i18n-aria="navigation"><a href="/#work"><span class="nav-number" aria-hidden="true">01</span><span data-i18n="navWork">开源</span></a><a href="/writing/" aria-current="page"><span class="nav-number" aria-hidden="true">02</span><span data-i18n="navWriting">文字</span></a><a href="/#about"><span class="nav-number" aria-hidden="true">03</span><span data-i18n="navAbout">联系</span></a></nav><div class="header-actions"><a class="github-link" href="https://github.com/overtrue" target="_blank" rel="noopener noreferrer">GitHub<svg class width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></a><div class="preferences" data-preferences hidden><div class="theme-picker"><button type="button" class="preference-button theme-toggle" aria-label="切换主题" data-i18n-aria="theme" aria-expanded="false" aria-controls="theme-options"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g data-theme-icon="system"><rect x="3" y="4" width="18" height="13" rx="2"></rect><path d="M8 21h8m-4-4v4"></path></g><g data-theme-icon="light" display="none"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.4 1.4m11.2 11.2L19 19M5 19l1.4-1.4M17.6 6.4 19 5"></path></g><g data-theme-icon="dark" display="none"><path d="M20.5 13.3A8.8 8.8 0 0 1 10.7 3.5a8.8 8.8 0 1 0 9.8 9.8Z"></path></g></svg></button><div class="theme-options" id="theme-options" role="group" aria-label="切换主题" data-i18n-aria="theme" hidden><button type="button" data-theme-choice="system" aria-pressed="true" data-i18n="themeSystem">跟随系统</button><button type="button" data-theme-choice="light" aria-pressed="false" data-i18n="themeLight">浅色</button><button type="button" data-theme-choice="dark" aria-pressed="false" data-i18n="themeDark">深色</button></div></div><button type="button" class="preference-button language-toggle" aria-label="Switch to English" lang="en">EN</button></div></div></header><script type="module">var e=document.querySelector(`.site-header`),t=()=>e?.classList.toggle(`is-scrolled`,scrollY>24);addEventListener(`scroll`,t,{passive:!0}),t();</script><div class="reading-progress" aria-hidden="true"><span data-reading-progress></span></div><main id="main" class="article-shell"><a href="/writing/" class="article-back"><svg class width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12h16m-7-7 7 7-7 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg><span data-i18n="allPosts">全部文字</span></a><article><header class="article-header"><p class="article-kicker">notes / PHP</p><h1 lang="zh-CN">我所理解的 PHP Trait</h1><div class="article-meta"><a class="article-author" href="/#about"><img src="/images/overtrue.jpg" width="26" height="26" alt="">Chris An <span>安正超</span></a><time datetime="2016-04-16">2016.04.16</time><span data-i18n="readingTime" data-i18n-params="{&quot;minutes&quot;:4}">4 分钟阅读</span></div></header><div class="article-layout"><aside class="reading-rail"><details class="article-toc" open><summary><span data-i18n="toc">本文目录</span> <span class="toc-count">02</span></summary><nav aria-label="文章目录" data-i18n-aria="tocLabel" lang="zh-CN"><a href="#section-什么是-trait" data-toc-link lang="zh-CN">什么是 Trait ?</a><a href="#section-trait-有什么优势" data-toc-link lang="zh-CN">Trait 有什么优势 ?</a></nav></details><a class="rail-top" href="#top"><span data-i18n="backTop">回到顶部</span> <svg class width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12h16m-7-7 7 7-7 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></a></aside><div class="article-body"><p class="archive-notice" data-i18n="oldPost" data-i18n-params="{&quot;year&quot;:&quot;2016&quot;}">写于 2016 年，内容保留原貌。文中版本和链接可能已有变化。</p><div class="prose" lang="zh-CN"><p><a href="http://php.net/manual/zh/language.oop5.traits.php">Trait</a> 是从 PHP 5.4 加入的一种细粒度代码复用的语法。以下是官方手册对 Trait 的描述：</p>
 <blockquote>
 <p>Trait 是为类似 PHP 的单继承语言而准备的一种代码复用机制。Trait 为了减少单继承语言的限制，使开发人员能够自由地在不同层次结构内独立的类中复用 method。Trait 和 Class 组合的语义定义了一种减少复杂性的方式，避免传统多继承和 Mixin 类相关典型问题。</p>
 <p>Trait 和 Class 相似，但仅仅旨在用细粒度和一致的方式来组合功能。 无法通过 trait 自身来实例化。它为传统继承增加了水平特性的组合；也就是说，应用的几个 Class 之间不需要继承。</p>
 </blockquote>
-<h2 id="什么是-trait">什么是 Trait ?</h2>
+<h2 id="section-什么是-trait">什么是 Trait ?<a class="heading-anchor" href="#section-什么是-trait" aria-label="链接到：什么是 Trait ?" data-i18n-aria="headingLink" data-i18n-params="{&quot;name&quot;:&quot;什么是 Trait ?&quot;}">#</a></h2>
 <p>其实说通俗一点，就是能把重复的<strong>方法</strong>拆分到一个文件，通过 <code>use</code>  引入以达到代码复用的目的。</p>
 <p>那么，我们应该怎么样去拆分我们的代码才是合适的呢？我的看法是这样的：</p>
 <p>Trait，译作 <strong>“特性”、“特征”、“特点”</strong> 。那么问题就来了：什么才是特性？</p>
 <p>一个销售公司有很多种产品：电视，电脑与鼠标垫，卡通手办等。其中鼠标垫与卡通手办是非卖品，只用于赠送。</p>
 <p>那么这里的 “可卖性” 就是一个特性，非卖品是没有价格的。我们便可以抽象出 “可卖性”  这个 Trait 来：</p>
-<pre><code class="language-php?start_inline=1">trait Sellable
-{
-    protected $price = 0;
-
-    public function getPrice()
-    {
-        return $this-&gt;price;
-    }
-
-    public function setPrice(int $price)
-    {
-        $this-&gt;price = $price;
-    }
-}
-</code></pre>
+<figure class="code-block" data-language="php"><figcaption class="code-bar"><span><span>PHP</span><span class="code-lines" data-i18n="codeLines" data-i18n-params="{&quot;count&quot;:14}">14 行</span></span><button class="copy-code" type="button" aria-label="复制代码" data-i18n-aria="copyCode" hidden><svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" aria-hidden="true"><rect x="5" y="5" width="8" height="9" rx="1.5"/><path d="M3 11H2V2h8v1"/></svg><span aria-live="polite" data-i18n="copy">复制</span></button></figcaption><pre class="shiki github-dark-default" style="background-color:#0d1117;color:#e6edf3" tabindex="0"><code><span class="line"><span style="color:#FF7B72">trait</span><span style="color:#FFA657"> Sellable</span></span>
+<span class="line"><span style="color:#E6EDF3">{</span></span>
+<span class="line"><span style="color:#FF7B72">    protected</span><span style="color:#E6EDF3"> $price </span><span style="color:#FF7B72">=</span><span style="color:#79C0FF"> 0</span><span style="color:#E6EDF3">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FF7B72">    public</span><span style="color:#FF7B72"> function</span><span style="color:#D2A8FF"> getPrice</span><span style="color:#E6EDF3">()</span></span>
+<span class="line"><span style="color:#E6EDF3">    {</span></span>
+<span class="line"><span style="color:#FF7B72">        return</span><span style="color:#79C0FF"> $this</span><span style="color:#FF7B72">-></span><span style="color:#E6EDF3">price;</span></span>
+<span class="line"><span style="color:#E6EDF3">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FF7B72">    public</span><span style="color:#FF7B72"> function</span><span style="color:#D2A8FF"> setPrice</span><span style="color:#E6EDF3">(</span><span style="color:#FF7B72">int</span><span style="color:#E6EDF3"> $price)</span></span>
+<span class="line"><span style="color:#E6EDF3">    {</span></span>
+<span class="line"><span style="color:#79C0FF">        $this</span><span style="color:#FF7B72">-></span><span style="color:#E6EDF3">price </span><span style="color:#FF7B72">=</span><span style="color:#E6EDF3"> $price;</span></span>
+<span class="line"><span style="color:#E6EDF3">    }</span></span>
+<span class="line"><span style="color:#E6EDF3">}</span></span></code></pre></figure>
 <p>当然我们所有的产品都会有品牌与其它基本属性，所以我们通常会定义一个产品类：</p>
-<pre><code class="language-php?start_inline=1">class Pruduct
-{
-    protected $brand;
-    //...
-
-    public function __construct($brand)
-    {
-        $this-&gt;brand = $brand;
-    }
-
-    public function getBrand()
-    {
-        return $this-&gt;brand;
-    }
-
-    //...
-}
-</code></pre>
+<figure class="code-block" data-language="php"><figcaption class="code-bar"><span><span>PHP</span><span class="code-lines" data-i18n="codeLines" data-i18n-params="{&quot;count&quot;:17}">17 行</span></span><button class="copy-code" type="button" aria-label="复制代码" data-i18n-aria="copyCode" hidden><svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" aria-hidden="true"><rect x="5" y="5" width="8" height="9" rx="1.5"/><path d="M3 11H2V2h8v1"/></svg><span aria-live="polite" data-i18n="copy">复制</span></button></figcaption><pre class="shiki github-dark-default" style="background-color:#0d1117;color:#e6edf3" tabindex="0"><code><span class="line"><span style="color:#FF7B72">class</span><span style="color:#FFA657"> Pruduct</span></span>
+<span class="line"><span style="color:#E6EDF3">{</span></span>
+<span class="line"><span style="color:#FF7B72">    protected</span><span style="color:#E6EDF3"> $brand;</span></span>
+<span class="line"><span style="color:#8B949E">    //...</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FF7B72">    public</span><span style="color:#FF7B72"> function</span><span style="color:#79C0FF"> __construct</span><span style="color:#E6EDF3">($brand)</span></span>
+<span class="line"><span style="color:#E6EDF3">    {</span></span>
+<span class="line"><span style="color:#79C0FF">        $this</span><span style="color:#FF7B72">-></span><span style="color:#E6EDF3">brand </span><span style="color:#FF7B72">=</span><span style="color:#E6EDF3"> $brand;</span></span>
+<span class="line"><span style="color:#E6EDF3">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FF7B72">    public</span><span style="color:#FF7B72"> function</span><span style="color:#D2A8FF"> getBrand</span><span style="color:#E6EDF3">()</span></span>
+<span class="line"><span style="color:#E6EDF3">    {</span></span>
+<span class="line"><span style="color:#FF7B72">        return</span><span style="color:#79C0FF"> $this</span><span style="color:#FF7B72">-></span><span style="color:#E6EDF3">brand;</span></span>
+<span class="line"><span style="color:#E6EDF3">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#8B949E">    //...</span></span>
+<span class="line"><span style="color:#E6EDF3">}</span></span></code></pre></figure>
 <p>我们的电视与电脑类：</p>
-<pre><code class="language-php?start_inline=1">class TV extends Pruduct
-{
-    use Sellable;
-    //...
-
-    public function play()
-    {
-        echo &quot;一台 {$this-&gt;brand} 电视在播放中...&quot;;
-    }
-
-    //...
-}
-
-class Computer extends Pruduct
-{
-    use Sellable;
-
-    protected $cores = 8;
-    //...
-
-    public function getNumberOfCores()
-    {
-        return $this-&gt;cores;
-    }
-
-    //...
-}
-</code></pre>
+<figure class="code-block" data-language="php"><figcaption class="code-bar"><span><span>PHP</span><span class="code-lines" data-i18n="codeLines" data-i18n-params="{&quot;count&quot;:27}">27 行</span></span><button class="copy-code" type="button" aria-label="复制代码" data-i18n-aria="copyCode" hidden><svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" aria-hidden="true"><rect x="5" y="5" width="8" height="9" rx="1.5"/><path d="M3 11H2V2h8v1"/></svg><span aria-live="polite" data-i18n="copy">复制</span></button></figcaption><pre class="shiki github-dark-default" style="background-color:#0d1117;color:#e6edf3" tabindex="0"><code><span class="line"><span style="color:#FF7B72">class</span><span style="color:#FFA657"> TV</span><span style="color:#FF7B72"> extends</span><span style="color:#79C0FF"> Pruduct</span></span>
+<span class="line"><span style="color:#E6EDF3">{</span></span>
+<span class="line"><span style="color:#FF7B72">    use</span><span style="color:#79C0FF"> Sellable</span><span style="color:#E6EDF3">;</span></span>
+<span class="line"><span style="color:#8B949E">    //...</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FF7B72">    public</span><span style="color:#FF7B72"> function</span><span style="color:#D2A8FF"> play</span><span style="color:#E6EDF3">()</span></span>
+<span class="line"><span style="color:#E6EDF3">    {</span></span>
+<span class="line"><span style="color:#79C0FF">        echo</span><span style="color:#A5D6FF"> "一台 {</span><span style="color:#79C0FF">$this</span><span style="color:#FF7B72">-></span><span style="color:#E6EDF3">brand</span><span style="color:#A5D6FF">} 电视在播放中..."</span><span style="color:#E6EDF3">;</span></span>
+<span class="line"><span style="color:#E6EDF3">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#8B949E">    //...</span></span>
+<span class="line"><span style="color:#E6EDF3">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FF7B72">class</span><span style="color:#FFA657"> Computer</span><span style="color:#FF7B72"> extends</span><span style="color:#79C0FF"> Pruduct</span></span>
+<span class="line"><span style="color:#E6EDF3">{</span></span>
+<span class="line"><span style="color:#FF7B72">    use</span><span style="color:#79C0FF"> Sellable</span><span style="color:#E6EDF3">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FF7B72">    protected</span><span style="color:#E6EDF3"> $cores </span><span style="color:#FF7B72">=</span><span style="color:#79C0FF"> 8</span><span style="color:#E6EDF3">;</span></span>
+<span class="line"><span style="color:#8B949E">    //...</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FF7B72">    public</span><span style="color:#FF7B72"> function</span><span style="color:#D2A8FF"> getNumberOfCores</span><span style="color:#E6EDF3">()</span></span>
+<span class="line"><span style="color:#E6EDF3">    {</span></span>
+<span class="line"><span style="color:#FF7B72">        return</span><span style="color:#79C0FF"> $this</span><span style="color:#FF7B72">-></span><span style="color:#E6EDF3">cores;</span></span>
+<span class="line"><span style="color:#E6EDF3">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#8B949E">    //...</span></span>
+<span class="line"><span style="color:#E6EDF3">}</span></span></code></pre></figure>
 <p>而鼠标垫与手办等礼品是不可卖的：</p>
-<pre><code class="language-php?start_inline=1">class Gift extends Pruduct
-{
-    protected $name;
-
-    function __construct($brand, $name)
-    {
-        parent::__construct($brand);
-        $this-&gt;name = $name;
-    }
-
-    //...
-}
-</code></pre>
+<figure class="code-block" data-language="php"><figcaption class="code-bar"><span><span>PHP</span><span class="code-lines" data-i18n="codeLines" data-i18n-params="{&quot;count&quot;:12}">12 行</span></span><button class="copy-code" type="button" aria-label="复制代码" data-i18n-aria="copyCode" hidden><svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" aria-hidden="true"><rect x="5" y="5" width="8" height="9" rx="1.5"/><path d="M3 11H2V2h8v1"/></svg><span aria-live="polite" data-i18n="copy">复制</span></button></figcaption><pre class="shiki github-dark-default" style="background-color:#0d1117;color:#e6edf3" tabindex="0"><code><span class="line"><span style="color:#FF7B72">class</span><span style="color:#FFA657"> Gift</span><span style="color:#FF7B72"> extends</span><span style="color:#79C0FF"> Pruduct</span></span>
+<span class="line"><span style="color:#E6EDF3">{</span></span>
+<span class="line"><span style="color:#FF7B72">    protected</span><span style="color:#E6EDF3"> $name;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FF7B72">    function</span><span style="color:#79C0FF"> __construct</span><span style="color:#E6EDF3">($brand, $name)</span></span>
+<span class="line"><span style="color:#E6EDF3">    {</span></span>
+<span class="line"><span style="color:#FF7B72">        parent::</span><span style="color:#D2A8FF">__construct</span><span style="color:#E6EDF3">($brand);</span></span>
+<span class="line"><span style="color:#79C0FF">        $this</span><span style="color:#FF7B72">-></span><span style="color:#E6EDF3">name </span><span style="color:#FF7B72">=</span><span style="color:#E6EDF3"> $name;</span></span>
+<span class="line"><span style="color:#E6EDF3">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#8B949E">    //...</span></span>
+<span class="line"><span style="color:#E6EDF3">}</span></span></code></pre></figure>
 <p>上面的这个例子中，“可卖性” 便是部分商品的一个特性，也可以理解为商品的一个归类。你也许会说，我也可以再添加一个 Goods 类来完成上面的例子啊，Goods 继承 Product，再让所有可卖的商品继承于 Goods 类，把价格属性与方法写到 Goods 里，同样可以代码复用啊。的确，这没啥问题。但是你会发现：你有多个需要区别的特性时，由于 PHP 只有单继承的原因，你不得不组合很多个基类出来，将他们层叠，最终得到的树状结构是很复杂的。这也是 Trait 所带来的优势：随意组合，代码清晰。</p>
 <p>其实还有很多例子，比如<strong>可飞行的</strong>，那么把飞行这个特性所具有的属性（如：高度，距离）与方法（如：起飞，降落）放到一个 trait 就是一个合理的拆分。</p>
-<h2 id="trait-有什么优势">Trait 有什么优势 ?</h2>
+<h2 id="section-trait-有什么优势">Trait 有什么优势 ?<a class="heading-anchor" href="#section-trait-有什么优势" aria-label="链接到：Trait 有什么优势 ?" data-i18n-aria="headingLink" data-i18n-params="{&quot;name&quot;:&quot;Trait 有什么优势 ?&quot;}">#</a></h2>
 <p>trait 有什么优势？来看一段代码：</p>
-<pre><code class="language-php?start_inline=1">class User extends Model
-{
-    use Authenticate, SoftDeletes, Arrayable, Cacheable;
-
-    ...
-}
-</code></pre>
+<figure class="code-block" data-language="php"><figcaption class="code-bar"><span><span>PHP</span><span class="code-lines" data-i18n="codeLines" data-i18n-params="{&quot;count&quot;:6}">6 行</span></span><button class="copy-code" type="button" aria-label="复制代码" data-i18n-aria="copyCode" hidden><svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" aria-hidden="true"><rect x="5" y="5" width="8" height="9" rx="1.5"/><path d="M3 11H2V2h8v1"/></svg><span aria-live="polite" data-i18n="copy">复制</span></button></figcaption><pre class="shiki github-dark-default" style="background-color:#0d1117;color:#e6edf3" tabindex="0"><code><span class="line"><span style="color:#FF7B72">class</span><span style="color:#FFA657"> User</span><span style="color:#FF7B72"> extends</span><span style="color:#79C0FF"> Model</span></span>
+<span class="line"><span style="color:#E6EDF3">{</span></span>
+<span class="line"><span style="color:#FF7B72">    use</span><span style="color:#79C0FF"> Authenticate</span><span style="color:#E6EDF3">, </span><span style="color:#79C0FF">SoftDeletes</span><span style="color:#E6EDF3">, </span><span style="color:#79C0FF">Arrayable</span><span style="color:#E6EDF3">, </span><span style="color:#79C0FF">Cacheable</span><span style="color:#E6EDF3">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FF7B72">    ...</span></span>
+<span class="line"><span style="color:#E6EDF3">}</span></span></code></pre></figure>
 <p>这个用户模型类，我们引入了四个特性：注册与授权、软删除、数组式操作、可缓存。</p>
 <p>我们看到代码的时候一眼便知道当前支持了哪些个特性。再看下面另外一种写法：</p>
-<pre><code class="language-php?start_inline=1">abstract AdvansedUser {
-  // ... 实现了 Authenticate, SoftDeletes, Arrayable, Cacheable 的所有方法
-}
-class User extends AdvansedUser
-{
-    ...
-}
-</code></pre>
+<figure class="code-block" data-language="php"><figcaption class="code-bar"><span><span>PHP</span><span class="code-lines" data-i18n="codeLines" data-i18n-params="{&quot;count&quot;:7}">7 行</span></span><button class="copy-code" type="button" aria-label="复制代码" data-i18n-aria="copyCode" hidden><svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" aria-hidden="true"><rect x="5" y="5" width="8" height="9" rx="1.5"/><path d="M3 11H2V2h8v1"/></svg><span aria-live="polite" data-i18n="copy">复制</span></button></figcaption><pre class="shiki github-dark-default" style="background-color:#0d1117;color:#e6edf3" tabindex="0"><code><span class="line"><span style="color:#FF7B72">abstract</span><span style="color:#79C0FF"> AdvansedUser</span><span style="color:#E6EDF3"> {</span></span>
+<span class="line"><span style="color:#8B949E">  // ... 实现了 Authenticate, SoftDeletes, Arrayable, Cacheable 的所有方法</span></span>
+<span class="line"><span style="color:#E6EDF3">}</span></span>
+<span class="line"><span style="color:#FF7B72">class</span><span style="color:#FFA657"> User</span><span style="color:#FF7B72"> extends</span><span style="color:#79C0FF"> AdvansedUser</span></span>
+<span class="line"><span style="color:#E6EDF3">{</span></span>
+<span class="line"><span style="color:#FF7B72">    ...</span></span>
+<span class="line"><span style="color:#E6EDF3">}</span></span></code></pre></figure>
 <p>你不得不再去阅读 <code>AdvansedUser</code> 的代码才能理解。你想说没有可读性是因为我基类的名称没起好？可是，这种各种特性组合的一个基类是根本无法起一个见名知义的名称的，不信你可以试一下。</p>
 <p>就算你真的起了一个见名知义的名称：<code>AuthenticateCacheableAndArrayableSoftDeletesUser</code>，可是当需求变更，要求在 <code>FooUser</code>（同样继承了这个基类） 中去除缓存特性，而 <code>User</code> 类保留这个特性，怎么办？再创建一个基类么？</p>
 <p>这就是我理解的 Trait：</p>
@@ -236,113 +131,5 @@ class User extends AdvansedUser
 <li>拆分时如果给 Trait 起名困难时，请认真思考你是否真的拆分对了，因为正确的拆分是很容易描述 “它是一个具有什么功能的特性” 的；</li>
 </ul>
 <p>总之一定要记住：不要为了让两段相同的代码提到一起这样简单粗暴的方式来拆分。</p>
-<p>以上是个人见解，欢迎各位讨论。​😄​</p>
-
-              </div>
-              <div class="toc-container">
-                <ul class="markdownIt-TOC">
-<li>
-<ul>
-<li><a href="#%E4%BB%80%E4%B9%88%E6%98%AF-trait">什么是 Trait ?</a></li>
-<li><a href="#trait-%E6%9C%89%E4%BB%80%E4%B9%88%E4%BC%98%E5%8A%BF">Trait 有什么优势 ?</a></li>
-</ul>
-</li>
-</ul>
-
-              </div>
-            </div>
-          </article>
-        </div>
-
-        
-          <div class="next-post">
-            <div class="next">下一篇</div>
-            <a href="https://overtrue.me/npm-proxy/">
-              <h3 class="post-title">
-                npm 代理安装依赖
-              </h3>
-            </a>
-          </div>
-        
-
-        
-          
-            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
-<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
-
-<div id="gitalk-container"></div>
-
-<script>
-
-  var gitalk = new Gitalk({
-    clientID: 'f2027ed0e5be934c16d5',
-    clientSecret: '37b4520fa4543c1565ed971e0e50ac215e110c99',
-    repo: 'blog',
-    owner: 'overtrue',
-    admin: ['overtrue'],
-    labels: ['gitalk', 'comment'],
-    id: location.pathname.slice(1, location.pathname.lastIndexOf('/')).substring(0, 49), 
-    distractionFreeMode: false  // Facebook-like distraction free mode
-  })
-
-  gitalk.render('gitalk-container')
-
-</script>
-
-          
-
-          
-        
-
-        <div class="site-footer">
-  <span>Powered by  <span><a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
-  <a class="rss" href="https://overtrue.me/atom.xml" target="_blank">
-    <i class="ri-rss-line"></i> RSS
-  </a>
-</div>
-
-      </div>
-    </div>
-
-    <script>
-      hljs.initHighlightingOnLoad()
-
-      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
-
-      // This should probably be throttled.
-      // Especially because it triggers during smooth scrolling.
-      // https://lodash.com/docs/4.17.10#throttle
-      // You could do like...
-      // window.addEventListener("scroll", () => {
-      //    _.throttle(doThatStuff, 100);
-      // });
-      // Only not doing it here to keep this Pen dependency-free.
-
-      window.addEventListener("scroll", event => {
-        let fromTop = window.scrollY;
-
-        mainNavLinks.forEach((link, index) => {
-          let section = document.getElementById(decodeURI(link.hash).substring(1));
-          let nextSection = null
-          if (mainNavLinks[index + 1]) {
-            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
-          }
-          if (section.offsetTop <= fromTop) {
-            if (nextSection) {
-              if (nextSection.offsetTop > fromTop) {
-                link.classList.add("current");
-              } else {
-                link.classList.remove("current");    
-              }
-            } else {
-              link.classList.add("current");
-            }
-          } else {
-            link.classList.remove("current");
-          }
-        });
-      });
-
-    </script>
-  </body>
-</html>
+<p>以上是个人见解，欢迎各位讨论。​:smile:​</p>
+</div></div></div></article><div class="article-footer"><a href="/writing/" class="article-back"><svg class width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12h16m-7-7 7 7-7 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg> <span data-i18n="allPosts">全部文字</span></a><a href="/npm-proxy/" class="article-next"><span data-i18n="readNext">接着读</span><strong lang="zh-CN">npm 代理安装依赖</strong><svg class width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></a></div></main><footer class="site-footer compact"><div class="footer-bottom"><a class="footer-identity" href="/"><img src="/brand/mark-color.svg" width="28" height="28" alt=""><span>Chris An<span>安正超 / overtrue</span></span></a><p>Keep calm and coding.</p><div><a href="https://github.com/overtrue" target="_blank" rel="noopener noreferrer">GitHub</a><a href="https://x.com/overtrue666" target="_blank" rel="noopener noreferrer">X / Twitter</a><a href="/rss.xml">RSS</a><a href="#top"><span data-i18n="backTop">回到顶部</span> <svg class width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></a></div></div><div class="footer-wordmark" aria-hidden="true">OVERTRUE</div></footer><script type="module" src="/_astro/_slug_.astro_astro_type_script_index_0_lang.uu2a7OVK.js"></script><script type="module" src="/_astro/Base.astro_astro_type_script_index_0_lang.F6bjS25y.js"></script></body></html>
